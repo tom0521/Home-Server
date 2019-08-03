@@ -1,7 +1,7 @@
 <?php
 include 'connect.php';
 
-$sql = "SELECT MONTH(date) AS date, SUM(amount) AS amount FROM income GROUP BY YEAR(date), MONTH(date)";
+$sql = "SELECT MONTHNAME(date) AS month, MONTH(date), SUM(amount) AS amount FROM income GROUP BY MONTHNAME(date), MONTH(date) ORDER BY MONTH(date)";
 $result = $conn->query($sql);
 
 $rows = array();
