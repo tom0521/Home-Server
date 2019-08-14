@@ -9,7 +9,21 @@
 	</head>
 	<body>
 		<script src="http://d3js.org/d3.v4.min.js"></script>
-		<script src="js/income-graph.js"></script>
-		<script src="js/spending-graph.js"></script>
+		<div id="overview-panel" class="row">
+			<div class="col">
+				<h2 id="gross-income"> $Gross-Income </h2>
+			</div>
+			<div class="col">
+				<h2 id="expenses"> $Expenses </h2>
+			<div class="col">
+				<h2 id="net-income"> $Net-Income </h2>
+			</div>
+		</div>
+		<div id="chart-panel" class="row">
+			<script src="js/spending-graph.js"></script>
+		</div>
+		<div id="cash-flow-panel" class="row">
+			<script src="js/income-graph.js"></script>
+		</div>
 	</body>
 </html>
