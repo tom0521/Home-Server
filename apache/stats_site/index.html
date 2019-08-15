@@ -6,10 +6,11 @@
 		<meta name="description" content="Home-Server">
 		<meta name="author" content="Tommy">
 		<link rel="stylesheet" href="css/style.css" >
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 	<body>
-		<script src="http://d3js.org/d3.v4.min.js"></script>
-		<div id="overview-panel" class="row">
+		<script src="https://unpkg.com/frappe-charts@1.1.0/dist/frappe-charts.min.iife.js"></script>
+		<section>
 			<div class="col">
 				<h2 id="gross-income"> $Gross-Income </h2>
 			</div>
@@ -18,12 +19,13 @@
 			<div class="col">
 				<h2 id="net-income"> $Net-Income </h2>
 			</div>
-		</div>
-		<div id="chart-panel" class="row">
-			<script src="js/spending-graph.js"></script>
-		</div>
-		<div id="cash-flow-panel" class="row">
-			<script src="js/income-graph.js"></script>
-		</div>
+		</section>
+		<section id="pie-section">
+			<div id="expenses-pie"></div>
+		</section>
+		<section id="cash-flow-section">
+			<div id="cash-flow"></div>
+			<script src="js/cash-flow.js"></script>
+		</section>
 	</body>
 </html>
