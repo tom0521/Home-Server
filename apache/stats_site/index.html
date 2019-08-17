@@ -2,30 +2,46 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title> Home-Server </title>
+		<meta name="viewport" content="width=device-width">
 		<meta name="description" content="Home-Server">
 		<meta name="author" content="Tommy">
-		<link rel="stylesheet" href="css/style.css" >
+
+		<!-- JQuery CDN -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		
+		<link rel="stylesheet" href="css/style.css">
+
+		<title> Home-Server </title>
 	</head>
 	<body>
+		<!-- Frappe Charts CDN -->
 		<script src="https://unpkg.com/frappe-charts@1.1.0/dist/frappe-charts.min.iife.js"></script>
-		<section>
-			<div class="col">
-				<h2 id="gross-income"> $Gross-Income </h2>
+		<header>
+			<div class="contianer">
+				<div id="title">
+					<h1> My Finances </h1>
+				</div>
+				<nav>
+					<ul>
+						<li> Gross Income </li>
+						<li> Expenses </li>
+						<li> Net Income </li>
+					</ul>
+				</nav>
 			</div>
-			<div class="col">
-				<h2 id="expenses"> $Expenses </h2>
-			<div class="col">
-				<h2 id="net-income"> $Net-Income </h2>
-			</div>
-		</section>
+		</header>
+		
 		<section id="pie-section">
 			<div id="expenses-pie"></div>
 		</section>
+
 		<section id="cash-flow-section">
 			<div id="cash-flow"></div>
 			<script src="js/cash-flow.js"></script>
 		</section>
+
+		<footer>
+			<p> Thomas Sherwood </p>
+		</footer>
 	</body>
 </html>
