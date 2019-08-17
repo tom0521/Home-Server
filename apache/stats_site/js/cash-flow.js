@@ -3,6 +3,7 @@ $.getJSON('php/cash-flow.php', function(jsonData) {
 		title: "Cash-Flow",
 		data: jsonData,
 		type: 'axis-mixed',
-		colors: ['green', 'red', 'light-blue']
+		colors: ['green', 'red', 'light-blue'],
+		height: (screen.height / 2)
 	});
 });
