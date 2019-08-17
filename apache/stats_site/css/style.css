@@ -15,7 +15,7 @@ body {
 
 /* Horizontal Rule */
 hr {
-	margin: 0.5em 10px 0.5em 10px;
+	margin: 0.5em 10% 0.5em 10%;
 }
 
 /* Overall Stats */
@@ -46,4 +46,9 @@ li h3 {
 
 li label {
 	font-size: 0.75em;
+}
+
+/* Footer */
+footer {
+	text-align: center;
 }
