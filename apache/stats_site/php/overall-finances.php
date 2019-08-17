@@ -15,9 +15,9 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
 	$row = $result->fetch_assoc();
 	echo json_encode(array(
-		"gross_income"=>$row['gross_income'],
-		"expenses"=>$row['expenses'],
-		"net_income"=>$row['net_income']));
+		"gross_income"=>floatval($row['gross_income']),
+		"expenses"=>floatval($row['expenses']),
+		"net_income"=>floatval($row['net_income'])));
 }
 
 $conn->close();

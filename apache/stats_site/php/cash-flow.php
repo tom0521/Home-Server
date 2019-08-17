@@ -40,9 +40,9 @@ if ($result->num_rows > 0) {
 	$prev = 0; 
 	while($row = $result->fetch_assoc()) {
 		$jsonObj['labels'][] = $row['month'];
-		$jsonObj['datasets'][0]['values'][] = $row['income'];
-		$jsonObj['datasets'][1]['values'][] = $row['expenses'];
-		$prev += $row['income'] - $row['expenses'];
+		$jsonObj['datasets'][0]['values'][] = floatval($row['income']);
+		$jsonObj['datasets'][1]['values'][] = floatval($row['expenses']);
+		$prev += floatval($row['income']) - floatval($row['expenses']);
 		$jsonObj['datasets'][2]['values'][] = $prev;
 	}
 }
