@@ -3,6 +3,6 @@ $.getJSON('php/expenses.php', function(jsonData){
 		title: "Expenses",
 		data: jsonData,
 		type: 'pie',
-		height: (screen.height / 2)
+		height: (screen.height / 2.5)
 	});
 });

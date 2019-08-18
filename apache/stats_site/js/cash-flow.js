@@ -4,6 +4,6 @@ $.getJSON('php/cash-flow.php', function(jsonData) {
 		data: jsonData,
 		type: 'axis-mixed',
 		colors: ['green', 'red', 'light-blue'],
-		height: (screen.height / 2)
+		height: (screen.height / 3)
 	});
 });
