@@ -4,12 +4,12 @@ include 'connect.php';
 $sql = "SELECT income.month AS month,
          income.income AS income, expenses.expenses AS expenses
          FROM (
-         	SELECT MONTH(date) AS month, SUM(amount) as income
-         	FROM finances.income GROUP BY MONTH(date) ORDER BY MONTH(date)
+         	SELECT MONTHNAME(date) AS month, MONTH(date), SUM(amount) as income
+         	FROM finances.income GROUP BY MONTHNAME(date), MONTH(date) ORDER BY MONTH(date)
          ) AS income,
          (
-         	SELECT MONTH(timestamp) AS month, SUM(price) as expenses
-         	FROM finances.spending GROUP BY MONTH(timestamp) ORDER BY MONTH(timestamp)
+         	SELECT MONTHNAME(timestamp) AS month, MONTH(timestamp), SUM(price) as expenses
+         	FROM finances.spending GROUP BY MONTHNAME(timestamp), MONTH(timestamp) ORDER BY MONTH(timestamp)
          ) AS expenses
          WHERE income.month=expenses.month";
 
