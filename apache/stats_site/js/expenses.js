@@ -1,12 +1,3 @@
-/*$.getJSON('php/expenses.php', function(jsonData){
-	const chart = new frappe.Chart("#expenses-pie", {
-		title: "Expenses",
-		data: jsonData,
-		type: 'pie',
-		height: (screen.height / 2.5)
-	});
-});*/
-
 var request = new XMLHttpRequest();
 request.open('GET', 'php/expenses.php', true);
 request.onload = function () {
