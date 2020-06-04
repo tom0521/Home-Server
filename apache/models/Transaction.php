@@ -8,6 +8,7 @@ class Transaction
     public $date;
     public $time;
     public $amount;
+    public $payment_method;
     public $location_id;
 
     public function __construct($db)
@@ -21,12 +22,14 @@ class Transaction
                 date = :date,
                 time = :time,
                 amount = :amount,
+                payment_method = :payment_method,
                 location_id = :location_id';
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':date', $this->date);
         $stmt->bindParam(':time', $this->time);
         $stmt->bindParam(':amount', $this->amount);
+        $stmt->bindParam(':payment_method', $this->payment_method);
         $stmt->bindParam(':location_id', $this->location_id);
 
         if($stmt->execute()){
@@ -44,6 +47,7 @@ class Transaction
             t.date,
             t.time,
             t.amount,
+            t.payment_method,
             t.location_id
           FROM 
             ' . $this->table . ' t

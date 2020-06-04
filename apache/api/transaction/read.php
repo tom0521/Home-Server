@@ -14,16 +14,24 @@
 
     if($num > 0){
         $transactions_arr = array();
+        $transactions_arr['income'] = 0;
+        $transactions_arr['spending'] = 0;
         $transactions_arr['data_length'] = $num;
         $transactions_arr['data'] = array();
 
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             extract($row);
+            if($amount > 0){
+                $transactions_arr['income'] += $amount;
+            } else {
+                $transactions_arr['spending'] += $amount;
+            }
             $transaction_item = array(
                 'id' => $id,
                 'date' => $date,
                 'time' => $time,
                 'amount' => $amount,
+                'payment_method' => $payment_method,
                 'location_id' => $location_id
             );
 

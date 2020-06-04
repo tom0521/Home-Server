@@ -16,7 +16,9 @@
     $location_arr = array(
         'id' => $location->id,
         'name' => $location->name,
-        'address' => $location->address
+        'address' => $location->address,
+        'address_type' => $location->address_type,
+        'phone' => $location->phone
     );
 
     echo json_encode($location_arr);

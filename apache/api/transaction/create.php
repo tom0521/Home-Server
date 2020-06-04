@@ -1,8 +1,8 @@
 <?php
-    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Origin: http://192.168.1.101:81');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
-    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
+    header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,
     Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
 
     include_once '../../config/Database.php';
@@ -18,6 +18,7 @@
     $transaction->date = $data->date;
     $transaction->time = $data->time;
     $transaction->amount = $data->amount;
+    $transaction->payment_method = $data->payment_method;
     $transaction->location_id = $data->location_id;
 
     if($transaction->create()){
@@ -27,6 +28,7 @@
                 'date' => $transaction->date,
                 'time' => $transaction->time,
                 'amount' => $transaction->amount,
+                'payment_method' => $transaction->payment_method,
                 'location_id' =>$transaction->location_id
             )
         );

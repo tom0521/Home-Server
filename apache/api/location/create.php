@@ -3,7 +3,7 @@
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
-    Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
+        Access-Control-Allow-Methods,Authorization,X-Requested-With');
 
     include_once '../../config/Database.php';
     include_once '../../models/Location.php';
@@ -17,13 +17,17 @@
 
     $location->name = $data->name;
     $location->address = $data->address;
+    $location->address_type = $data->address_type;
+    $location->phone = $data->phone;
 
     if($location->create()){
         echo json_encode(
             array(
                 'id' => $location->id,
                 'name' => $location->name,
-                'address' => $location->address
+                'address' => $location->address,
+                'address_type' => $location->address_type,
+                'phone' => $location->phone
             )
         );
     } else {

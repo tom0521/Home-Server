@@ -7,6 +7,8 @@ class Location
     public $id;
     public $name;
     public $address;
+    public $address_type;
+    public $phone;
 
     public function __construct($db)
     {
@@ -17,11 +19,15 @@ class Location
         $query = 'INSERT INTO ' . $this->table . '
             SET
                 name = :name,
-                address = :address';
+                address = :address,
+                address_type = :address_type,
+                phone = :phone';
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':address', $this->address);
+        $stmt->bindParam(':address_type', $this->address_type);
+        $stmt->bindParam(':phone', $this->phone);
 
         if($stmt->execute()){
             $this->id = $this->conn->lastInsertId();
@@ -36,7 +42,9 @@ class Location
         $query = 'SELECT
             t.id,
             t.name,
-            t.address
+            t.address,
+            t.address_type,
+            t.phone
           FROM
             ' . $this->table . ' t
           ORDER BY
@@ -51,13 +59,14 @@ class Location
         $query = 'SELECT
             t.id,
             t.name,
-            t.address
+            t.address,
+            t.address_type,
+            t.phone
           FROM
             ' .$this->table . ' t
           WHERE
             id = :id
-          ORDER BY
-            t.name, t.address';
+          LIMIT 0,1';
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);

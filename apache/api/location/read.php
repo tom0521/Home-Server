@@ -22,7 +22,9 @@
             $location_item = array(
                 'id' => $id,
                 'name' => $name,
-                'address' => $address
+                'address' => $address,
+                'address_type' => $address_type,
+                'phone' => $phone
             );
 
             array_push($location_arr['data'], $location_item);
