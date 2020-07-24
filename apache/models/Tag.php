@@ -2,9 +2,9 @@
 class Tag
 {
     private $conn;
-    private $table = 'tags';
+    private $table = 'tag';
 
-    public $id;
+    public $tag_id;
     public $tag;
 
     public function __construct($db)
@@ -21,7 +21,7 @@ class Tag
         $stmt->bindParam(':tag', $this->tag);
 
         if($stmt->execute()){
-            $this->id = $this->conn->lastInsertId();
+            $this->tag_id = $this->conn->lastInsertId();
             return true;
         }
 
@@ -30,9 +30,7 @@ class Tag
     }
 
     public function read(){
-        $query = 'SELECT
-            t.id,
-            t.tag
+        $query = 'SELECT *
           FROM
             ' . $this->table . ' t
           ORDER BY

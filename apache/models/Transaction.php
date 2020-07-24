@@ -2,14 +2,16 @@
 class Transaction
 {
     private $conn;
-    private $table = 'transactions';
+    private $table = 'transaction';
 
-    public $id;
-    public $date;
-    public $time;
+    public $transaction_id;
+    public $timestamp;
     public $amount;
-    public $payment_method;
-    public $location_id;
+    public $address_id;
+    public $receipt;
+    public $payment_method_id;
+    public $category_id;
+    public $note;
 
     public function __construct($db)
     {
@@ -19,21 +21,25 @@ class Transaction
     public function create(){
         $query = 'INSERT INTO ' . $this->table . '
             SET
-                date = :date,
-                time = :time,
+                timestamp = :timestamp,
                 amount = :amount,
-                payment_method = :payment_method,
-                location_id = :location_id';
+                address_id = :address_id,
+                receipt = :receipt,
+                payment_method_id = :payment_method_id,
+                category_id = :category_id,
+                note = :note';
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->bindParam(':time', $this->time);
+        $stmt->bindParam(':timestamp', $this->timestamp);
         $stmt->bindParam(':amount', $this->amount);
-        $stmt->bindParam(':payment_method', $this->payment_method);
-        $stmt->bindParam(':location_id', $this->location_id);
+        $stmt->bindParam(':address_id', $this->address_id);
+        $stmt->bindParam(':receipt', $this->receipt);
+        $stmt->bindParam(':payment_method_id', $this->payment_method_id);
+        $stmt->bindParam(':category_id', $this->category_id);
+        $stmt->bindParam(':note', $this->note);
 
         if($stmt->execute()){
-            $this->id = $this->conn->lastInsertId();
+            $this->transaction_id = $this->conn->lastInsertId();
             return true;
         }
 
@@ -42,17 +48,12 @@ class Transaction
     }
 
     public function read(){
-        $query = 'SELECT
-            t.id,
-            t.date,
-            t.time,
-            t.amount,
-            t.payment_method,
-            t.location_id
+        $query = 'SELECT *
           FROM 
             ' . $this->table . ' t
           ORDER BY 
-            t.date, t.time';
+            t.timestamp,
+            t.transaction_id';
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();

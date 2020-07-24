@@ -5,7 +5,7 @@
     include_once '../../config/Database.php';
     include_once '../../models/Transaction.php';
 
-    $database = new Database('finances');
+    $database = new Database();
     $db = $database->connect();
 
     $transaction = new Transaction($db);
@@ -27,12 +27,14 @@
                 $transactions_arr['spending'] += $amount;
             }
             $transaction_item = array(
-                'id' => $id,
-                'date' => $date,
-                'time' => $time,
+                'transaction_id' => $transaction_id,
+                'timestamp' => $timestamp,
                 'amount' => $amount,
+                'address_id' => $address_id,
+                'receipt' => $receipt,
                 'payment_method' => $payment_method,
-                'location_id' => $location_id
+                'category_id' => $category_id,
+                'note' => $note
             );
 
             array_push($transactions_arr['data'], $transaction_item);

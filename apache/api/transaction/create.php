@@ -1,5 +1,5 @@
 <?php
-    header('Access-Control-Allow-Origin: http://192.168.1.101:81');
+    header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,
@@ -8,28 +8,32 @@
     include_once '../../config/Database.php';
     include_once '../../models/Transaction.php';
 
-    $database = new Database('finances');
+    $database = new Database();
     $db = $database->connect();
 
     $transaction = new Transaction($db);
 
     $data = json_decode(file_get_contents("php://input"));
 
-    $transaction->date = $data->date;
-    $transaction->time = $data->time;
+    $transaction->timestamp = $data->timestamp;
     $transaction->amount = $data->amount;
-    $transaction->payment_method = $data->payment_method;
-    $transaction->location_id = $data->location_id;
+    $transaction->address_id = $data->address_id;
+    $transaction->receipt = $data->receipt;
+    $transaction->payment_method_id = $data->payment_method_id;
+    $transaction->category_id = $data->category_id;
+    $transaction->note = $data->note;
 
     if($transaction->create()){
         echo json_encode(
             array(
-                'id' => $transaction->id,
-                'date' => $transaction->date,
-                'time' => $transaction->time,
+                'transaction_id' => $transaction->transaction_id,
+                'timestamp' => $transaction->timestamp,
                 'amount' => $transaction->amount,
-                'payment_method' => $transaction->payment_method,
-                'location_id' =>$transaction->location_id
+                'address_id' => $transaction->address_id,
+                'receipt' => $transaction->receipt,
+                'payment_method' => $transaction->payment_method_id,
+                'category_id' => $transaction->category_id,
+                'note' => $transaction->note
             )
         );
     } else {
