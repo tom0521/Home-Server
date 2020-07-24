@@ -16,12 +16,14 @@
     $data = json_decode(file_get_contents("php://input"));
 
     $place->name = $data->name;
+    $category_id = $data->category_id;
 
     if($place->create()){
         echo json_encode(
             array(
                 'place_id' => $place->place_id,
-                'name' => $place->name
+                'name' => $place->name,
+                'category_id' => $place->category_id
             )
         );
     } else {

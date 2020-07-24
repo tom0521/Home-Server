@@ -20,7 +20,7 @@
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             extract($row);
             $tag_item = array(
-                'id' => $id,
+                'tag_id' => $tag_id,
                 'tag' => $tag
             );
 

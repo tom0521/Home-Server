@@ -20,7 +20,7 @@
     if($tag->create()){
         echo json_encode(
             array(
-                'id' => $tag->id,
+                'tag_id' => $tag->tag_id,
                 'tag' => $tag->tag
             )
         );
