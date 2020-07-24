@@ -8,7 +8,7 @@
     include_once '../../config/Database.php';
     include_once '../../models/Payment_Method.php';
 
-    $database = new Database('finances');
+    $database = new Database();
     $db = $database->connect();
 
     $payment_method = new Payment_Method($db);

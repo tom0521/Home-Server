@@ -5,7 +5,7 @@
     include_once '../../config/Database.php';
     include_once '../../models/City.php';
 
-    $database = new Database('finances');
+    $database = new Database();
     $db = $database->connect();
 
     $city = new City($db);

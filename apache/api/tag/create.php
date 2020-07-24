@@ -8,7 +8,7 @@
     include_once '../../config/Database.php';
     include_once '../../models/Tag.php';
 
-    $database = new Database('finances');
+    $database = new Database();
     $db = $database->connect();
 
     $tag = new Tag($db);
