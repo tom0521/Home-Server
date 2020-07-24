@@ -6,28 +6,26 @@
         Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
 
     include_once '../../config/Database.php';
-    include_once '../../models/Place.php';
+    include_once '../../models/Category.php';
 
     $database = new Database('finances');
     $db = $database->connect();
 
-    $place = new Place($db);
+    $category = new Category($db);
 
     $data = json_decode(file_get_contents("php://input"));
 
-    $place->name = $data->name;
-    $place->category_id = $data->category_id;
+    $category->category = $data->category;
 
-    if($place->create()){
+    if($category->create()){
         echo json_encode(
             array(
-                'place_id' => $place->place_id,
-                'name' => $place->name,
-                'category_id' => $place->category_id
+                'category_id' => $category->category_id,
+                'category' => $category->category
             )
         );
     } else {
         echo json_encode(
-            array('message' => 'Place Not Created')
+            array('message' => 'Category Not Created')
         );
     }

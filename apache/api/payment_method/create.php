@@ -6,28 +6,26 @@
         Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
 
     include_once '../../config/Database.php';
-    include_once '../../models/Place.php';
+    include_once '../../models/Payment_Method.php';
 
     $database = new Database('finances');
     $db = $database->connect();
 
-    $place = new Place($db);
+    $payment_method = new Payment_Method($db);
 
     $data = json_decode(file_get_contents("php://input"));
 
-    $place->name = $data->name;
-    $place->category_id = $data->category_id;
+    $payment_method->payment_method = $data->payment_method;
 
-    if($place->create()){
+    if($payment_method->create()){
         echo json_encode(
             array(
-                'place_id' => $place->place_id,
-                'name' => $place->name,
-                'category_id' => $place->category_id
+                'payment_method_id' => $payment_method->payment_method_id,
+                'payment_method' => $payment_method->payment_method
             )
         );
     } else {
         echo json_encode(
-            array('message' => 'Place Not Created')
+            array('message' => 'Payment Method Not Created')
         );
     }
