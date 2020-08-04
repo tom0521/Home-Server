@@ -60,4 +60,21 @@ class Address
         $stmt->execute();
         return $stmt;
     }
+
+    public function read_place(){
+        $query = 'SELECT *
+            FROM
+                ' . $this->table . ' t
+            WHERE
+                place_id = :place_id
+            ORDER BY
+                t.address,
+                t.address2,
+                t.address_id';
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':place_id', $this->place_id);
+        $stmt->execute();
+        return $stmt;
+    }
 }

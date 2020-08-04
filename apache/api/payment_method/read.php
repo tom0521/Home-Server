@@ -30,6 +30,6 @@
         echo json_encode($payment_method_arr);
     } else {
         echo json_encode(
-            array('message' => 'No Places Found')
+            array('message' => 'No Payment Methods Found')
         );
     }

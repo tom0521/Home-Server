@@ -18,7 +18,7 @@ class Category
                 category = :category';
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':category', $this->tag);
+        $stmt->bindParam(':category', $this->category);
 
         if($stmt->execute()){
             $this->category_id = $this->conn->lastInsertId();

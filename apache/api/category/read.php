@@ -9,7 +9,7 @@
     $db = $database->connect();
 
     $category = new Category($db);
-    $result = $place->read();
+    $result = $category->read();
     $num = $result->rowCount();
 
     if($num > 0){

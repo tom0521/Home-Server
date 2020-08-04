@@ -5,10 +5,12 @@
 		<meta name="viewport" content="width=device-width">
 		<meta name="description" content="Home-Server">
 		<meta name="author" content="Tommy">
+		
+		<style>
+			@import url('css/base.css');
+			@import url('css/home.css');
+		</style>
 
-		<link rel="stylesheet" href="css/style.css">
-
-		<title> Home-Server </title>
 	</head>
 	<body>
 		<!-- Frappe Charts CDN -->
@@ -16,50 +18,32 @@
 		<!-- D3 CDN -->
 		<script src="https://d3js.org/d3.v5.min.js"></script>
 
-		<section id="overall-section">
-			<div class="container">
-				<div id="title">
-					<h1> My Finances </h1>
+		<div class="grid">
+			<div class="card card-wide" id="overall-finances">
+				<div>
+					<h3 id="gross-income"> $0.00 </h3>
+					<label> Gross Income </label>
 				</div>
-				<ul>
-					<li>
-						<div>
-							<h3 id="gross-income"> $0.00 </h3>
-							<label> Gross Income </label>
-						</div>
-					</li>
-					<li>
-						<div>
-							<h3 id="expenses"> $0.00 </h3>
-							<label> Expenses </label>
-						</div>
-					</li>
-					<li>
-						<div>
-							<h3 id="net-income"> $0.00 </h3>
-							<label> Net Income </label>
-						</div>
-					</li>
-				</ul>
+				<div>
+					<h3 id="expenses"> $0.00 </h3>
+					<label> Expenses </label>
+				</div>
+				<div>
+					<h3 id="net-income"> $0.00 </h3>
+					<label> Net Income </label>
+				</div>
+				<script src="js/overall-finances.js"></script>
 			</div>
-			<script src="js/overall-finances.js"></script>
-		</section>
+			<div class="card card-lg" id="pie-section">
+				<div id="expenses-pie" class="container"></div>
+				<script src="js/expenses.js"></script>
+			</div>
 
-		<hr>
-
-		<section id="pie-section">
-			<div id="expenses-pie" class="container"></div>
-			<script src="js/expenses.js"></script>
-		</section>
-
-		<hr>
-
-		<section id="cash-flow-section">
-			<div id="cash-flow" class="container"></div>
-			<script src="js/cash-flow.js"></script>
-		</section>
-
-		<hr>
+			<div class="card card-lg" id="cash-flow-section">
+				<div id="cash-flow" class="container"></div>
+				<script src="js/cash-flow.js"></script>
+			</div>
+		</div>
 
 		<footer>
 			<p> Thomas Sherwood </p>

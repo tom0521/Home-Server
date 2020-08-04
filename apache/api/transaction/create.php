@@ -20,7 +20,6 @@
     $transaction->address_id = $data->address_id;
     $transaction->receipt = $data->receipt;
     $transaction->payment_method_id = $data->payment_method_id;
-    $transaction->category_id = $data->category_id;
     $transaction->note = $data->note;
 
     if($transaction->create()){
@@ -32,7 +31,6 @@
                 'address_id' => $transaction->address_id,
                 'receipt' => $transaction->receipt,
                 'payment_method' => $transaction->payment_method_id,
-                'category_id' => $transaction->category_id,
                 'note' => $transaction->note
             )
         );
