@@ -15,13 +15,13 @@
 
     $data = json_decode(file_get_contents("php://input"));
 
-    $place->name = $data->name;
+    $place->place = $data->place;
 
     if($place->create()){
         echo json_encode(
             array(
                 'place_id' => $place->place_id,
-                'name' => $place->name
+                'place' => $place->place
             )
         );
     } else {

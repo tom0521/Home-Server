@@ -23,8 +23,8 @@ const create = function () {
                 create_payment_method(data.payment_method,
                 function (payment_method) {
                     create_category(data.category, 
-                        function (category) {
-                        create_transaction(data.timestamp,  data.amount, address.address_id, payment_method.payment_method_id, category.catgeory_id, data.note,
+                    function (category) {
+                        create_transaction(data.timestamp, data.amount, address.address_id, payment_method.payment_method_id, category.category_id, data.note,
                         function (transaction) {
                             // For every tag, associate it with the transaction
                             for (i in data.tags) {
