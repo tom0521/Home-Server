@@ -1,7 +1,17 @@
+places = [];
+categories = [];
+
 const init = function () {
-    get_places(function (res) { places = res.data || []; });
-    get_categories(function (res) { categories = res.data || []; });
+    get_places(function (res) { places = res.data; fill_datalist('places', places, 'place'); });
+    get_categories(function (res) { categories = res.data; fill_datalist('categories', categories, 'category'); });
 };
+
+function fill_datalist (id, arr, mbr) {
+    var datalist = document.getElementById(id);
+    for(i in arr) {
+        datalist.innerHTML += `<option>${arr[i][mbr]}</option>`;
+    }
+}
 
 const create = function () {
     /* Form data to dictionary */
