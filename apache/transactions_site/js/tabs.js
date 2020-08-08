@@ -71,3 +71,5 @@ function fixStepIndicator(n) {
     //... and adds the "active" class to the current step:
     x[n].className += " active";
 }
+
+document.addEventListener('keyup', function (event) { if (event.keyCode == 13) { nextPrev(1); }});

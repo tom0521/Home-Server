@@ -3,10 +3,10 @@
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
-        Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
+        Access-Control-Allow-Methods,Authorization,X-Requested-With');
 
-    include_once '../../config/Database.php';
-    include_once '../../models/Transaction_Tag.php';
+    include_once '../../../config/Database.php';
+    include_once '../../../models/Transaction_Tag.php';
 
     $database = new Database();
     $db = $database->connect();

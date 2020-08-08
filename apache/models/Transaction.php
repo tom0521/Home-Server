@@ -10,6 +10,7 @@ class Transaction
     public $address_id;
     public $receipt;
     public $payment_method_id;
+    public $category_id;
     public $note;
 
     public function __construct($db)
@@ -25,6 +26,7 @@ class Transaction
                 address_id = :address_id,
                 receipt = :receipt,
                 payment_method_id = :payment_method_id,
+                category_id = :category_id,
                 note = :note';
 
         $stmt = $this->conn->prepare($query);
@@ -33,6 +35,7 @@ class Transaction
         $stmt->bindParam(':address_id', $this->address_id);
         $stmt->bindParam(':receipt', $this->receipt);
         $stmt->bindParam(':payment_method_id', $this->payment_method_id);
+        $stmt->bindParam(':category_id', $this->category_id);
         $stmt->bindParam(':note', $this->note);
 
         if($stmt->execute()){

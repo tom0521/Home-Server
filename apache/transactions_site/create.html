@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 </head>
 <body>
+    <form id="transaction_form">
     <div class="tab">
         <label for="place">Place:</label>
         <input list="places" name="place" id="place" />
@@ -78,6 +79,7 @@
             <input type="text" name="note" id="note" />
         </div>
     </div>
+    </form>
     <div style="overflow:auto;">
         <div style="float:right;">
             <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
@@ -92,6 +94,7 @@
     </div>
 
     <datalist id="places">
+        <option value="1234">test</option>
     </datalist>
 
     <datalist id="categories">

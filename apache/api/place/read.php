@@ -21,8 +21,7 @@
             extract($row);
             $place_item = array(
                 'place_id' => $place_id,
-                'place' => $place,
-                'category_id' => $category_id
+                'place' => $place
             );
 
             array_push($place_arr['data'], $place_item);

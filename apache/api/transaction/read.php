@@ -33,6 +33,7 @@
                 'address_id' => $address_id,
                 'receipt' => $receipt,
                 'payment_method' => $payment_method,
+                'category_id' => $category_id,
                 'note' => $note
             );
 

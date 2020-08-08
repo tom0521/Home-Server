@@ -3,7 +3,7 @@
     header('Content-Type: application/json');
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,
-    Access-Control-Allow-Methods,Content-Type,Authorization,X-Requested-With');
+        Access-Control-Allow-Methods,Authorization,X-Requested-With');
 
     include_once '../../config/Database.php';
     include_once '../../models/Transaction.php';
@@ -20,6 +20,7 @@
     $transaction->address_id = $data->address_id;
     $transaction->receipt = $data->receipt;
     $transaction->payment_method_id = $data->payment_method_id;
+    $transaction->category_id = $data->category_id;
     $transaction->note = $data->note;
 
     if($transaction->create()){
@@ -31,6 +32,7 @@
                 'address_id' => $transaction->address_id,
                 'receipt' => $transaction->receipt,
                 'payment_method' => $transaction->payment_method_id,
+                'category_id' => $transaction->category_id,
                 'note' => $transaction->note
             )
         );

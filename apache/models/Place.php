@@ -6,8 +6,7 @@ class Place
 
     public $place_id;
     public $place;
-    public $category_id;
-    
+
     public function __construct($db)
     {
         $this->conn = $db;
@@ -16,12 +15,10 @@ class Place
     public function create(){
         $query = 'INSERT INTO ' . $this->table . '
             SET
-                place = :place,
-                category_id = :category_id';
+                place = :place';
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':place', $this->place);
-        $stmt->bindParam(':category_id', $this->category_id);
 
         if($stmt->execute()){
             $this->place_id = $this->conn->lastInsertId();
@@ -59,6 +56,5 @@ class Place
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $this->name = $row['place'];
-        $this->category_id = $row['category_id'];
     }
 }

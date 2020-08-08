@@ -1,5 +1,7 @@
 RewriteEngine on
 
+Header Set Access-Control-Allow-Origin "*"
+
 # Error Pages
 
 # API redirects
