@@ -1,9 +1,12 @@
-places = [];
-categories = [];
+var categories = [];
+var places = [];
+var payment_methods = [];
+var addresses = [];
 
 const init = function () {
-    get_places(function (res) { places = res.data; fill_datalist('places', places, 'place'); });
     get_categories(function (res) { categories = res.data; fill_datalist('categories', categories, 'category'); });
+    get_payment_methods(function (res) { payment_methods = res.data; fill_datalist('payment_methods', payment_methods, 'payment_method'); });
+    get_places(function (res) { places = res.data; fill_datalist('places', places, 'place'); });
 };
 
 function fill_datalist (id, arr, mbr) {
@@ -22,6 +25,10 @@ const create = function () {
     }
     // Split up the tags to be an array
     data.tags = data.tags.split(',');
+
+    // Get the timestamp
+    var timestamp = new Date(`${data.date} ${data.time} `);
+    data.timestamp = timestamp.toISOString().slice(0, 19).replace('T', ' ');
 
     /* Cascading API calls */
     create_place(data.place,
