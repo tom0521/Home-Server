@@ -1,3 +1,4 @@
+from flask import abort
 from flask_restful import Resource
 
 class Account(Resource):
@@ -5,6 +6,8 @@ class Account(Resource):
         return { 'message': 'Not Implemented' }, 501
     
     def post(self, id=None):
+        if id:
+            abort(404)
         return { 'message': 'Not Implemented' }, 501
 
     def udpate(self, id=None):
@@ -15,6 +18,8 @@ class Address(Resource):
         return { 'message': 'Not Implemented' }, 501
     
     def post(self, id=None):
+        if id:
+            abort(404)
         return { 'message': 'Not Implemented' }, 501
 
     def udpate(self, id=None):
@@ -25,6 +30,8 @@ class Category(Resource):
         return { 'message': 'Not Implemented' }, 501
     
     def post(self, id=None):
+        if id:
+            abort(404)
         return { 'message': 'Not Implemented' }, 501
 
     def udpate(self, id=None):
