@@ -42,19 +42,22 @@ class Place
     }
 
     public function read_single(){
+        $where = array();
+        if (isset($this->place_id)) array_push($where, 't.place_id = :place_id');
+        if (isset($this->place)) array_push($where, 't.place = :place');
+        $where_clause = empty($where) ? '' : 'WHERE ' . implode(' AND ', $where);
+
         $query = 'SELECT *
           FROM
-            ' .$this->table . ' t
-          WHERE
-            place_id = :place_id
-          LIMIT 0,1';
+            ' .$this->table . ' t ' .
+          $where_clause;
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':place_id', $this->place_id);
+        
+        if (isset($this->place_id)) $stmt->bindParam(':place_id', $this->place_id);
+        if (isset($this->place)) $stmt->bindParam(':place', $this->place);
+
         $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $this->name = $row['place'];
+        return $stmt;
     }
 }

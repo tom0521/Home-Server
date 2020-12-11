@@ -59,4 +59,20 @@ class Transaction
         $stmt->execute();
         return $stmt;
     }
+
+    public function read_single(){
+        $where_clause = (isset($this->transaction_id)) ? 'WHERE t.transaction_id = :transaction_id' : '';
+        $query = 'SELECT *
+          FROM 
+            ' . $this->table . ' t ' .
+          $where_clause .
+          ' LIMIT 0,1';
+
+        $stmt = $this->conn->prepare($query);
+
+        if (isset($this->transaction_id)) $stmt->bindParam(':transaction_id', $this->transaction_id);
+
+        $stmt->execute();
+        return $stmt;
+    }
 }

@@ -33,14 +33,14 @@ function nextPrev(n) {
     if (currentTab >= x.length) {
         //...the form gets submitted:
         create();
-        return false;
+        currentTab = 0;
+        resetForm();
     }
     // Otherwise, display the correct tab:
     showTab(currentTab);
 }
 
 function validateForm() {
-    return true;
     // This function deals with validation of the form fields
     var x, y, i, valid = true;
     x = document.getElementsByClassName("tab");
@@ -48,7 +48,7 @@ function validateForm() {
     // A loop that checks every input field in the current tab:
     for (i = 0; i < y.length; i++) {
         // If a field is empty...
-        if (y[i].value == "") {
+        if (y[i].required && y[i].value == "") {
             // add an "invalid" class to the field:
             y[i].className += " invalid";
             // and set the current valid status to false:
@@ -70,6 +70,15 @@ function fixStepIndicator(n) {
     }
     //... and adds the "active" class to the current step:
     x[n].className += " active";
+}
+
+function resetForm() {
+    document.getElementById("transaction_form").reset();
+    var i, x = document.getElementsByClassName("step");
+    for (i = 0; i < x.length; i++) {
+        x[i].className = x[i].className.replace(" finish", "");
+    }
+    fixStepIndicator(0);
 }
 
 document.addEventListener('keyup', function (event) { if (event.keyCode == 13) { nextPrev(1); }});

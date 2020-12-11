@@ -1,12 +1,9 @@
-var categories = [];
-var places = [];
-var payment_methods = [];
-var addresses = [];
-
-const init = function () {
-    get_categories(function (res) { categories = res.data; fill_datalist('categories', categories, 'category'); });
-    get_payment_methods(function (res) { payment_methods = res.data; fill_datalist('payment_methods', payment_methods, 'payment_method'); });
-    get_places(function (res) { places = res.data; fill_datalist('places', places, 'place'); });
+function init () {
+    fill_datalist ('addresses', get_addresses().data, 'address');
+    fill_datalist ('categories', get_categories().data, 'category');
+    fill_datalist ('cities', get_cities().data, 'city');
+    fill_datalist ('places', get_places().data, 'place');
+    fill_datalist ('tag_list', get_tags().data, 'tag');
 };
 
 function fill_datalist (id, arr, mbr) {
@@ -16,7 +13,7 @@ function fill_datalist (id, arr, mbr) {
     }
 }
 
-const create = function () {
+function create () {
     /* Form data to dictionary */
     var form = $('#transaction_form').serializeArray();
     var data  = {};
@@ -29,32 +26,21 @@ const create = function () {
     // Get the timestamp
     var timestamp = new Date(`${data.date} ${data.time} `);
     data.timestamp = timestamp.toISOString().slice(0, 19).replace('T', ' ');
-
-    /* Cascading API calls */
-    create_place(data.place,
-    function (place) {
-        create_city(data.city, data.state,
-        function (city) {
-            create_address(place.place_id, data.address, data.address2, city.city_id, data.postal_code, data.phone, data.url,
-            function (address) {
-                create_payment_method(data.payment_method,
-                function (payment_method) {
-                    create_category(data.category, 
-                    function (category) {
-                        create_transaction(data.timestamp, data.amount, address.address_id, payment_method.payment_method_id, category.category_id, data.note,
-                        function (transaction) {
-                            // For every tag, associate it with the transaction
-                            for (i in data.tags) {
-                                create_tag(data.tags[i], function (tag) {
-                                    create_transaction_tag(transaction.transaction_id, tag.tag_id, console.log);
-                                });
-                            }
-                        });
-                    });
-                });
-            });
-        });
+    
+    let place_res = create_place(data.place);
+    let city_res = create_city(data.city);
+    let address_res = create_address(place_res.place_id, data.address, data.address2,
+                            city_res.city_id, data.postal_code, data.phone, data.url);
+    let payment_method_res = create_payment_method(data.payment_method);
+    let category_res = create_category(data.category);
+    let transaction_res = create_transaction(data.timestamp, data.amount, address_res.address_id, 
+                        payment_method_res.payment_method_id, category_res.category_id, data.note);
+    
+    data.tags.forEach(tag => {
+        let tag_res = create_tag(tag);
+        create_transaction_tag(transaction_res.transaction_id, tag_res.tag_id);
     });
-};
+
+}
 
 document.addEventListener('DOMContentLoaded', init);

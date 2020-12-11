@@ -9,6 +9,7 @@
     $db = $database->connect();
 
     $tag = new Tag($db);
+    $tag->tag = $_GET['tag'];
     $result = $tag->read();
     $num = $result->rowCount();
 

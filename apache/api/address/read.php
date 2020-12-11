@@ -19,7 +19,7 @@
 
         while($row = $result->fetch(PDO::FETCH_ASSOC)){
             extract($row);
-            $address_itme = array(
+            $address_item = array(
                 'address_id' => $address_id,
                 'place_id' => $place_id,
                 'address' => $address,

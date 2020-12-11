@@ -22,7 +22,8 @@
             $city_item = array(
                 'city_id' => $city_id,
                 'city' => $city,
-                'state' => $state
+                'state_province' => $state_province,
+                'country' => $country
             );
 
             array_push($city_arr['data'], $city_item);

@@ -10,7 +10,7 @@
 
     $address = new Address($db);
     $address->place_id = isset($_GET['place_id']) ? $_GET['place_id'] : die();
-    $result = $address->read_place();
+    $result = $address->read_single();
     $num = $result->rowCount();
 
     if($num > 0){

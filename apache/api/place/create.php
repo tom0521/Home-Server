@@ -17,13 +17,29 @@
 
     $place->place = $data->place;
 
-    if($place->create()){
-        echo json_encode(
-            array(
-                'place_id' => $place->place_id,
-                'place' => $place->place
-            )
-        );
+    $result = $place->read_single();
+    if ($result->rowCount() == 0) {
+        $place->create();
+        $result = $place->read_single();
+    }
+
+    $num = $result->rowCount();
+    if($num > 0){
+        $place_arr = array();
+        $place_arr['data_length'] = $num;
+        $place_arr['data'] = array();
+
+        while($row = $result->fetch(PDO::FETCH_ASSOC)){
+            extract($row);
+            $place_item = array(
+                'place_id' => $place_id,
+                'place' => $place
+            );
+
+            array_push($place_arr['data'], $place_item);
+        }
+
+        echo json_encode($place_arr);
     } else {
         echo json_encode(
             array('message' => 'Place Not Created')

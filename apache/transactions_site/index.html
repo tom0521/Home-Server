@@ -15,10 +15,10 @@
     <form id="transaction_form" autocomplete="off">
     <div class="tab">
         <label for="place">Place:</label>
-        <input list="places" name="place" id="place" />
+        <input list="places" name="place" id="place" required />
         <div>
             <label for="address">Address:</label>
-            <input type="text" name="address" id="address"/>
+            <input type="text" name="address" id="address" required/>
         </div>
         <div>
             <label for="address2">Address 2:</label>
@@ -26,15 +26,15 @@
         </div>
         <div>
             <label for="city">City:</label>
-            <input type="text" name="city" id="city"/>
+            <input list="cities" name="city" id="city" required />
         </div>
         <div>
             <label for="state">State:</label>
-            <input list="states" name="state" id="state" />
+            <input list="states" name="state" id="state" required />
         </div>
         <div>
             <label for="postal_code">Postal Code:</label>
-            <input type="text" name="postal_code" id="postal_code" />
+            <input type="text" name="postal_code" id="postal_code" required />
         </div>
         <div>
             <label for="phone">Phone:</label>
@@ -48,7 +48,7 @@
     <div class="tab">
         <div>
             <label for="time">Time:</label>
-            <input type="time" name="time" id="time" />
+            <input type="time" name="time" id="time" required />
         </div>
         <div>
             <label for="date">Date:</label>
@@ -60,19 +60,19 @@
         </div>
         <div>
             <label for="payment_method">Payment Method:</label>
-            <input list="payment_methods" name="payment_method" id="payment_method" />
+            <input list="payment_methods" name="payment_method" id="payment_method" required />
         </div>
     </div>
     <div class="tab">
         <label for="category">Category</label>
-        <input list="categories" name="category" id="category" />
+        <input list="categories" name="category" id="category" required />
         <!-- <div>
             <label for="receipt">Receipt:</label>
             <input type="file" accept="image/*" name="receipt" id="receipt" />
         </div> -->
         <div>
             <label for="tags">Tags:</label>
-            <input type="text" name="tags" id="tags" />
+            <input list="tag_list" name="tags" id="tags" />
         </div>
         <div>
             <label for="note">Note:</label>
@@ -99,6 +99,9 @@
     <datalist id="categories">
     </datalist>
 
+    <datalist id="cities">
+    </datalist>
+
     <datalist id="payment_methods">
     </datalist>
 
@@ -106,6 +109,9 @@
     </datalist>
     
     <datalist id="states">
+    </datalist>
+
+    <datalist id="tag_list">
     </datalist>
 
     <!-- Local Scripts -->

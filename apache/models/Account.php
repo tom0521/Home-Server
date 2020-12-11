@@ -1,11 +1,13 @@
 <?php
-class Category
+class Account
 {
     private $conn;
-    private $table = 'category';
+    private $table = 'account';
 
-    public $category_id;
-    public $category;
+    public $account_id;
+    public $account;
+    public $balance;
+    public $transaction_type;
 
     public function __construct($db)
     {
@@ -15,13 +17,15 @@ class Category
     public function create(){
         $query = 'INSERT INTO ' . $this->table . '
             SET
-                category = :category';
+                account = :account,
+                transaction_type = :transaction_type';
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':category', $this->category);
+        $stmt->bindParam(':account', $this->account);
+        $stmt->bindParam(':transaction_type', $this->transaction_type);
 
         if($stmt->execute()){
-            $this->category_id = $this->conn->lastInsertId();
+            $this->account_id = $this->conn->lastInsertId();
             return true;
         }
 
@@ -31,10 +35,11 @@ class Category
 
     public function read(){
         $query = 'SELECT *
-          FROM
+          FROM 
             ' . $this->table . ' t
-          ORDER BY
-            t.category';
+          ORDER BY 
+            t.account,
+            t.balance';
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -43,19 +48,19 @@ class Category
 
     public function read_single(){
         $where = array();
-        if (isset($this->category_id)) array_push($where, 't.category_id = :category_id');
-        if (isset($this->category)) array_push($where, 't.category = :category');
+        if (isset($this->account_id)) array_push($where, 't.account_id = :account_id');
+        if (isset($this->account_id)) array_push($where, 't.account = :account');
         $where_clause = empty($where) ? '' : 'WHERE ' . implode(' AND ', $where);
 
         $query = 'SELECT *
           FROM
-            ' . $this->table . ' t '.
+            ' . $this->table . ' t ' .
           $where_clause;
 
         $stmt = $this->conn->prepare($query);
-
-        if (isset($this->category_id)) $stmt->bindParam(':category_id', $this->category_id);
-        if (isset($this->category)) $stmt->bindParam(':category', $this->category);
+        
+        if (isset($this->account_id)) $stmt->bindParam(':account_id', $this->account_id);
+        if (isset($this->account_id)) $stmt->bindParam(':account', $this->account_id);
 
         $stmt->execute();
         return $stmt;

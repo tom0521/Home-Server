@@ -15,10 +15,12 @@
 
     $data = json_decode(file_get_contents("php://input"));
 
+    $tag_len = 0;
     $tag_arr = array();
     foreach ($data->tags as $tag) {
         $tag->tag = $tag;
         if($tag->create()){
+            $tag_len++;
             push($tag_arr, array(
                 'tag_id' => $tag->tag_id,
                 'tag' => $tag->tag
@@ -31,5 +33,7 @@
             array('message' => 'Tag Not Created')
         );
     } else {
-        echo json_encode($tag_arr);
+        echo json_encode(array(
+            'data_length' => $tag_len,
+            'data' => $tag_arr));
     }
