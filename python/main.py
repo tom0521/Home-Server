@@ -3,9 +3,9 @@ import os
 import resource
 
 from datetime import datetime
-from enum import Enum
+from enum import Enum,auto
 from flask import Flask,abort
-from flask_restful import Api,Resource
+from flask_restful import Api,Resource,fields,marshal,reqparse
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -19,14 +19,17 @@ db = SQLAlchemy(app)
 
 '''
 class AccountType(Enum):
-    DEBIT = 0
-    CREDIT = 1
+    DEBIT = auto()
+    CREDIT = auto()
+
+    def __str__(self):
+        return f'{self.name}'
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String(50), unique=True, nullable=False)
     balance = db.Column(db.Float, nullable=False,default=0)
-    account_type = db.Column(db.Enum(AccountType), nullable=False)
+    type = db.Column(db.Enum(AccountType), nullable=False)
     transactions = db.relationship('Transaction', backref='account', lazy=True)
     
     def __repr__(self):
@@ -97,13 +100,44 @@ class Transaction(db.Model):
 
 '''
 class AccountApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'account': fields.String,
+        'balance': fields.Float,
+        'type': fields.String
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            account = Account.query.filter_by(id=id).first()
+            if account:
+                return marshal(account, self.mfields), 200
+            abort(404)
+        return marshal(Account.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('account', required=True)
+        parser.add_argument('balance', type=float, default=0)
+        parser.add_argument('type', choices=('DEBIT', 'CREDIT'), required=True)
+        args = parser.parse_args()
+
+        # If the etnry already exists, return the entry with Accepted status code
+        account = Account.query.filter_by(account=args['account']).first()
+        if account:
+            return marshal(account, self.mfields), 202
+
+        # Otherwise, insert the new entry and return Created status code
+        account = Account(account=args['account'], balance=args['balance'], type=AccountType[args['type']])
+        db.session.add(account)
+        db.session.commit()
+        return marshal(account, self.mfields), 201
 
 class AddressApi(Resource):
     def get(self, id=None):
@@ -133,13 +167,40 @@ class CityApi(Resource):
         abort(501)
 
 class PlaceApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'place': fields.String
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            place = Place.query.filter_by(id=id).first()
+            if place:
+                return marshal(place, self.mfields), 200
+            abort(404)
+        return marshal(Place.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('place', required=True)
+        args = parser.parse_args()
+
+        # If the etnry already exists, return the entry with Accepted status code
+        place = Place.query.filter_by(place=args['place']).first()
+        if place:
+            return marshal(place, self.mfields), 202
+
+        # Otherwise, insert the new entry and return Created status code
+        place = Place(place=args['place'])
+        db.session.add(place)
+        db.session.commit()
+        return marshal(place, self.mfields), 201
 
 class TagApi(Resource):
     def get(self, id=None):
@@ -184,4 +245,5 @@ def index():
 
 '''
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)
