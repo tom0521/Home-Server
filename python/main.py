@@ -313,13 +313,40 @@ class PlaceApi(Resource):
         return marshal(place, self.mfields), 201
 
 class TagApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'tag': fields.String
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            tag = Tag.query.filter_by(id=id).first()
+            if tag:
+                return marshal(tag, self.mfields), 200
+            abort(404)
+        return marshal(Tag.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('tag', required=True)
+        args = parser.parse_args()
+
+        # If the etnry already exists, return the entry with Accepted status code
+        tag = Tag.query.filter_by(tag=args['tag']).first()
+        if tag:
+            return marshal(tag, self.mfields), 202
+
+        # Otherwise, insert the new entry and return Created status code
+        tag = Tag(tag=args['tag'])
+        db.session.add(tag)
+        db.session.commit()
+        return marshal(tag, self.mfields), 201
 
 class TransactionApi(Resource):
     def get(self, id=None):
