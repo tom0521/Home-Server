@@ -56,8 +56,8 @@ class Category(db.Model):
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String(50), unique=True, nullable=False)
-    state_province = db.Column(db.String(50), unique=True, nullable=False)
+    city = db.Column(db.String(50), nullable=False)
+    state_province = db.Column(db.String(50), nullable=False)
     country = db.Column(db.String(50), nullable=False)
     addresses = db.relationship('Address', backref='city', lazy=True)
 
@@ -158,13 +158,44 @@ class CategoryApi(Resource):
         abort(501)
 
 class CityApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'city': fields.String,
+        'state_province': fields.String,
+        'country': fields.String
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            city = City.query.filter_by(id=id).first()
+            if city:
+                return marshal(city, self.mfields), 200
+            abort(404)
+        return marshal(City.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('city', required=True)
+        parser.add_argument('state_province', required=True)
+        parser.add_argument('country', required=True)
+        args = parser.parse_args()
+
+        # If the etnry already exists, return the entry with Accepted status code
+        city = City.query.filter_by(city=args['city'], state_province=args['state_province'], country=args['country']).first()
+        if city:
+            return marshal(city, self.mfields), 202
+
+        # Otherwise, insert the new entry and return Created status code
+        city = City(city=args['city'], state_province=args['state_province'], country=args['country'])
+        db.session.add(city)
+        db.session.commit()
+        return marshal(city, self.mfields), 201
 
 class PlaceApi(Resource):
     mfields = {
