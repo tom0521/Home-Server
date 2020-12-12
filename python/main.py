@@ -364,7 +364,6 @@ class TransactionApi(Resource):
         if id:
             transaction = Transaction.query.filter_by(id=id).first()
             if transaction:
-                print(transaction.tags)
                 return marshal(transaction, self.mfields), 200
             abort(404)
         return marshal(Transaction.query.all(), self.mfields), 200
