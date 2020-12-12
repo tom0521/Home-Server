@@ -4,8 +4,8 @@ import resource
 
 from datetime import datetime
 from enum import Enum
-from flask import Flask
-from flask_restful import Api
+from flask import Flask,abort
+from flask_restful import Api,Resource
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -13,6 +13,11 @@ api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+'''
+
+    Database Model Definitions
+
+'''
 class AccountType(Enum):
     DEBIT = 0
     CREDIT = 1
@@ -88,21 +93,95 @@ class Transaction(db.Model):
 
 '''
 
+    API Method Definitions
+
+'''
+class AccountApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class AddressApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class CategoryApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class CityApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class PlaceApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class TagApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+class TransactionApi(Resource):
+    def get(self, id=None):
+        abort(501)
+    
+    def post(self, id=None):
+        if id:
+            abort(404)
+        abort(501)
+
+'''
+
     API Path Definitions
 
 '''
-api.add_resource(resource.Account, '/account', '/account/<int:id>')
-api.add_resource(resource.Address, '/address', '/address/<int:id>')
-api.add_resource(resource.Category, '/category', '/category/<int:id>')
-api.add_resource(resource.City, '/city', '/city/<int:id>')
-api.add_resource(resource.Place, '/place', '/place/<int:id>')
-api.add_resource(resource.Tag, '/tag', '/tag/<int:id>')
-api.add_resource(resource.Transaction, '/transaction', '/transaction/<int:id>')
+api.add_resource(AccountApi, '/account', '/account/<int:id>')
+api.add_resource(AddressApi, '/address', '/address/<int:id>')
+api.add_resource(CategoryApi, '/category', '/category/<int:id>')
+api.add_resource(CityApi, '/city', '/city/<int:id>')
+api.add_resource(PlaceApi, '/place', '/place/<int:id>')
+api.add_resource(TagApi, '/tag', '/tag/<int:id>')
+api.add_resource(TransactionApi, '/transaction', '/transaction/<int:id>')
 
+# index path displays documentation
 @app.route('/')
 def index():
     with open(os.path.dirname(app.instance_path) + '/README.md', 'r') as readme:
         return markdown.markdown(readme.read())
 
+'''
+
+    Main
+
+'''
 if __name__ == '__main__':
     app.run(debug=True)
