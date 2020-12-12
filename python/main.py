@@ -47,7 +47,7 @@ class Address(db.Model):
     transactions = db.relationship('Transaction', backref='address', lazy=True)
 
     def __repr__(self):
-        return f'{self.address} {self.address2}\n{self.url}'
+        return f'{self.address} {self.address2}'
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,7 +55,7 @@ class Category(db.Model):
     transactions = db.relationship('Transaction', backref='category', lazy=True)
 
     def __repr__(self):
-        return '%s' % self.category
+        return f'{self.category}'
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,7 +65,7 @@ class City(db.Model):
     addresses = db.relationship('Address', backref='city', lazy=True)
 
     def __repr__(self):
-        return '%s, %s\n%s' % (self.city, self.state_province, self.country)
+        return f'{self.city}, {self.state}'
 
 class Place(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,7 +73,7 @@ class Place(db.Model):
     addresses = db.relationship('Address', backref='place', lazy=True)
 
     def __repr__(self):
-        return '%s' % self.place
+        return f'{self.place}'
 
 tags = db.Table('tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
@@ -85,7 +85,7 @@ class Tag(db.Model):
     tag = db.Column(db.String(50), unique=True, nullable=False)
 
     def __repr__(self):
-        return '%s' % self.tag
+        return f'{self.tag}'
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
