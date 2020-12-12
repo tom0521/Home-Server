@@ -349,13 +349,48 @@ class TagApi(Resource):
         return marshal(tag, self.mfields), 201
 
 class TransactionApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            transaction = Transaction.query.filter_by(id=id).first()
+            if transaction:
+                return marshal(transaction, self.mfields), 200
+            abort(404)
+        return marshal(Transaction.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('timestamp', required=True)
+        parser.add_argument('amount', type=float, required=True)
+        parser.add_argument('account_id', type=int, required=True)
+        parser.add_argument('address_id', type=int)
+        parser.add_argument('category_id', type=int)
+        parser.add_argument('note')
+        args = parser.parse_args()
+
+        # if any foreign ids do not exist abort
+        if Account.query.filter_by(id=args['account_id']).first() is None:
+            abort(400)
+        if args['address_id'] and Address.query.filter_by(id=args['address_id']).first is None:
+            abort(400)
+        if args['category_id'] and Category.query.filter_by(id=args['category_id']).first is None:
+            abort(400)
+
+        # Otherwise, insert the new entry and return Created status code
+        transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],
+                        address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
+        db.session.add(transaction)
+        db.session.commit()
+        return marshal(transaction, self.mfields), 201
 
 '''
 
