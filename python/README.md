@@ -2,7 +2,7 @@
 
 ## Usage
 
-All responses will have the form
+All responses will have the form (eventually...)
 
 ```json
 {
@@ -60,7 +60,7 @@ All responses will have the form
     "id": 1234,
     "account": "Account Name",
     "balance": 00.00,
-    "type": "DEBIT"        
+    "type": "DEBIT"
 }
 ```
 
@@ -104,12 +104,12 @@ All responses will have the form
 **Arguments**
 
 - `place_id:integer` identifier to an existing Place
-- `address:string` the first address line (optinal)
-- `address2:string` the second address line (optional)
-- `city_id:integer` identifier to an existing City (optional)
-- `postal_code:integer` the address postal code (optional)
-- `phone:string` phone number (optional)
-- `url:string` website url (optional)
+- `address:string` the first address line (`optinal`)
+- `address2:string` the second address line (`optional`)
+- `city_id:integer` identifier to an existing City (`optional`)
+- `postal_code:integer` the address postal code (`optional`)
+- `phone:string` phone number (`optional`)
+- `url:string` website url (`optional`)
 
 **Responses**
 
@@ -362,7 +362,12 @@ All responses will have the form
 
 **Arguments**
 
-
+- `"timestamp":string` the time of transaction in format `YYYY-MM-DDTHH:mm:SS` (`default: now())`
+- `"amount":float` the amount spent/received on this transaction
+- `"account_id":integer` the Account identifier this transaction took action on
+- `"address_id":integer` the Address identifier this transaction took place (`optional`)
+- `"category_id":integer` the Category identifier this transaction falls under (`optional`)
+- `"note":string` any personal notes to make about this transaction (`optional`)
 
 **Responses**
 
