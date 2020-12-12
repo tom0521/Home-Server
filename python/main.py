@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
 class AccountType(Enum):
@@ -82,7 +82,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Float, nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
-    category_id = db.Column(db.Integer, db.ForeignKey('category_id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     tags = db.relationship('Tag', secondary=tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
     note = db.Column(db.Text)
 

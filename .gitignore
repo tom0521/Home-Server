@@ -4,3 +4,4 @@ apache/upload_site/uploads/*
 apache/api/receipt/*
 *.pyc
 .vscode
+*.db*
