@@ -31,7 +31,7 @@ All responses will have the form
     {
         "id": 1234,
         "account": "Account Name",
-        "balance": 00.00.
+        "balance": 00.00,
         "type": "DEBIT"
     },
     ...
@@ -59,7 +59,7 @@ All responses will have the form
 {
     "id": 1234,
     "account": "Account Name",
-    "balance": 00.00.
+    "balance": 00.00,
     "type": "DEBIT"        
 }
 ```

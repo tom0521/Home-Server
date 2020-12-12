@@ -3,6 +3,7 @@ import os
 import resource
 
 from datetime import datetime
+from enum import Enum
 from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -12,10 +13,16 @@ api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 
+class AccountType(Enum):
+    DEBIT = 0
+    CREDIT = 1
+
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String(50), unique=True, nullable=False)
     balance = db.Column(db.Float, nullable=False,default=0)
+    account_type = db.Column(db.Enum(AccountType), nullable=False)
+    transactions = db.relationship('Transaction', backref='account', lazy=True)
     
     def __repr__(self):
         return '%s - $%.2f' % (self.account, self.balance)
@@ -29,10 +36,12 @@ class Address(db.Model):
     postal_code = db.Column(db.String(10))
     phone = db.Column(db.String(20))
     url = db.Column(db.String(255))
+    transactions = db.relationship('Transaction', backref='address', lazy=True)
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(50), unique=True, nullable=False)
+    transactions = db.relationship('Transaction', backref='category', lazy=True)
 
     def __repr__(self):
         return '%s' % self.category
@@ -42,6 +51,7 @@ class City(db.Model):
     city = db.Column(db.String(50), unique=True, nullable=False)
     state_province = db.Column(db.String(50), unique=True, nullable=False)
     country = db.Column(db.String(50), nullable=False)
+    addresses = db.relationship('Address', backref='city', lazy=True)
 
     def __repr__(self):
         return '%s, %s\n%s' % (self.city, self.state_province, self.country)
@@ -49,9 +59,15 @@ class City(db.Model):
 class Place(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     place = db.Column(db.String(50), unique=True, nullable=False)
+    addresses = db.relationship('Address', backref='place', lazy=True)
 
     def __repr__(self):
         return '%s' % self.place
+
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('transaction_id', db.Integer, db.ForeignKey('transaction.id'), primary_key=True)
+)
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +83,7 @@ class Transaction(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category_id'))
+    tags = db.relationship('Tag', secondary=tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
     note = db.Column(db.Text)
 
 '''
