@@ -15,9 +15,11 @@ All responses will have the form
 
 ### Getting Accounts
 
-**Definition**
+**Definitions**
 
-`GET /account/?<account_id>`
+`GET /account`
+
+`GET /account/<account_id>`
 
 **Responses**
 
@@ -66,9 +68,11 @@ All responses will have the form
 
 ### Getting Addresses
 
-**Definition**
+**Definitions**
 
-`GET /address/?<address_id>`
+`GET /address`
+
+`GET /address/<address_id>`
 
 **Responses**
 
@@ -126,13 +130,15 @@ All responses will have the form
 }
 ```
 
-## Category
+## Categories
 
 ### Getting Categories
 
-**Definition**
+**Definitions**
 
-`GET /category/?<category_id>`
+`GET /category`
+
+`GET /category/<category_id>`
 
 **Responses**
 
@@ -168,5 +174,211 @@ All responses will have the form
 {
     "id": 1234,
     "category": "Category"  
+}
+```
+
+## Cities
+
+### Getting Cities
+
+**Definitions**
+
+`GET /city`
+
+`GET /city/<city_id>`
+
+**Responses**
+
+- `200 OK` on success
+- `404 Not Found` if the City was not found
+
+```json
+[
+    {
+        "id": 1234,
+        "city": "New York",
+        "state_province": "New York",
+        "country": "United States of America"
+    },
+    ...
+]
+```
+
+### Creating Cities
+
+**Definition**
+
+`POST /city`
+
+**Arguments**
+
+- `"city":string` the name of the city
+- `"state_province:string"` the state or province that the city is located
+- `"country":string` the country that the city is located
+
+**Responses**
+
+- `201 Created` on success
+- `202 Accepted` if the City already exists
+
+```json
+{
+    "id": 1234,
+    "city": "New York",
+    "state_province": "New York",
+    "country": "United States of America"
+}
+```
+
+## Places
+
+### Getting Places
+
+**Definitions**
+
+`GET /place`
+
+`GET /place/<place_id>`
+
+**Responses**
+
+- `200 OK` on success
+- `404 Not Found` if the Place was not found
+
+```json
+[
+    {
+        "id": 1234,
+        "place": "Amazon"
+    },
+    ...
+]
+```
+
+### Creating Places
+
+**Definition**
+
+`POST /place`
+
+**Arguments**
+
+- `"place":string` the name of the place
+
+**Responses**
+
+- `201 Created` on success
+- `202 Accepted` if the Place already exists
+
+```json
+{
+    "id": 1234,
+    "place": "Amazon"  
+}
+```
+
+## Tags
+
+### Getting Tags
+
+**Definitions**
+
+`GET /tag`
+
+`GET /tag/<tag_id>`
+
+**Responses**
+
+- `200 OK` on success
+- `404 Not Found` if the Tag was not found
+
+```json
+[
+    {
+        "id": 1234,
+        "tag": "food"
+    },
+    ...
+]
+```
+
+### Creating Tags
+
+**Definition**
+
+`POST /tag`
+
+**Arguments**
+
+- `"tag":string` a friendly name for the tag
+
+**Responses**
+
+- `201 Created` on success
+- `202 Accepted` if the Tag already exists
+
+```json
+{
+    "id": 1234,
+    "tag": "food"  
+}
+```
+
+## Transactions
+
+### Getting Transactions
+
+**Definitions**
+
+`GET /transaction`
+
+`GET /transaction/<transaction_id>`
+
+**Responses**
+
+- `200 OK` on success
+- `404 Not Found` if the Transaction was not found
+
+```json
+[
+    {
+        "id": 1234,
+        "timestamp": "2038-01-19 03:14:07",
+        "amount": 00.00,
+        "account_id": 1234,
+        "address_id": 1234,
+        "receipt": 1234,
+        "category_id": 1234,
+        "note": "Very nice service"
+    },
+    ...
+]
+```
+
+### Creating Transactions
+
+**Definition**
+
+`POST /transaction`
+
+**Arguments**
+
+
+
+**Responses**
+
+- `201 Created` on success
+- `400 Bad Request` if the given account_id, address_id or category_id do not exist (Message has more info)
+
+```json
+{
+    "id": 1234,
+    "timestamp": "2038-01-19 03:14:07",
+    "amount": 00.00,
+    "account_id": 1234,
+    "address_id": 1234,
+    "receipt": 1234,
+    "category_id": 1234,
+    "note": "Very nice service"
 }
 ```
