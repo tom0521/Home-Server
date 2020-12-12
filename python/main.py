@@ -201,13 +201,40 @@ class AddressApi(Resource):
         return marshal(address, self.mfields), 201
 
 class CategoryApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'category': fields.String
+    }
+
     def get(self, id=None):
-        abort(501)
+        # if the id was specified, try to query it
+        if id:
+            category = Category.query.filter_by(id=id).first()
+            if category:
+                return marshal(category, self.mfields), 200
+            abort(404)
+        return marshal(Category.query.all(), self.mfields), 200
     
     def post(self, id=None):
+        # POST requests do not allow id url
         if id:
             abort(404)
-        abort(501)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('category', required=True)
+        args = parser.parse_args()
+
+        # If the etnry already exists, return the entry with Accepted status code
+        category = Category.query.filter_by(category=args['category']).first()
+        if category:
+            return marshal(category, self.mfields), 202
+
+        # Otherwise, insert the new entry and return Created status code
+        category = Category(category=args['category'])
+        db.session.add(category)
+        db.session.commit()
+        return marshal(category, self.mfields), 201
 
 class CityApi(Resource):
     mfields = {
