@@ -87,7 +87,7 @@ All responses will have the form
         "address": "1600 Pennyslvania Avenue",
         "address2": "",
         "city_id": 1234,
-        "postal_code": 20500,
+        "postal_code": "20500",
         "phone": "2024561111",
         "url": "thewhitehouse.gov"
     },
@@ -124,7 +124,7 @@ All responses will have the form
     "address": "1600 Pennyslvania Avenue",
     "address2": "",
     "city_id": 1234,
-    "postal_code": 20500,
+    "postal_code": "20500",
     "phone": "2024561111",
     "url": "thewhitehouse.gov"
 }
@@ -347,7 +347,6 @@ All responses will have the form
         "amount": 00.00,
         "account_id": 1234,
         "address_id": 1234,
-        "receipt": 1234,
         "category_id": 1234,
         "note": "Very nice service"
     },
@@ -377,7 +376,6 @@ All responses will have the form
     "amount": 00.00,
     "account_id": 1234,
     "address_id": 1234,
-    "receipt": 1234,
     "category_id": 1234,
     "note": "Very nice service"
 }
