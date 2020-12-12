@@ -75,7 +75,7 @@ class Place(db.Model):
     def __repr__(self):
         return f'{self.place}'
 
-tags = db.Table('tags',
+transaction_tags = db.Table('transaction_tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
     db.Column('transaction_id', db.Integer, db.ForeignKey('transaction.id'), primary_key=True)
 )
@@ -94,7 +94,7 @@ class Transaction(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    tags = db.relationship('Tag', secondary=tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
+    tags = db.relationship('Tag', secondary=transaction_tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
     note = db.Column(db.Text)
 
 '''
@@ -351,6 +351,12 @@ class TagApi(Resource):
 class TransactionApi(Resource):
     mfields = {
         'id': fields.Integer,
+        'timestamp': fields.DateTime,
+        'amount': fields.Float,
+        'account_id': fields.Integer,
+        'address_id': fields.Integer,
+        'category_id': fields.Integer,
+        'note': fields.String
     }
 
     def get(self, id=None):
@@ -358,6 +364,7 @@ class TransactionApi(Resource):
         if id:
             transaction = Transaction.query.filter_by(id=id).first()
             if transaction:
+                print(transaction.tags)
                 return marshal(transaction, self.mfields), 200
             abort(404)
         return marshal(Transaction.query.all(), self.mfields), 200
@@ -369,11 +376,12 @@ class TransactionApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('timestamp', required=True)
+        parser.add_argument('timestamp', type=lambda x: datetime.strptime(x,'%Y-%m-%dT%H:%M:%S'), default=datetime.now())
         parser.add_argument('amount', type=float, required=True)
         parser.add_argument('account_id', type=int, required=True)
         parser.add_argument('address_id', type=int)
         parser.add_argument('category_id', type=int)
+        parser.add_argument('tag', action='append', default=[])
         parser.add_argument('note')
         args = parser.parse_args()
 
@@ -389,6 +397,16 @@ class TransactionApi(Resource):
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],
                         address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
         db.session.add(transaction)
+
+        # create and associate all tags with this transaction
+        for t in args['tag']:
+            # if the tag does not exist, create it
+            tag = Tag.query.filter_by(tag=t).first()
+            if tag is None:
+                tag = Tag(tag=t)
+                db.session.add(tag)
+            transaction.tags.append(tag)
+
         db.session.commit()
         return marshal(transaction, self.mfields), 201
 

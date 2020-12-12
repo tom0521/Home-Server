@@ -348,6 +348,7 @@ All responses will have the form (eventually...)
         "account_id": 1234,
         "address_id": 1234,
         "category_id": 1234,
+        "tag": ["apple", "banana", "cherry"],
         "note": "Very nice service"
     },
     ...
@@ -362,11 +363,12 @@ All responses will have the form (eventually...)
 
 **Arguments**
 
-- `"timestamp":string` the time of transaction in format `YYYY-MM-DDTHH:mm:SS` (`default: now())`
+- `"timestamp":string` the time of transaction in format `YYYY-mm-DDTHH:MM:SS` (`default: now())`
 - `"amount":float` the amount spent/received on this transaction
 - `"account_id":integer` the Account identifier this transaction took action on
 - `"address_id":integer` the Address identifier this transaction took place (`optional`)
 - `"category_id":integer` the Category identifier this transaction falls under (`optional`)
+- `"tag:string` any tags to be associated with this transaction (`optional`)
 - `"note":string` any personal notes to make about this transaction (`optional`)
 
 **Responses**
@@ -382,6 +384,7 @@ All responses will have the form (eventually...)
     "account_id": 1234,
     "address_id": 1234,
     "category_id": 1234,
+    "tag": ["apple", "banana", "cherry"],
     "note": "Very nice service"
 }
 ```
