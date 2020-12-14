@@ -2,121 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Transaction</title>
-    <style>
-        @import url('css/tabs.css');
-    </style>
     <!-- JQuery and AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Handlebars -->
-    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <title>Create Transaction</title>
 </head>
 <body>
-    <form id="transaction_form" autocomplete="off">
-    <div class="tab">
-        <label for="place">Place:</label>
-        <input list="places" name="place" id="place" required />
+    <form id="transaction_form">
         <div>
-            <label for="address">Address:</label>
-            <input type="text" name="address" id="address" required/>
+            <label>Place:<input name="place" id="place" required /></label>
         </div>
         <div>
-            <label for="address2">Address 2:</label>
-            <input type="text" name="address2" id="address2" />
+            <label>Address:<input type="text" name="address" id="address" /></label>
         </div>
         <div>
-            <label for="city">City:</label>
-            <input list="cities" name="city" id="city" required />
+            <label>Address 2:<input type="text" name="address2" id="address2" /></label>
         </div>
         <div>
-            <label for="state">State:</label>
-            <input list="states" name="state" id="state" required />
+            <label>City:<input name="city" id="city" /></label>
         </div>
         <div>
-            <label for="postal_code">Postal Code:</label>
-            <input type="text" name="postal_code" id="postal_code" required />
+            <label>State or Province:<input name="state" id="state" /></label>
         </div>
         <div>
-            <label for="phone">Phone:</label>
-            <input type="tel" name="phone" id="phone" />
+            <label>Postal Code:<input type="text" name="postal_code" id="postal_code" /></label>
         </div>
         <div>
-            <label for="url">URL:</label>
-            <input type="url" name="url" id="url" />
-        </div>
-    </div>
-    <div class="tab">
-        <div>
-            <label for="time">Time:</label>
-            <input type="time" name="time" id="time" required />
+            <label>Phone:<input type="tel" name="phone" id="phone" /></label>
         </div>
         <div>
-            <label for="date">Date:</label>
-            <input type="date" name="date" id="date" required />
+            <label>URL:<input type="url" name="url" id="url" /></label>
         </div>
         <div>
-            <label for="amount">Amount:</label>
-            <input type="number" name="amount" required />
+            <label>Time:<input type="time" name="time" id="time" /></label>
         </div>
         <div>
-            <label for="payment_method">Payment Method:</label>
-            <input list="payment_methods" name="payment_method" id="payment_method" required />
-        </div>
-    </div>
-    <div class="tab">
-        <label for="category">Category</label>
-        <input list="categories" name="category" id="category" required />
-        <!-- <div>
-            <label for="receipt">Receipt:</label>
-            <input type="file" accept="image/*" name="receipt" id="receipt" />
-        </div> -->
-        <div>
-            <label for="tags">Tags:</label>
-            <input list="tag_list" name="tags" id="tags" />
+            <label>Date:<input type="date" name="date" id="date" required /></label>
         </div>
         <div>
-            <label for="note">Note:</label>
-            <input type="text" name="note" id="note" />
+            <label>Amount:<input type="number" name="amount" required /></label>
         </div>
-    </div>
+        <div>
+            <label>Account:<input name="account" id="account" required /></label>
+        </div>
+        <div>
+            <label>Debit:<input type="radio" name="type" id="debit" value="DEBIT" checked/></label>
+            <label>Credit:<input type="radio" name="type" id="credit" value="CREDIT"/></label>
+        </div>
+        <div>
+            <label>Category<input name="category" id="category" required /></label>
+        </div>
+        <div>
+            <label>Tags:<input name="tags" id="tags" /></label>
+        </div>
+        <div>
+            <label>Note:<input type="text" name="note" id="note" /></label>
+        </div>
     </form>
-    <div style="overflow:auto;">
-        <div style="float:right;">
-            <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-            <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-        </div>
-    </div>
-    <!-- Circles which indicates the steps of the form: -->
-    <div style="text-align:center;margin-top:40px;">
-        <span class="step"></span>
-        <span class="step"></span>
-        <span class="step"></span>
-    </div>
-
-    <datalist id="addresses">
-    </datalist>
-
-    <datalist id="categories">
-    </datalist>
-
-    <datalist id="cities">
-    </datalist>
-
-    <datalist id="payment_methods">
-    </datalist>
-
-    <datalist id="places">
-    </datalist>
-    
-    <datalist id="states">
-    </datalist>
-
-    <datalist id="tag_list">
-    </datalist>
-
-    <!-- Local Scripts -->
+    <button onclick="create()">Submit</button>
     <script src="js/api.js"></script>
     <script src="js/create_transaction.js"></script>
-    <script src="js/tabs.js"></script>
 </body>
 </html>
