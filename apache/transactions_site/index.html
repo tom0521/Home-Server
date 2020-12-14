@@ -7,7 +7,7 @@
     <title>Create Transaction</title>
 </head>
 <body>
-    <form id="transaction_form">
+    <form id="transaction_form" onsubmit="create()">
         <div>
             <label>Place:<input name="place" id="place" required /></label>
         </div>
@@ -57,8 +57,8 @@
         <div>
             <label>Note:<input type="text" name="note" id="note" /></label>
         </div>
+        <button type="submit">Submit</button>
     </form>
-    <button onclick="create()">Submit</button>
     <script src="js/api.js"></script>
     <script src="js/create_transaction.js"></script>
 </body>
