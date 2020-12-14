@@ -45,6 +45,7 @@ function post (path, data) {
         url: `${API_URL}${path}`,
         type: 'POST',
         data: data,
+        traditional: true,
         async: false
     }).responseJSON;
 }
@@ -82,7 +83,7 @@ function create_category (category) {
     );
 }
 
-function create_city (city, state_province, country) {
+function create_city (city, state_province, country="United States of America") {
     return post('/city',
         {
             city: city,
@@ -101,7 +102,7 @@ function create_place (place) {
 }
 
 function create_transaction (timestamp, amount, address_id, 
-                                    account_id, category_id, tags, note) {
+                                    account_id, category_id, tag, note) {
     return post('/transaction',
         {
             timestamp: timestamp,
@@ -109,7 +110,7 @@ function create_transaction (timestamp, amount, address_id,
             address_id: address_id,
             account_id: account_id,
             category_id: category_id,
-            tags: tags,
+            tag: tag,
             note: note
         }
     );
