@@ -5,10 +5,12 @@ import resource
 from datetime import datetime
 from enum import Enum,auto
 from flask import Flask,abort
+from flask_cors import CORS
 from flask_restful import Api,Resource,fields,marshal,reqparse
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -129,7 +131,7 @@ class AccountApi(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('account', required=True)
         parser.add_argument('balance', type=float, default=0)
-        parser.add_argument('type', choices=('DEBIT', 'CREDIT'), required=True)
+        parser.add_argument('type', choices=('DEBIT', 'CREDIT'), default='DEBIT')
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
@@ -386,7 +388,8 @@ class TransactionApi(Resource):
         args = parser.parse_args()
 
         # if any foreign ids do not exist abort
-        if Account.query.filter_by(id=args['account_id']).first() is None:
+        account = Account.query.filter_by(id=args['account_id']).first()
+        if account is None:
             abort(400)
         if args['address_id'] and Address.query.filter_by(id=args['address_id']).first is None:
             abort(400)
@@ -397,6 +400,7 @@ class TransactionApi(Resource):
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],
                         address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
         db.session.add(transaction)
+        account.balance += transaction.amount
 
         # create and associate all tags with this transaction
         for t in args['tag']:
@@ -436,4 +440,4 @@ def index():
 '''
 if __name__ == '__main__':
     db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
