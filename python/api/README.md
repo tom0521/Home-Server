@@ -48,12 +48,12 @@ All responses will have the form (eventually...)
 
 - `"account":string` a friendly name for the account
 - `"balance":float` initial balance of the account (`default: 0`)
-- `"type":string` the type of account this is (`DEBIT | CREDIT`)
+- `"type":string` the type of account this is (`DEBIT | CREDIT`) (`default: DEBIT`)
 
 **Responses**
 
 - `201 Created` on success
-- `202 Accepted` if the Account already exists
+- `202 Accepted` if the Account already exists and was returned
 
 ```json
 {
