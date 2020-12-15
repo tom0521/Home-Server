@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- JQuery and AJAX -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Create Transaction</title>
+</head>
+<body>
+    <form id="transaction_form" onsubmit="create()">
+        <div>
+            <label>Place:<input name="place" id="place" required /></label>
+        </div>
+        <div>
+            <label>Address:<input type="text" name="address" id="address" /></label>
+        </div>
+        <div>
+            <label>Address 2:<input type="text" name="address2" id="address2" /></label>
+        </div>
+        <div>
+            <label>City:<input name="city" id="city" /></label>
+        </div>
+        <div>
+            <label>State or Province:<input name="state_province" id="state_province" /></label>
+        </div>
+        <div>
+            <label>Postal Code:<input type="text" name="postal_code" id="postal_code" /></label>
+        </div>
+        <div>
+            <label>Phone:<input type="tel" name="phone" id="phone" /></label>
+        </div>
+        <div>
+            <label>URL:<input type="url" name="url" id="url" /></label>
+        </div>
+        <div>
+            <label>Time:<input type="time" name="time" id="time" /></label>
+        </div>
+        <div>
+            <label>Date:<input type="date" name="date" id="date" required /></label>
+        </div>
+        <div>
+            <label>Amount:<input type="number" name="amount" id="amount" required /></label>
+        </div>
+        <div>
+            <label>Account:<input name="account" id="account" required /></label>
+        </div>
+        <div>
+            <label>Debit:<input type="radio" name="type" id="debit" value="DEBIT" checked/></label>
+            <label>Credit:<input type="radio" name="type" id="credit" value="CREDIT"/></label>
+        </div>
+        <div>
+            <label>Category<input name="category" id="category" required /></label>
+        </div>
+        <div>
+            <label>Tags:<input name="tag" id="tag" /></label>
+        </div>
+        <div>
+            <label>Note:<input type="text" name="note" id="note" /></label>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <script src="js/api.js"></script>
+    <script src="js/create_transaction.js"></script>
+</body>
+</html>

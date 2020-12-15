@@ -1,0 +1,10 @@
+RewriteEngine on
+
+Header Set Access-Control-Allow-Origin "*"
+
+# Error Pages
+
+# API redirects
+# /[read|create|update]/[transaction|location|address|...]/?(id)
+
+RewriteRule ^read/transactions$ transaction/read.php [NC,L]

@@ -1,3 +1,7 @@
 **/config.ini
 apache/upload_site/uploads/*
 .idea
+apache/api/receipt/*
+*.pyc
+.vscode
+*.db*
