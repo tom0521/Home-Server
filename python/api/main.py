@@ -145,6 +145,23 @@ class AccountApi(Resource):
         db.session.commit()
         return marshal(account, self.mfields), 201
 
+class AccountTransactionApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'timestamp': fields.DateTime,
+        'amount': fields.Float,
+        'account_id': fields.Integer,
+        'address_id': fields.Integer,
+        'category_id': fields.Integer,
+        'note': fields.String
+    }
+
+    def get(self, account_id):
+        account = Account.query.filter_by(id=account_id).first()
+        if account:
+            return marshal(account.transactions, self.mfields), 200
+        abort(404)
+
 class AddressApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -203,6 +220,23 @@ class AddressApi(Resource):
         db.session.commit()
         return marshal(address, self.mfields), 201
 
+class AddressTransactionApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'timestamp': fields.DateTime,
+        'amount': fields.Float,
+        'account_id': fields.Integer,
+        'address_id': fields.Integer,
+        'category_id': fields.Integer,
+        'note': fields.String
+    }
+
+    def get(self, address_id):
+        address = Address.query.filter_by(id=address_id).first()
+        if address:
+            return marshal(address.transactions, self.mfields)
+        abort(404)
+
 class CategoryApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -238,6 +272,23 @@ class CategoryApi(Resource):
         db.session.add(category)
         db.session.commit()
         return marshal(category, self.mfields), 201
+
+class CategoryTransactionApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'timestamp': fields.DateTime,
+        'amount': fields.Float,
+        'account_id': fields.Integer,
+        'address_id': fields.Integer,
+        'category_id': fields.Integer,
+        'note': fields.String
+    }
+
+    def get(self, category_id):
+        category = Category.query.filter_by(id=category_id).first()
+        if category:
+            return marshal(category.transactions, self.mfields)
+        abort(404)
 
 class CityApi(Resource):
     mfields = {
@@ -279,6 +330,24 @@ class CityApi(Resource):
         db.session.commit()
         return marshal(city, self.mfields), 201
 
+class CityAddressApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'place_id': fields.Integer,
+        'address': fields.String,
+        'address2': fields.String,
+        'city_id': fields.Integer,
+        'postal_code': fields.String,
+        'phone': fields.String,
+        'url': fields.String
+    }
+
+    def get(self, city_id):
+        city = City.query.filter_by(id=city_id).first()
+        if city:
+            return marshal(city.addresses, self.mfields)
+        abort(404)
+
 class PlaceApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -314,6 +383,24 @@ class PlaceApi(Resource):
         db.session.add(place)
         db.session.commit()
         return marshal(place, self.mfields), 201
+
+class PlaceAddressApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'place_id': fields.Integer,
+        'address': fields.String,
+        'address2': fields.String,
+        'city_id': fields.Integer,
+        'postal_code': fields.String,
+        'phone': fields.String,
+        'url': fields.String
+    }
+
+    def get(self, place_id):
+        place = Place.query.filter_by(id=place_id).first()
+        if place:
+            return marshal(place.addresses, self.mfields)
+        abort(404)
 
 class TagApi(Resource):
     mfields = {
@@ -414,18 +501,36 @@ class TransactionApi(Resource):
         db.session.commit()
         return marshal(transaction, self.mfields), 201
 
+class TransactionTagApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'tag': fields.String
+    }
+
+    def get(self, transaction_id):
+        transaction = Transaction.query.filter_by(id=transaction_id).first()
+        if transaction:        
+            return marshal(transaction.tags, self.mfields), 200
+        abort(404)
+
 '''
 
     API Path Definitions
 
 '''
 api.add_resource(AccountApi, '/account', '/account/<int:id>')
+api.add_resource(AccountTransactionApi, '/account/<int:account_id>/transaction')
 api.add_resource(AddressApi, '/address', '/address/<int:id>')
+api.add_resource(AddressTransactionApi, '/address/<int:address_id>/transaction')
 api.add_resource(CategoryApi, '/category', '/category/<int:id>')
+api.add_resource(CategoryTransactionApi, '/category/<int:category_id>/transaction')
 api.add_resource(CityApi, '/city', '/city/<int:id>')
+api.add_resource(CityAddressApi, '/city/<int:city_id>/address')
 api.add_resource(PlaceApi, '/place', '/place/<int:id>')
+api.add_resource(PlaceAddressApi, '/place/<int:place_id>/address')
 api.add_resource(TagApi, '/tag', '/tag/<int:id>')
 api.add_resource(TransactionApi, '/transaction', '/transaction/<int:id>')
+api.add_resource(TransactionTagApi, '/transaction/<int:transaction_id>/tag')
 
 # index path displays documentation
 @app.route('/')
