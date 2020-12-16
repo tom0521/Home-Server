@@ -1,16 +1,5 @@
 # Home Server API
 
-## Usage
-
-All responses will have the form (eventually...)
-
-```json
-{
-    "data": "Mixed type holding the content of the response",
-    "message": "Description of what happened"
-}
-```
-
 ## Accounts
 
 ### Getting Accounts
@@ -74,10 +63,14 @@ All responses will have the form (eventually...)
 
 `GET /address/<address_id>`
 
+`GET /city/<city_id>/address`
+
+`GET /place/<place_id>/address`
+
 **Responses**
 
 - `200 OK` on success
-- `404 Not Found` if the Address was not found
+- `404 Not Found` if the Address, City or Place was not found
 
 ```json
 [
@@ -287,10 +280,12 @@ All responses will have the form (eventually...)
 
 `GET /tag/<tag_id>`
 
+`GET /transaction/<transaction_id>/tag`
+
 **Responses**
 
 - `200 OK` on success
-- `404 Not Found` if the Tag was not found
+- `404 Not Found` if the Tag or Transaction was not found
 
 ```json
 [
@@ -334,10 +329,16 @@ All responses will have the form (eventually...)
 
 `GET /transaction/<transaction_id>`
 
+`GET /account/<account_id>/transaction`
+
+`GET /address/<address_id>/transaction`
+
+`GET /category/<category_id>/transaction`
+
 **Responses**
 
 - `200 OK` on success
-- `404 Not Found` if the Transaction was not found
+- `404 Not Found` if the Account, Address, Category or Transaction was not found
 
 ```json
 [
@@ -348,7 +349,6 @@ All responses will have the form (eventually...)
         "account_id": 1234,
         "address_id": 1234,
         "category_id": 1234,
-        "tag": ["apple", "banana", "cherry"],
         "note": "Very nice service"
     },
     ...
@@ -384,7 +384,6 @@ All responses will have the form (eventually...)
     "account_id": 1234,
     "address_id": 1234,
     "category_id": 1234,
-    "tag": ["apple", "banana", "cherry"],
     "note": "Very nice service"
 }
 ```
