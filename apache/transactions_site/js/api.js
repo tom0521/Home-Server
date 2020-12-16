@@ -50,68 +50,26 @@ function post (path, data) {
     }).responseJSON;
 }
 
-function create_account (account, balance=0, type) {
-    return post('/account',
-        {
-            account: account,
-            balance: balance,
-            type: type
-        }
-    );
+function create_account (data) {
+    return post('/account', data);
 }
 
-function create_address (place_id, address, address2, city_id, 
-                                postal_code, phone, url) {
-    return post('/address', 
-        {
-            place_id: place_id,
-            address: address,
-            address2: address2,
-            city_id: city_id,
-            postal_code: postal_code,
-            phone: phone,
-            url: url
-        }
-    );
+function create_address (data) {
+    return post('/address', data);
 }
 
-function create_category (category) {
-    return post('/category',
-        {
-            category: category
-        }
-    );
+function create_category (data) {
+    return post('/category', data);
 }
 
-function create_city (city, state_province, country="United States of America") {
-    return post('/city',
-        {
-            city: city,
-            state_province: state_province,
-            country: country
-        }
-    );
+function create_city (data) {
+    return post('/city', data);
 }
 
-function create_place (place) {
-    return post('/place',
-        {
-            place: place
-        }
-    );
+function create_place (data) {
+    return post('/place', data);
 }
 
-function create_transaction (timestamp, amount, address_id, 
-                                    account_id, category_id, tag, note) {
-    return post('/transaction',
-        {
-            timestamp: timestamp,
-            amount: amount,
-            address_id: address_id,
-            account_id: account_id,
-            category_id: category_id,
-            tag: tag,
-            note: note
-        }
-    );
+function create_transaction (data) {
+    return post('/transaction', data);
 }
