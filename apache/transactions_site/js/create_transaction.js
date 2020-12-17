@@ -4,7 +4,7 @@ function init () {
 
 function create () {
     /* Form data to dictionary */
-    var form = $('#transaction_form').serializeArray();
+    var form = $('#transaction-form').serializeArray();
     var data  = {};
     for (i in form) {
         if (form[i].value) {
