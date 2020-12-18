@@ -4,69 +4,89 @@
     <meta charset="UTF-8">
     <!-- JQuery and AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>Create Transaction</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    
+    <title>Finances</title>
     <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
-
-    <button class="open-button" onclick="open_form()">Open Form</button>
-    <div class="form-popup" id="transaction-popup">
-        <form class="form-container" id="transaction-form" onsubmit="create()">
-            <div>
-                <label>Place:<input name="place" id="place" required /></label>
+    <button class="btn btn-primary" id="transaction-popup-btn" onclick="show_transaction_popup()">$</button>
+    <div id="transaction-popup">
+        <form id="transaction-form" class="row g-2">
+            <div class="col-sm-12 form-floating">
+                <input class="form-control" name="place" id="place" required />
+                <label for="place">Place</label>
             </div>
-            <div>
-                <label>Address:<input type="text" name="address" id="address" /></label>
+            <div class="col-sm-12 form-floating">
+                <input class="form-control" type="text" name="address" id="address" />
+                <label for="address">Address</label>
             </div>
-            <div>
-                <label>Address 2:<input type="text" name="address2" id="address2" /></label>
+            <div class="col-sm-12 form-floating">
+                <input class="form-control" type="text" name="address2" id="address2" />
+                <label for="address2">Address 2</label>
             </div>
-            <div>
-                <label>City:<input name="city" id="city" /></label>
+            <div class="col-sm-6 form-floating">
+                <input class="form-control" name="city" id="city" />
+                <label for="city">City</label>
             </div>
-            <div>
-                <label>State or Province:<input name="state_province" id="state_province" /></label>
+            <div class="col-sm-4 form-floating">
+                <input class="form-control" name="state_province" id="state_province" />
+                <label for="state_province">State or Province</label>
             </div>
-            <div>
-                <label>Postal Code:<input type="text" name="postal_code" id="postal_code" /></label>
+            <div class="col-sm-2 form-floating">
+                <input class="form-control" type="text" name="postal_code" id="postal_code" />
+                <label for="postal_code">Postal Code</label>
             </div>
-            <div>
-                <label>Phone:<input type="tel" name="phone" id="phone" /></label>
+            <div class="col-sm-6 form-floating">
+                <input class="form-control" type="tel" name="phone" id="phone" />
+                <label for="phone">Telephone</label>
             </div>
-            <div>
-                <label>URL:<input type="url" name="url" id="url" /></label>
+            <div class="col-sm-6 form-floating">
+                <input class="form-control" type="url" name="url" id="url" />
+                <label for="url">Website</label>
             </div>
-            <div>
-                <label>Time:<input type="time" name="time" id="time" /></label>
+            <div class="col-sm-6 form-floating">
+                <input class="form-control" type="time" name="time" id="time" />
+                <label for="time">Time</label>
             </div>
-            <div>
-                <label>Date:<input type="date" name="date" id="date" required /></label>
+            <div class="col-sm-6 form-floating">
+                <input class="form-control" type="date" name="date" id="date" required />
+                <label for="date">Date</label>
             </div>
-            <div>
-                <label>Amount:<input type="number" step="0.01" name="amount" id="amount" required /></label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-text">$</div>
+                    <input class="form-control" type="number" step="0.01" name="amount" id="amount" required />
+                </div>
             </div>
-            <div>
-                <label>Account:<input name="account" id="account" required /></label>
+            <div class="col-sm-4">
+                <select class="form-select" name="account_id" id="account">
+                    <option value="1">Cash</option>
+                    <option value="2">Savings</option>
+                </select>
+                <!-- <input class="form-control" name="account" id="account" placeholder="Account" required /> -->
             </div>
-            <div>
-                <label>Debit:<input type="radio" name="type" id="debit" value="DEBIT" checked/></label>
-                <label>Credit:<input type="radio" name="type" id="credit" value="CREDIT"/></label>
+            <div class="col-sm-4">
+                <input class="form-control" name="category" id="category" placeholder="Category" required />
             </div>
-            <div>
-                <label>Category<input name="category" id="category" required /></label>
+            <div class="col-sm-12 form-floating">
+                <textarea class="form-control" name="tag" id="tag" style="height: 100px"></textarea>
+                <label for="tag">Tags</label>
             </div>
-            <div>
-                <label>Tags:<input name="tag" id="tag" /></label>
+            <div class="col-sm-12 form-floating">
+                <textarea class="form-control" name="note" id="note" style="height: 100px"></textarea>
+                <label for="note">Note</label>
             </div>
-            <div>
-                <label>Note:<input type="text" name="note" id="note" /></label>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-success" onclick="create()">Create</button>
+                <button type="reset" class="btn btn-danger" onclick="hide_transaction_popup()">Close</button>
             </div>
-            <button type="submit" class="btn">Create</button>
-            <button type="button" class="btn cancel" onclick="close_form()">Close</button>
         </form>
     </div>
 <script src="js/api.js"></script>
-<script src="js/create_transaction.js"></script>
-<script src="js/popup.js"></script>
+<script src="js/finances.js"></script>
 </body>
 </html>
