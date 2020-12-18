@@ -1,4 +1,7 @@
 function init () {
+    $.each(get_accounts(), function(index, value) {
+        $('#account').append(`<option value=${value.id}>${value.account}</option>`);
+    });
 }
 
 function create () {
