@@ -9,13 +9,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     
+    <!-- Font Awesome -->
+  <script defer src="https://use.fontawesome.com/releases/v5.15.1/js/all.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.15.1/js/v4-shims.js"></script>
+
     <title>Finances</title>
     <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
-    <button class="btn btn-primary" id="transaction-popup-btn" onclick="show_transaction_popup()">$</button>
+    <button class="btn btn-primary" id="transaction-popup-btn" onclick="show_transaction_popup()"><i class="fas fa-dollar-sign"></i></button>
     <div id="transaction-popup">
-        <form id="transaction-form" class="row g-2">
+        <form id="transaction-form" class="row g-2" autocomplete="off">
             <div class="col-sm-12 form-floating">
                 <input class="form-control" name="place" id="place" required />
                 <label for="place">Place</label>
@@ -48,26 +52,30 @@
                 <input class="form-control" type="url" name="url" id="url" />
                 <label for="url">Website</label>
             </div>
-            <div class="col-sm-6 form-floating">
-                <input class="form-control" type="time" name="time" id="time" />
-                <label for="time">Time</label>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                    <input class="form-control" type="time" name="time" id="time" />
+                </div>
             </div>
-            <div class="col-sm-6 form-floating">
-                <input class="form-control" type="date" name="date" id="date" required />
-                <label for="date">Date</label>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-text"><i class="far fa-calendar"></i></div>
+                    <input class="form-control" type="date" name="date" id="date" required />
+                </div>
             </div>
             <div class="col-sm-4">
                 <div class="input-group">
-                    <div class="input-group-text">$</div>
+                    <div class="input-group-text"><i class="fas fa-dollar-sign"></i></div>
                     <input class="form-control" type="number" step="0.01" name="amount" id="amount" required />
                 </div>
             </div>
             <div class="col-sm-4">
                 <select class="form-select" name="account_id" id="account"></select>
-                <!-- <input class="form-control" name="account" id="account" placeholder="Account" required /> -->
             </div>
             <div class="col-sm-4">
-                <input class="form-control" name="category" id="category" placeholder="Category" required />
+                <input class="form-control" name="category" id="category" placeholder="Category" list="categories" required />
+                <datalist id="categories"></datalist>
             </div>
             <div class="col-sm-12 form-floating">
                 <textarea class="form-control" name="tag" id="tag" style="height: 100px"></textarea>

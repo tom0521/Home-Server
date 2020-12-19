@@ -2,6 +2,9 @@ function init () {
     $.each(get_accounts(), function(index, value) {
         $('#account').append(`<option value=${value.id}>${value.account}</option>`);
     });
+    $.each(get_categories(), function(index, value) {
+        $('#categories').append(`<option value=${value.category}>`);
+    })
 }
 
 function create () {
