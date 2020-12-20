@@ -316,7 +316,7 @@ class CityApi(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('city', required=True)
         parser.add_argument('state_province', required=True)
-        parser.add_argument('country', required=True)
+        parser.add_argument('country', default="United States of America")
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
