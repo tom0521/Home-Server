@@ -1,5 +1,10 @@
 {box-sizing: border-box;}
 
+#overall-stats {
+  text-align: right;
+  margin: 10px;
+}
+
 /* Button used to open the contact form - fixed at the bottom of the page */
 #transaction-popup-btn {
   position: fixed;

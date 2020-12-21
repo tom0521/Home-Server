@@ -19,99 +19,117 @@
 <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">My Finances</a>
-        <ul class="navbar-nav px-3">
+        <!-- <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
                 <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle">
                     <i class="far fa-calendar"></i>
                     This week
                 </button>
             </li>
-        </ul>
+        </ul> -->
     </header>
-    <button class="btn btn-primary" id="transaction-popup-btn" onclick="show_transaction_popup()"><i class="fas fa-dollar-sign"></i></button>
-    <div id="transaction-popup">
-        <form id="transaction-form" class="row g-2" autocomplete="off">
-            <div class="col-sm-12 form-floating">
-                <input class="form-control" name="place" id="place" required />
-                <label for="place">Place</label>
+    <main>
+        <div class="row" id="overall-stats">
+            <div class="col-3">
             </div>
-            <div class="col-sm-12 form-floating">
-                <input class="form-control" type="text" name="address" id="address" />
-                <label for="address">Address</label>
+            <div class="col-3">
+                <small class="text-muted">Gross Income</small>
+                <h3 id="gross-income">$9,999.99</h3>
             </div>
-            <div class="col-sm-12 form-floating">
-                <input class="form-control" type="text" name="address2" id="address2" />
-                <label for="address2">Address 2</label>
+            <div class="col-3">
+                <small class="text-muted">Expenses</small>
+                <h3 id="expenses">$9,999.99</h3>
             </div>
-            <div class="col-sm-6 form-floating">
-                <input class="form-control" name="city" id="city" />
-                <label for="city">City</label>
+            <div class="col-3">
+                <small class="text-muted">Net Income</small>
+                <h3 id="net-income">$9,999.99</h3>
             </div>
-            <div class="col-sm-4 form-floating">
-                <input class="form-control" name="state_province" id="state_province" />
-                <label for="state_province">State or Province</label>
-            </div>
-            <div class="col-sm-2 form-floating">
-                <input class="form-control" type="text" name="postal_code" id="postal_code" />
-                <label for="postal_code">Postal Code</label>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-phone-alt"></i></div>
-                    <input class="form-control" type="tel" name="phone" id="phone" />
+        </div>
+        <button class="btn btn-primary" id="transaction-popup-btn" onclick="show_transaction_popup()"><i class="fas fa-dollar-sign"></i></button>
+        <div id="transaction-popup">
+            <form id="transaction-form" class="row g-2" autocomplete="off">
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" name="place" id="place" required />
+                    <label for="place">Place</label>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-globe"></i></div>
-                    <input class="form-control" type="url" name="url" id="url" />
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" type="text" name="address" id="address" />
+                    <label for="address">Address</label>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-clock"></i></div>
-                    <input class="form-control" type="time" name="time" id="time" />
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" type="text" name="address2" id="address2" />
+                    <label for="address2">Address 2</label>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-calendar"></i></div>
-                    <input class="form-control" type="date" name="date" id="date" required />
+                <div class="col-sm-6 form-floating">
+                    <input class="form-control" name="city" id="city" />
+                    <label for="city">City</label>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-dollar-sign"></i></div>
-                    <input class="form-control" type="number" step="0.01" name="amount" id="amount" required />
+                <div class="col-sm-4 form-floating">
+                    <input class="form-control" name="state_province" id="state_province" />
+                    <label for="state_province">State or Province</label>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-wallet"></i></div>
-                    <select class="form-select" name="account_id" id="account"></select>
+                <div class="col-sm-2 form-floating">
+                    <input class="form-control" type="text" name="postal_code" id="postal_code" />
+                    <label for="postal_code">Postal Code</label>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text"><i class="fas fa-chart-pie"></i></div>
-                    <input class="form-control" name="category" id="category" list="categories" required />
-                    <datalist id="categories"></datalist>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-phone-alt"></i></div>
+                        <input class="form-control" type="tel" name="phone" id="phone" />
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12 form-floating">
-                <textarea class="form-control" name="tag" id="tag" style="height: 100px"></textarea>
-                <label for="tag">Tags</label>
-            </div>
-            <div class="col-sm-12 form-floating">
-                <textarea class="form-control" name="note" id="note" style="height: 100px"></textarea>
-                <label for="note">Note</label>
-            </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn btn-success" onclick="create()">Create</button>
-                <button type="reset" class="btn btn-danger" onclick="hide_transaction_popup()">Close</button>
-            </div>
-        </form>
-    </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-globe"></i></div>
+                        <input class="form-control" type="url" name="url" id="url" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                        <input class="form-control" type="time" name="time" id="time" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                        <input class="form-control" type="date" name="date" id="date" required />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-dollar-sign"></i></div>
+                        <input class="form-control" type="number" step="0.01" name="amount" id="amount" required />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-wallet"></i></div>
+                        <select class="form-select" name="account_id" id="account"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-chart-pie"></i></div>
+                        <input class="form-control" name="category" id="category" list="categories" required />
+                        <datalist id="categories"></datalist>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <textarea class="form-control" name="tag" id="tag" style="height: 100px"></textarea>
+                    <label for="tag">Tags</label>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <textarea class="form-control" name="note" id="note" style="height: 100px"></textarea>
+                    <label for="note">Note</label>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-success" onclick="create()">Create</button>
+                    <button type="reset" class="btn btn-danger" onclick="hide_transaction_popup()">Close</button>
+                </div>
+            </form>
+        </div>
+    </main>
 <script src="js/api.js"></script>
 <script src="js/finances.js"></script>
 </body>

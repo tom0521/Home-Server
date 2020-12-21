@@ -4,7 +4,19 @@ function init () {
     });
     $.each(get_categories(), function(index, value) {
         $('#categories').append(`<option value=${value.category}>`);
-    })
+    });
+    let gross_income = 0, expenses = 0;
+    $.each(get_transactions(), function(index, value) {
+        if (value.amount < 0) {
+            expenses -= value.amount;
+        } else {
+            gross_income += value.amount;
+        }
+    });
+    let currency_format = new Intl.NumberFormat('en-US', { style: 'currency' , currency: 'USD' });
+    $('#gross-income').text(currency_format.format(gross_income));
+    $('#expenses').text(currency_format.format(expenses));
+    $('#net-income').text(currency_format.format(gross_income - expenses));
 }
 
 function create () {
