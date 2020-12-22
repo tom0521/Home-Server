@@ -12,9 +12,9 @@ function init () {
     let gross_income = 0, expenses = 0;
     $.each(get_transactions(), function(index, value) {
         if (value.amount < 0) {
+            category_stats[value.category_id] = (category_stats[value.category_id] || 0) - value.amount;
             expenses -= value.amount;
         } else {
-            category_stats[value.category_id] = (category_stats[value.category_id] || 0) + value.amount;
             gross_income += value.amount;
         }
         $('#gross-income').text(currency_format.format(gross_income));
