@@ -11,10 +11,10 @@ function init () {
     });
     let gross_income = 0, expenses = 0;
     $.each(get_transactions(), function(index, value) {
-        category_stats[value.category_id] = (category_stats[value.category_id] || 0) + 1;
         if (value.amount < 0) {
             expenses -= value.amount;
         } else {
+            category_stats[value.category_id] = (category_stats[value.category_id] || 0) + value.amount;
             gross_income += value.amount;
         }
         $('#gross-income').text(currency_format.format(gross_income));
@@ -25,9 +25,15 @@ function init () {
 }
 
 function init_pie_chart () {
-    var data = Object.entries(category_stats);
+    var data = Object.entries(category_stats)
+        .map(([key, val]) => ([get(`/category/${key}`).category, val]));
     var width = 500;
     var height = width;
+
+    arcLabel = function() {
+        const radius = Math.min(width, height) / 2 * 0.8;
+        return d3.arc().innerRadius(radius).outerRadius(radius);
+      }
     
     pie = d3.pie()
             .sort(null)
@@ -55,6 +61,24 @@ function init_pie_chart () {
         .attr("d", arc)
         .append("title")
         .text(d => `${d.data[0]}: ${d.data[1].toLocaleString()}`);
+
+    svg.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 12)
+        .attr("text-anchor", "middle")
+        .selectAll("text")
+        .data(arcs)
+        .join("text")
+        .attr("transform", d => `translate(${arcLabel().centroid(d)})`)
+        .call(text => text.append("tspan")
+        .attr("y", "-0.4em")
+        .attr("font-weight", "bold")
+        .text(d => d.data[0]))
+        .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+        .attr("x", 0)
+        .attr("y", "0.7em")
+        .attr("fill-opacity", 0.7)
+        .text(d => currency_format.format(d.data[1])));
 
     $('#category-stats').append(svg.node());
 }
