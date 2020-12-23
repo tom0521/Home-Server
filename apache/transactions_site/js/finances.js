@@ -4,10 +4,10 @@ let category_stats = {};
 
 function init () {
     $.each(get_accounts(), function(index, value) {
-        $('#account').append(`<option value=${value.id}>${value.account}</option>`);
+        $('#account').append(`<option value="${value.id}">${value.account}</option>`);
     });
     $.each(get_categories(), function(index, value) {
-        $('#categories').append(`<option value=${value.category}>`);
+        $('#categories').append(`<option value="${value.category}">`);
     });
     let gross_income = 0, expenses = 0;
     $.each(get_transactions(), function(index, value) {
@@ -37,6 +37,7 @@ function init_pie_chart () {
     
     pie = d3.pie()
             .sort(null)
+            .padAngle(0.03)
             .value(d => d[1]);
 
     color = d3.scaleOrdinal()
@@ -46,8 +47,9 @@ function init_pie_chart () {
     const arcs = pie(data);
 
     arc = d3.arc()
-        .innerRadius(0)
+        .innerRadius(70)
         .outerRadius(Math.min(width, height) / 2 - 1)
+        .cornerRadius(15);
 
     const svg = d3.create("svg")
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
@@ -60,10 +62,10 @@ function init_pie_chart () {
         .attr("fill", d => color(d.data[0]))
         .attr("d", arc)
         .append("title")
-        .text(d => `${d.data[0]}: ${d.data[1].toLocaleString()}`);
+        .text(d => `${d.data[0]}: ${currency_format.format(d.data[1])}`);
 
     svg.append("g")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "var(--bs-font-sans-serif)")
         .attr("font-size", 12)
         .attr("text-anchor", "middle")
         .selectAll("text")
@@ -106,7 +108,12 @@ function create () {
     data.address_id = create_address(data).id;
     // data.account_id = create_account(data).id;
     data.category_id = create_category(data).id;
-    create_transaction(data);
+    var transaction_res = create_transaction(data);
+    if (transaction_res.id) {
+        alert('Transaction created!');
+    } else {
+        alert(`Failed to create Transaction\n${transaction_res}`);
+    }
 }
 
 function show_transaction_popup () {
