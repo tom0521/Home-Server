@@ -108,7 +108,7 @@ function init_pie_chart () {
     const arcs = pie(data);
 
     arc = d3.arc()
-        .innerRadius(75)
+        .innerRadius(width/4)
         .outerRadius(Math.min(width, height) / 2 - 1);
 
     const svg = d3.create("svg")
