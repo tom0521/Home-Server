@@ -4,62 +4,145 @@
     <meta charset="UTF-8">
     <!-- JQuery and AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>Create Transaction</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    
+    <!-- Font Awesome -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.1/js/all.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.1/js/v4-shims.js"></script>
+
+    <!-- D3 Charts -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <title>Finances</title>
+    <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
-    <form id="transaction_form" onsubmit="create()">
-        <div>
-            <label>Place:<input name="place" id="place" required /></label>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="">My Finances</a>
+        <!-- <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle">
+                    <i class="far fa-calendar"></i>
+                    This week
+                </button>
+            </li>
+        </ul> -->
+    </header>
+    <main>
+        <div class="row" id="overall-stats">
+            <div class="col-6">
+            </div>
+            <div class="col-2">
+                <small class="text-muted">Gross Income</small>
+                <h3 id="gross-income">$9,999.99</h3>
+            </div>
+            <div class="col-2">
+                <small class="text-muted">Expenses</small>
+                <h3 id="expenses">$9,999.99</h3>
+            </div>
+            <div class="col-2">
+                <small class="text-muted">Net Income</small>
+                <h3 id="net-income">$9,999.99</h3>
+            </div>
         </div>
-        <div>
-            <label>Address:<input type="text" name="address" id="address" /></label>
+        <hr>
+        <div class="row" style="margin: 30px;">
+            <div class="col-4"></div>
+            <div class="col-4" id="category-stats"></div>
+            <div class="col-4"></div>
         </div>
-        <div>
-            <label>Address 2:<input type="text" name="address2" id="address2" /></label>
+        <div class="row" style="margin: 30px;">
+            <div class="col-12" id="rolling-income"></div>
         </div>
-        <div>
-            <label>City:<input name="city" id="city" /></label>
+        <button class="btn-lg btn-success" id="transaction-popup-btn" onclick="show_transaction_popup()"><i class="fas fa-dollar-sign"></i></button>
+        <div id="transaction-popup">
+            <form id="transaction-form" class="row g-2" autocomplete="off">
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" name="place" id="place" required />
+                    <label for="place">Place</label>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" type="text" name="address" id="address" />
+                    <label for="address">Address</label>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <input class="form-control" type="text" name="address2" id="address2" />
+                    <label for="address2">Address 2</label>
+                </div>
+                <div class="col-sm-6 form-floating">
+                    <input class="form-control" name="city" id="city" />
+                    <label for="city">City</label>
+                </div>
+                <div class="col-sm-4 form-floating">
+                    <input class="form-control" name="state_province" id="state_province" />
+                    <label for="state_province">State or Province</label>
+                </div>
+                <div class="col-sm-2 form-floating">
+                    <input class="form-control" type="text" name="postal_code" id="postal_code" />
+                    <label for="postal_code">Postal Code</label>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-phone-alt"></i></div>
+                        <input class="form-control" type="tel" name="phone" id="phone" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-globe"></i></div>
+                        <input class="form-control" type="url" name="url" id="url" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                        <input class="form-control" type="time" name="time" id="time" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                        <input class="form-control" type="date" name="date" id="date" required />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-dollar-sign"></i></div>
+                        <input class="form-control" type="number" step="0.01" name="amount" id="amount" required />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-wallet"></i></div>
+                        <select class="form-select" name="account_id" id="account"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="fas fa-chart-pie"></i></div>
+                        <input class="form-control" name="category" id="category" list="categories" required />
+                        <datalist id="categories"></datalist>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <textarea class="form-control" name="tag" id="tag" style="height: 100px"></textarea>
+                    <label for="tag">Tags</label>
+                </div>
+                <div class="col-sm-12 form-floating">
+                    <textarea class="form-control" name="note" id="note" style="height: 100px"></textarea>
+                    <label for="note">Note</label>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-success" onclick="create()">Create</button>
+                    <button type="reset" class="btn btn-danger" onclick="hide_transaction_popup()">Close</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <label>State or Province:<input name="state_province" id="state_province" /></label>
-        </div>
-        <div>
-            <label>Postal Code:<input type="text" name="postal_code" id="postal_code" /></label>
-        </div>
-        <div>
-            <label>Phone:<input type="tel" name="phone" id="phone" /></label>
-        </div>
-        <div>
-            <label>URL:<input type="url" name="url" id="url" /></label>
-        </div>
-        <div>
-            <label>Time:<input type="time" name="time" id="time" /></label>
-        </div>
-        <div>
-            <label>Date:<input type="date" name="date" id="date" required /></label>
-        </div>
-        <div>
-            <label>Amount:<input type="number" step="0.01" name="amount" id="amount" required /></label>
-        </div>
-        <div>
-            <label>Account:<input name="account" id="account" required /></label>
-        </div>
-        <div>
-            <label>Debit:<input type="radio" name="type" id="debit" value="DEBIT" checked/></label>
-            <label>Credit:<input type="radio" name="type" id="credit" value="CREDIT"/></label>
-        </div>
-        <div>
-            <label>Category<input name="category" id="category" required /></label>
-        </div>
-        <div>
-            <label>Tags:<input name="tag" id="tag" /></label>
-        </div>
-        <div>
-            <label>Note:<input type="text" name="note" id="note" /></label>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-    <script src="js/api.js"></script>
-    <script src="js/create_transaction.js"></script>
+    </main>
+<script src="js/api.js"></script>
+<script src="js/finances.js"></script>
 </body>
 </html>

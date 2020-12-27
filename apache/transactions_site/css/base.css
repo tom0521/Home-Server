@@ -1,0 +1,29 @@
+{box-sizing: border-box;}
+
+#overall-stats {
+  text-align: right;
+  margin: 10px;
+}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+#transaction-popup-btn {
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  border-radius: 35px;
+}
+
+/* The popup form - hidden by default */
+#transaction-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+#transaction-form {
+  max-width: 1000px;
+  padding: 10px;
+}

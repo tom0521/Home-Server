@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.1.101:5000';
+const API_URL = 'http://localhost:5555';
 
 /*-------------  GET FUNCTIONS  -------------*/
 
@@ -10,7 +10,7 @@ function get (path) {
     }).responseJSON;
 };
 
-function accounts () {
+function get_accounts () {
     return get(`/account`);
 }
 
