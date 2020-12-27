@@ -36,7 +36,7 @@ function init () {
 function init_line_graph () {
     var data = transaction_stats;
     var height = 500;
-    var width = height;
+    var width = height*3;
     var margin = ({top: 20, right: 30, bottom: 30, left: 40});
     var yAxis = g => g
         .attr("transform", `translate(${margin.left},0)`)
@@ -99,7 +99,6 @@ function init_pie_chart () {
     
     pie = d3.pie()
             .sort(null)
-            .padAngle(0.03)
             .value(d => d[1]);
 
     color = d3.scaleOrdinal()
@@ -109,9 +108,8 @@ function init_pie_chart () {
     const arcs = pie(data);
 
     arc = d3.arc()
-        .innerRadius(70)
-        .outerRadius(Math.min(width, height) / 2 - 1)
-        .cornerRadius(15);
+        .innerRadius(75)
+        .outerRadius(Math.min(width, height) / 2 - 1);
 
     const svg = d3.create("svg")
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
