@@ -1,6 +1,7 @@
 let currency_format = new Intl.NumberFormat('en-US', { style: 'currency' , currency: 'USD' });
 
 let category_stats = {};
+let transaction_stats = [];
 
 function init () {
     $.each(get_accounts(), function(index, value) {
@@ -10,7 +11,14 @@ function init () {
         $('#categories').append(`<option value="${value.category}">`);
     });
     let gross_income = 0, expenses = 0;
-    $.each(get_transactions(), function(index, value) {
+    let funds = 0;
+    $.each(get_accounts(), function(index, value) {
+        funds += value.balance;
+    });
+    $.each(get_transactions().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)), function(index, value) {
+        value['cumulative'] = funds;
+        funds -= value.amount;
+        transaction_stats.unshift(value);
         if (value.amount < 0) {
             category_stats[value.category_id] = (category_stats[value.category_id] || 0) - value.amount;
             expenses -= value.amount;
@@ -26,7 +34,7 @@ function init () {
 }
 
 function init_line_graph () {
-    var data = get_transactions().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    var data = transaction_stats;
     var height = 500;
     var width = height;
     var margin = ({top: 20, right: 30, bottom: 30, left: 40});
@@ -45,7 +53,7 @@ function init_line_graph () {
         .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
 
     y = d3.scaleLinear()
-        .domain([d3.min(data, d => d.amount), d3.max(data, d => d.amount)]).nice()
+        .domain([d3.min(data, d => d.cumulative), d3.max(data, d => d.cumulative)]).nice()
         .range([height - margin.bottom, margin.top]);
 
     x = d3.scaleUtc()
@@ -53,9 +61,9 @@ function init_line_graph () {
         .range([margin.left, width - margin.right]);
 
     line = d3.line()
-        .defined(d => !isNaN(d.amount))
+        .defined(d => !isNaN(d.cumulative))
         .x(d => x(new Date(d.timestamp)))
-        .y(d => y(d.amount));
+        .y(d => y(d.cumulative));
 
     const svg = d3.create("svg")
       .attr("viewBox", [0, 0, width, height]);
