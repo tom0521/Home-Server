@@ -95,6 +95,7 @@ class Transaction(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     amount = db.Column(db.Float, nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    account_balance = db.Column(db.Float, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     tags = db.relationship('Tag', secondary=transaction_tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
@@ -226,6 +227,7 @@ class AddressTransactionApi(Resource):
         'timestamp': fields.DateTime,
         'amount': fields.Float,
         'account_id': fields.Integer,
+        'account_balance': fields.Float,
         'address_id': fields.Integer,
         'category_id': fields.Integer,
         'note': fields.String
@@ -279,6 +281,7 @@ class CategoryTransactionApi(Resource):
         'timestamp': fields.DateTime,
         'amount': fields.Float,
         'account_id': fields.Integer,
+        'account_balance': fields.Float,
         'address_id': fields.Integer,
         'category_id': fields.Integer,
         'note': fields.String
@@ -444,6 +447,7 @@ class TransactionApi(Resource):
         'timestamp': fields.DateTime,
         'amount': fields.Float,
         'account_id': fields.Integer,
+        'account_balance': fields.Float,
         'address_id': fields.Integer,
         'category_id': fields.Integer,
         'note': fields.String
@@ -484,10 +488,13 @@ class TransactionApi(Resource):
             abort(400)
 
         # Otherwise, insert the new entry and return Created status code
-        transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],
+        new_balance = account.balance + transaction.amount
+        transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
                         address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
         db.session.add(transaction)
-        account.balance += transaction.amount
+        account.balance = new_balance
+        # TODO: Does this return a value?
+        # account.balance += transaction.amount
 
         # create and associate all tags with this transaction
         for t in args['tag']:
