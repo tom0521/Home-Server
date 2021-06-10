@@ -60,6 +60,7 @@ class Category(db.Model):
     def __repr__(self):
         return f'{self.category}'
 
+# TODO: state_province and country tables
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String(50), nullable=False)
@@ -114,6 +115,19 @@ class AccountApi(Resource):
         'type': fields.String
     }
 
+    # TODO: what to do with related transactions?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        account = Account.query,filter_by(id=id).first()
+        if not account:
+            abort(404)
+        db.session.delete(account)
+        db.session.commit()
+        return marshal(account, self.mfields), 200
+
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
@@ -122,7 +136,7 @@ class AccountApi(Resource):
                 return marshal(account, self.mfields), 200
             abort(404)
         return marshal(Account.query.all(), self.mfields), 200
-    
+
     def post(self, id=None):
         # POST requests do not allow id url
         if id:
@@ -145,6 +159,41 @@ class AccountApi(Resource):
         db.session.add(account)
         db.session.commit()
         return marshal(account, self.mfields), 201
+
+    """
+      TODO: if balance changed, should the transactions be updated?
+            or do not allow balance to be updated. Need to create a
+            transaction to update.
+    """
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('account')
+        parser.add_argument('balance', type=float)
+        parser.add_argument('type', choices=('DEBIT', 'CREDIT'))
+        args = parser.parse_args()
+
+        account = Account.query.filter_by(id=id).first()
+        if not account:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(account, self.mfields), 202
+
+        if args['account']:
+            account.account = args['account']
+        if args['balance']:
+            account.balance = args['balance']
+        if args['type']:
+            account.type = args['type']
+
+        db.session.commit()
+        return marshal(account, self.mfields), 200
 
 class AccountTransactionApi(Resource):
     mfields = {
@@ -174,6 +223,19 @@ class AddressApi(Resource):
         'phone': fields.String,
         'url': fields.String
     }
+
+    # TODO: what to do with related transactions?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        address = Address.query,filter_by(id=id).first()
+        if not address:
+            abort(404)
+        db.session.delete(address)
+        db.session.commit()
+        return marshal(account, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -221,6 +283,48 @@ class AddressApi(Resource):
         db.session.commit()
         return marshal(address, self.mfields), 201
 
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('place_id', type=int)
+        parser.add_argument('address')
+        parser.add_argument('address2')
+        parser.add_argument('city_id', type=int)
+        parser.add_argument('postal_code')
+        parser.add_argument('phone')
+        parser.add_argument('url')
+        args = parser.parse_args()
+
+        address = Address.query.filter_by(id=id).first()
+        if not address:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(address, self.mfields), 202
+
+        if args['place_id']:
+            address.place_id = args['place_id']
+        if args['address']:
+            address.address = args['address']
+        if args['address2']:
+            address.address2 = args['address2']
+        if args['city_id']:
+            address.city_id = args['city_id']
+        if args['postal_code']:
+            address.postal_code = args['postal_code']
+        if args['phone']:
+            address.phone = args['phone']
+        if args['url']:
+            address.url = args['url']
+
+        db.session.commit()
+        return marshal(address, self.mfields), 200
+
 class AddressTransactionApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -244,6 +348,19 @@ class CategoryApi(Resource):
         'id': fields.Integer,
         'category': fields.String
     }
+
+    # TODO: what to do with related transactions?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        category = Category.query,filter_by(id=id).first()
+        if not category:
+            abort(404)
+        db.session.delete(category)
+        db.session.commit()
+        return marshal(category, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -275,6 +392,30 @@ class CategoryApi(Resource):
         db.session.commit()
         return marshal(category, self.mfields), 201
 
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('category')
+        args = parser.parse_args()
+
+        category = Category.query.filter_by(id=id).first()
+        if not category:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(category, self.mfields), 202
+
+        if args['category']:
+            category.category = args['category']
+
+        db.session.commit()
+        return marshal(category, self.mfields), 200
+
 class CategoryTransactionApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -293,6 +434,7 @@ class CategoryTransactionApi(Resource):
             return marshal(category.transactions, self.mfields)
         abort(404)
 
+# TODO: state_province and country tables
 class CityApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -300,6 +442,19 @@ class CityApi(Resource):
         'state_province': fields.String,
         'country': fields.String
     }
+
+    # TODO: what to do with related addresses?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        city = City.query,filter_by(id=id).first()
+        if not city:
+            abort(404)
+        db.session.delete(city)
+        db.session.commit()
+        return marshal(city, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -333,6 +488,36 @@ class CityApi(Resource):
         db.session.commit()
         return marshal(city, self.mfields), 201
 
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('city')
+        parser.add_argument('state_province')
+        parser.add_argument('country')
+        args = parser.parse_args()
+
+        city = City.query.filter_by(id=id).first()
+        if not city:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(city, self.mfields), 202
+
+        if args['city']:
+            city.city = args['city']
+        if args['state_province']:
+            city.state_province = args['state_province']
+        if args['country']:
+            city.country = args['country']
+
+        db.session.commit()
+        return marshal(city, self.mfields), 200
+
 class CityAddressApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -356,6 +541,19 @@ class PlaceApi(Resource):
         'id': fields.Integer,
         'place': fields.String
     }
+
+    # TODO: what to do with related addresses?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        place = place.query,filter_by(id=id).first()
+        if not place:
+            abort(404)
+        db.session.delete(place)
+        db.session.commit()
+        return marshal(place, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -387,6 +585,30 @@ class PlaceApi(Resource):
         db.session.commit()
         return marshal(place, self.mfields), 201
 
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('place')
+        args = parser.parse_args()
+
+        place = Place.query.filter_by(id=id).first()
+        if not place:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(place, self.mfields), 202
+
+        if args['place']:
+            place.place = args['place']
+
+        db.session.commit()
+        return marshal(place, self.mfields), 200
+
 class PlaceAddressApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -410,6 +632,19 @@ class TagApi(Resource):
         'id': fields.Integer,
         'tag': fields.String
     }
+
+    # TODO: what to do with transaction_tag entries?
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        tag = Tag.query,filter_by(id=id).first()
+        if not tag:
+            abort(404)
+        db.session.delete(tag)
+        db.session.commit()
+        return marshal(tag, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -441,6 +676,30 @@ class TagApi(Resource):
         db.session.commit()
         return marshal(tag, self.mfields), 201
 
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('tag')
+        args = parser.parse_args()
+
+        tag = Tag.query.filter_by(id=id).first()
+        if not tag:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(tag, self.mfields), 202
+
+        if args['tag']:
+            tag.tag = args['tag']
+
+        db.session.commit()
+        return marshal(tag, self.mfields), 200
+
 class TransactionApi(Resource):
     mfields = {
         'id': fields.Integer,
@@ -452,6 +711,19 @@ class TransactionApi(Resource):
         'category_id': fields.Integer,
         'note': fields.String
     }
+
+    # TODO: Need to update account and all transactions after this one
+    def delete(self, id=None):
+        # if an id was not specified, what do I delete?
+        if not id:
+            abort(404)
+
+        transaction = Transaction.query,filter_by(id=id).first()
+        if not transaction:
+            abort(404)
+        db.session.delete(transaction)
+        db.session.commit()
+        return marshal(transaction, self.mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -507,6 +779,47 @@ class TransactionApi(Resource):
 
         db.session.commit()
         return marshal(transaction, self.mfields), 201
+
+    def update(self, id=None):
+        # if an id was not specified, who do I update?
+        if not id:
+            abort(404)
+
+        # set the arguments for the request
+        parser = reqparse.RequestParser()
+        parser.add_argument('timestamp', type=lambda x: datetime.strptime(x,'%Y-%m-%dT%H:%M:%S'))
+        parser.add_argument('amount', type=float)
+        parser.add_argument('account_id', type=int)
+        parser.add_argument('address_id', type=int)
+        parser.add_argument('category_id', type=int)
+        parser.add_argument('tag', action='append')
+        parser.add_argument('note')
+        args = parser.parse_args()
+
+        transaction = Transaction.query.filter_by(id=id).first()
+        if not transaction:
+            abort(404)
+
+        # if the request has no arguments then there is nothing to update
+        if len(args) == 0:
+            return marshal(transaction, self.mfields), 202
+
+        if args['timestamp']:
+            transaction.timestamp = args['timestamp']
+        if args['amount']:
+            transaction.amount = args['amount']
+        if args['account_id']:
+            transaction.account_id = args['account_id']
+        if args['address_id']:
+            transaction.address_id = args['address_id']
+        if args['category_id']:
+            transaction.category_id = args['category_id']
+        # TODO: what to do with tags?
+        if args['note']:
+            transaction.note = args['note']
+
+        db.session.commit()
+        return marshal(transaction, self.mfields), 200
 
 class TransactionTagApi(Resource):
     mfields = {
