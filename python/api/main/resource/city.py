@@ -1,6 +1,7 @@
-from flask_restful import marshal,Resource
+from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
+from ..model.city import City
 
 
 mfields = {

@@ -1,6 +1,7 @@
-from flask_restful import marshal,Resource
+from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
+from ..model.address import Address
 
 mfields = {
     'id': fields.Integer,
@@ -117,14 +118,6 @@ class AddressApi(Resource):
         db.session.commit()
         return marshal(address, mfields), 200
 
-class AddressTransactionApi(Resource):
-
-    def get(self, address_id):
-        address = Address.query.filter_by(id=address_id).first()
-        if address:
-            return marshal(address.transactions, mfields)
-        abort(404)
-
 
 class CityAddressApi(Resource):
 
@@ -132,4 +125,25 @@ class CityAddressApi(Resource):
         city = City.query.filter_by(id=city_id).first()
         if city:
             return marshal(city.addresses, mfields)
+        abort(404)
+        db.session.commit()
+        return marshal(place, self.mfields), 200
+
+
+class PlaceAddressApi(Resource):
+    mfields = {
+        'id': fields.Integer,
+        'place_id': fields.Integer,
+        'address': fields.String,
+        'address2': fields.String,
+        'city_id': fields.Integer,
+        'postal_code': fields.String,
+        'phone': fields.String,
+        'url': fields.String
+    }
+
+    def get(self, place_id):
+        place = Place.query.filter_by(id=place_id).first()
+        if place:
+            return marshal(place.addresses, self.mfields)
         abort(404)
