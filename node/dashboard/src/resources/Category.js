@@ -9,27 +9,27 @@ import {
 	TextInput
 } from 'react-admin';
 
-export const PlaceCreate = props => (
+export const CategoryCreate = props => (
 	<Create {...props}>
 		<SimpleForm>
-			<TextInput source="place" />
+			<TextInput source="category" />
 		</SimpleForm>
 	</Create>
 );
 
-export const PlaceEdit = props => (
+export const CategoryEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="place" />
+			<TextInput source="category" />
 		</SimpleForm>
 	</Edit>
 );
 
-export const PlaceList = props => (
+export const CategoryList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="place" />
+			<TextField source="category" />
 		</Datagrid>
 	</List>
 );
