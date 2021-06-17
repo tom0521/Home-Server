@@ -1,6 +1,11 @@
+from datetime import datetime
+
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
+from ..model.account import Account
+from ..model.address import Address
+from ..model.category import Category
 from ..model.transaction import Transaction
 
 
@@ -85,7 +90,7 @@ class TransactionApi(Resource):
         db.session.commit()
         return marshal(transaction, mfields), 201
 
-    def update(self, id=None):
+    def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
             abort(404)

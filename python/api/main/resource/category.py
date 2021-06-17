@@ -54,7 +54,7 @@ class CategoryApi(Resource):
         db.session.commit()
         return marshal(category, mfields), 201
 
-    def update(self, id=None):
+    def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
             abort(404)
