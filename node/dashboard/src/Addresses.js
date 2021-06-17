@@ -5,6 +5,7 @@ import {
 	Edit,
 	List,
 	NumberInput,
+	ReferenceField,
 	ReferenceInput,
 	SelectInput,
 	SimpleForm,
@@ -24,7 +25,10 @@ export const AddressCreate = props => (
 			<ReferenceInput source="city_id" reference="city">
 				<SelectInput optionText="city" />
 			</ReferenceInput>
-			<NumberInput source="postal_code" />
+			{
+			// TODO: Custom input for these three
+			}
+			<NumberInput source="postal_code" min="0" max="99999" step="1" />
 			<TextInput source="phone" />
 			<TextInput source="url" type="url" />
 		</SimpleForm>
@@ -42,7 +46,10 @@ export const AddressEdit = props => (
 			<ReferenceInput source="city_id" reference="city">
 				<SelectInput optionText="city" />
 			</ReferenceInput>
-			<NumberInput source="postal_code" />
+			{
+			// TODO: Custom input for these three
+			}
+			<NumberInput source="postal_code" min="0" max="99999" step="1" />
 			<TextInput source="phone" />
 			<TextInput source="url" type="url" />
 		</SimpleForm>
@@ -53,10 +60,20 @@ export const AddressList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="place_id" />
+			<ReferenceField source="place_id" reference="place">
+				<TextField source="place" />
+			</ReferenceField>
+			{
+			// TODO: Custom field to combine address
+			}
 			<TextField source="address" />
 			<TextField source="address2" />
-			<TextField source="city_id" />
+			<ReferenceField source="city_id" reference="city">
+				<TextField source="city" />
+			</ReferenceField>
+			{
+			// TODO: Custom fields for these three?
+			}
 			<TextField source="postal_code" />
 			<TextField source="phone" />
 			<UrlField source="url" />
