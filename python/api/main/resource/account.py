@@ -1,7 +1,7 @@
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.account import Account
+from ..model.account import Account,AccountType
 
 mfields = {
     'id': fields.Integer,
@@ -62,7 +62,7 @@ class AccountApi(Resource):
             or do not allow balance to be updated. Need to create a
             transaction to update.
     """
-    def update(self, id=None):
+    def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
             abort(404)

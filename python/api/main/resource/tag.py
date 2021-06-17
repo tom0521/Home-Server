@@ -2,6 +2,7 @@ from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
 from ..model.tag import Tag
+from ..model.transaction import Transaction
 
 
 mfields = {
@@ -54,7 +55,7 @@ class TagApi(Resource):
         db.session.commit()
         return marshal(tag, mfields), 201
 
-    def update(self, id=None):
+    def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
             abort(404)

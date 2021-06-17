@@ -1,7 +1,10 @@
+from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
 from ..model.address import Address
+from ..model.city import City
+from ..model.place import Place
 
 mfields = {
     'id': fields.Integer,
@@ -76,7 +79,7 @@ class AddressApi(Resource):
         db.session.commit()
         return marshal(address, mfields), 201
 
-    def update(self, id=None):
+    def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
             abort(404)
