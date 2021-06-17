@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Admin, Resource } from 'react-admin';
 
+import dashboard from './Dashboard';
 import dataProvider from './DataProvider';
 
 import { AccountCreate, AccountEdit, AccountList } from './resources/Account';
@@ -12,7 +13,7 @@ import { TagCreate, TagEdit, TagList } from './resources/Tag';
 import { TransactionCreate, TransactionEdit, TransactionList } from './resources/Transaction';
 
 const App = () => (
-    <Admin dataProvider={dataProvider}>
+    <Admin dashboard={dashboard} dataProvider={dataProvider}>
 	<Resource name="account" list={AccountList} edit={AccountEdit} create={AccountCreate} />
 	<Resource name="address" list={AddressList} edit={AddressEdit} create={AddressCreate} />
 	<Resource name="category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} />
