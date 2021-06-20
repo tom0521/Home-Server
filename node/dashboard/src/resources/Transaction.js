@@ -16,16 +16,15 @@ import {
 	TextInput
 } from 'react-admin';
 
+import { CategoryCreate } from './Category';
+
 export const TransactionCreate = props => (
 	<Create {...props}>
 		<SimpleForm>
 			<DateTimeInput source="timestamp" />
 			<NumberInput source="amount" step="0.01" />
 			<ReferenceInput source="account_id" reference="account">
-				{
-				// TODO: Add the balance
-				}
-				<SelectInput optionText="account" />
+				<SelectInput optionText={choice => `${choice.account} - $${choice.balance}`} />
 			</ReferenceInput>
 			<ReferenceInput source="address_id" reference="address">
 				{
@@ -34,7 +33,7 @@ export const TransactionCreate = props => (
 				<SelectInput optionText="address" />
 			</ReferenceInput>
 			<ReferenceInput source="category_id" reference="category">
-				<SelectInput optionText="category" />
+				<SelectInput create={CategoryCreate} optionText="category" />
 			</ReferenceInput>
 			<TextInput multiline source="note" />
 		</SimpleForm>
@@ -47,10 +46,7 @@ export const TransactionEdit = props => (
 			<DateTimeInput source="timestamp" />
 			<NumberInput source="amount" step="0.01" />
 			<ReferenceInput source="account_id" reference="account">
-				{
-				// TODO: Add the balance
-				}
-				<SelectInput optionText="account" />
+				<SelectInput optionText={choice => `${choice.account} - $${choice.balance}`} />
 			</ReferenceInput>
 			<ReferenceInput source="address_id" reference="address">
 				{
