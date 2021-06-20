@@ -15,7 +15,7 @@ import {
 
 export const AccountCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/account">
 			<TextInput source="account" />
 			<NumberInput source="balance" step="0.01" />
 			<RadioButtonGroupInput source="type" choices={[

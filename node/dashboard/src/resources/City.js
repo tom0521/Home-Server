@@ -11,7 +11,7 @@ import {
 
 export const CityCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/city">
 			<TextInput source="city" />
 			<TextInput source="state_province" />
 			<TextInput source="country" />

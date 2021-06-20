@@ -16,7 +16,7 @@ import {
 
 export const AddressCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/address">
 			<ReferenceInput source="place_id" reference="place">
 				<SelectInput optionText="place" />
 			</ReferenceInput>

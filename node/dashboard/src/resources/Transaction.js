@@ -28,7 +28,7 @@ import {
 
 export const TransactionCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/transaction/create">
 			<DateTimeInput source="timestamp" />
 			<NumberInput source="amount" step="0.01" />
 			<ReferenceInput source="account_id" reference="account">
@@ -43,6 +43,10 @@ export const TransactionCreate = props => (
 			<ReferenceInput source="category_id" reference="category">
 				<SelectInput create={<CreateCategory />} optionText="category" />
 			</ReferenceInput>
+			{
+			// TODO; Add SelectArrayInput for tags
+			// TODO: Add ImageInput for receipt
+			}
 			<TextInput multiline source="note" />
 		</SimpleForm>
 	</Create>
@@ -65,6 +69,10 @@ export const TransactionEdit = props => (
 			<ReferenceInput source="category_id" reference="category">
 				<SelectInput create={<CreateCategory />} optionText="category" />
 			</ReferenceInput>
+			{
+			// TODO; Add SelectArrayInput for tags
+			// TODO: Add ImageInput for receipt
+			}
 			<TextInput multiline source="note" />
 		</SimpleForm>
 	</Edit>
@@ -124,12 +132,6 @@ export const TransactionList = props => (
 				// TODO: Add the balance
 				}
 				<TextField source="account" />
-			</ReferenceField>
-			<ReferenceField source="address_id" reference="address">
-				{
-				// TODO: Add the entire address
-				}
-				<TextField source="address" />
 			</ReferenceField>
 			<ReferenceField source="category_id" reference="category">
 				<TextField source="category" />

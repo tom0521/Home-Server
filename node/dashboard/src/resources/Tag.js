@@ -11,7 +11,7 @@ import {
 
 export const TagCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/tag">
 			<TextInput source="tag" />
 		</SimpleForm>
 	</Create>

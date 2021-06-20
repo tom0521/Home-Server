@@ -11,7 +11,7 @@ import {
 
 export const PlaceCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirec="/place">
 			<TextInput source="place" />
 		</SimpleForm>
 	</Create>
