@@ -28,7 +28,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from .model import account,address,category,city,place,tag,transaction
+    from .model import account,address,category,city,country,place,state_province,tag,transaction
 
     app.app_context().push()
     db.init_app(app)
