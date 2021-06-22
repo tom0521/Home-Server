@@ -1,3 +1,4 @@
+from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
@@ -9,17 +10,18 @@ mfields = {
     'country': fields.String
 }
 
-# TODO: state_province and country tables
 class CountryApi(Resource):
     
 
     # TODO: what to do with related addresses?
     def delete(self, id=None):
+        parser = reqparse.RequestParser()
+        print(parser.parse_args())
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        country = Country.query,filter_by(id=id).first()
+        country = Country.query.filter_by(id=id).first()
         if not country:
             abort(404)
         db.session.delete(country)
@@ -75,7 +77,7 @@ class CountryApi(Resource):
             return marshal(country, mfields), 202
 
         if args['country']:
-            city.country = args['country']
+            country.country = args['country']
 
         db.session.commit()
         return marshal(country, mfields), 200

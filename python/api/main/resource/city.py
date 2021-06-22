@@ -1,3 +1,4 @@
+from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
@@ -11,7 +12,6 @@ mfields = {
     'state_province_id': fields.Integer
 }
 
-# TODO: state_province and country tables
 class CityApi(Resource):
     
 
@@ -21,7 +21,7 @@ class CityApi(Resource):
         if not id:
             abort(404)
 
-        city = City.query,filter_by(id=id).first()
+        city = City.query.filter_by(id=id).first()
         if not city:
             abort(404)
         db.session.delete(city)
@@ -53,7 +53,7 @@ class CityApi(Resource):
             abort(400)
 
         # If the etnry already exists, return the entry with Accepted status code
-        city = City.query.filter_by(city=args['city'], state_province=args['state_province_id']).first()
+        city = City.query.filter_by(city=args['city'], state_province_id=args['state_province_id']).first()
         if city:
             return marshal(city, mfields), 202
 
@@ -86,7 +86,7 @@ class CityApi(Resource):
             # if the foreign id does not exist then abort
             if StateProvince.query.filter_by(id=args['state_province_id']).first() is None:
                 abort(400)
-            city.state_province = args['state_province_id']
+            city.state_province_id = args['state_province_id']
         if args['city']:
             city.city = args['city']
 

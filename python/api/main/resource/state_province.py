@@ -1,3 +1,4 @@
+from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
@@ -11,7 +12,6 @@ mfields = {
     'country_id': fields.Integer
 }
 
-# TODO: state_province and country tables
 class StateProvinceApi(Resource):
     
 
@@ -21,7 +21,7 @@ class StateProvinceApi(Resource):
         if not id:
             abort(404)
 
-        state_province = StateProvince.query,filter_by(id=id).first()
+        state_province = StateProvince.query.filter_by(id=id).first()
         if not state_province:
             abort(404)
         db.session.delete(state_province)

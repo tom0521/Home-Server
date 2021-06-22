@@ -16,7 +16,9 @@ import { AccountCreate, AccountEdit, AccountList } from './resources/Account';
 import { AddressCreate, AddressEdit, AddressList } from './resources/Address';
 import { CategoryCreate, CategoryEdit, CategoryList } from './resources/Category';
 import { CityCreate, CityEdit, CityList } from './resources/City';
+import { CountryCreate, CountryEdit, CountryList } from './resources/Country';
 import { PlaceCreate, PlaceEdit, PlaceList } from './resources/Place';
+import { StateProvinceCreate, StateProvinceEdit, StateProvinceList } from './resources/StateProvince';
 import { TagCreate, TagEdit, TagList } from './resources/Tag';
 import { TransactionCreate, TransactionEdit, TransactionList } from './resources/Transaction';
 
@@ -26,7 +28,9 @@ const App = () => (
 	<Resource name="address" list={AddressList} edit={AddressEdit} create={AddressCreate} icon={AddressIcon} />
 	<Resource name="category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} icon={CategoryIcon} />
         <Resource name="city" list={CityList} edit={CityEdit} create={CityCreate} icon={CityIcon} />
+	<Resource name="country" list={CountryList} edit={CountryEdit} create={CountryCreate} />
 	<Resource name="place" list={PlaceList} edit={PlaceEdit} create={PlaceCreate} icon={PlaceIcon} />
+	<Resource name="state_province" list={StateProvinceList} edit={StateProvinceEdit} create={StateProvinceCreate} />
 	<Resource name="tag" list={TagList} edit={TagEdit} create={TagCreate} icon={TagIcon} />
 	<Resource name="transaction" list={TransactionList} edit={TransactionEdit} create={TransactionCreate} icon={TransactionIcon} />
     </Admin>
