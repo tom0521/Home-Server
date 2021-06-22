@@ -4,6 +4,9 @@ import {
 	Datagrid,
 	Edit,
 	List,
+	ReferenceField,
+	ReferenceInput,
+	SelectInput,
 	SimpleForm,
 	TextField,
 	TextInput
@@ -11,10 +14,11 @@ import {
 
 export const CityCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/city">
 			<TextInput source="city" />
-			<TextInput source="state_province" />
-			<TextInput source="country" />
+			<ReferenceInput source="state_province_id" reference="state_province">
+				<SelectInput optionText="state_province" />
+			</ReferenceInput>
 		</SimpleForm>
 	</Create>
 );
@@ -23,8 +27,9 @@ export const CityEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
 			<TextInput source="city" />
-			<TextInput source="state_province" />
-			<TextInput source="country" />
+			<ReferenceInput source="state_province_id" reference="state_province">
+				<SelectInput optionText="state_province" />
+			</ReferenceInput>
 		</SimpleForm>
 	</Edit>
 );
@@ -34,8 +39,9 @@ export const CityList = props => (
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="city" />
-			<TextField source="state_province" />
-			<TextField source="country" />
+			<ReferenceField source="state_province_id" reference="state_province">
+				<TextField source="state_province" />
+			</ReferenceField>
 		</Datagrid>
 	</List>
 );

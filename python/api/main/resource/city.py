@@ -1,17 +1,17 @@
+from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
 from ..model.city import City
+from ..model.state_province import StateProvince
 
 
 mfields = {
     'id': fields.Integer,
     'city': fields.String,
-    'state_province': fields.String,
-    'country': fields.String
+    'state_province_id': fields.Integer
 }
 
-# TODO: state_province and country tables
 class CityApi(Resource):
     
 
@@ -21,7 +21,7 @@ class CityApi(Resource):
         if not id:
             abort(404)
 
-        city = City.query,filter_by(id=id).first()
+        city = City.query.filter_by(id=id).first()
         if not city:
             abort(404)
         db.session.delete(city)
@@ -45,17 +45,20 @@ class CityApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('city', required=True)
-        parser.add_argument('state_province', required=True)
-        parser.add_argument('country', default="United States of America")
+        parser.add_argument('state_province_id', type=int, required=True)
         args = parser.parse_args()
 
+        # if the foreign id does not exist then abort
+        if StateProvince.query.filter_by(id=args['state_province_id']).first() is None:
+            abort(400)
+
         # If the etnry already exists, return the entry with Accepted status code
-        city = City.query.filter_by(city=args['city'], state_province=args['state_province'], country=args['country']).first()
+        city = City.query.filter_by(city=args['city'], state_province_id=args['state_province_id']).first()
         if city:
             return marshal(city, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        city = City(city=args['city'], state_province=args['state_province'], country=args['country'])
+        city = City(city=args['city'], state_province_id=args['state_province_id'])
         db.session.add(city)
         db.session.commit()
         return marshal(city, mfields), 201
@@ -68,8 +71,7 @@ class CityApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('city')
-        parser.add_argument('state_province')
-        parser.add_argument('country')
+        parser.add_argument('state_province_id')
         args = parser.parse_args()
 
         city = City.query.filter_by(id=id).first()
@@ -80,12 +82,13 @@ class CityApi(Resource):
         if len(args) == 0:
             return marshal(city, mfields), 202
 
+        if args['state_province_id']:
+            # if the foreign id does not exist then abort
+            if StateProvince.query.filter_by(id=args['state_province_id']).first() is None:
+                abort(400)
+            city.state_province_id = args['state_province_id']
         if args['city']:
             city.city = args['city']
-        if args['state_province']:
-            city.state_province = args['state_province']
-        if args['country']:
-            city.country = args['country']
 
         db.session.commit()
         return marshal(city, mfields), 200

@@ -9,27 +9,27 @@ import {
 	TextInput
 } from 'react-admin';
 
-export const PlaceCreate = props => (
+export const CountryCreate = props => (
 	<Create {...props}>
-		<SimpleForm redirec="/place">
-			<TextInput source="place" />
+		<SimpleForm redirect="/country">
+			<TextInput source="country" />
 		</SimpleForm>
 	</Create>
 );
 
-export const PlaceEdit = props => (
+export const CountryEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="place" />
+			<TextInput source="country" />
 		</SimpleForm>
 	</Edit>
 );
 
-export const PlaceList = props => (
+export const CountryList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="place" />
+			<TextField source="country" />
 		</Datagrid>
 	</List>
 );

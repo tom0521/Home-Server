@@ -2,37 +2,40 @@ from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.category import Category
+from ..model.country import Country
 
 
 mfields = {
     'id': fields.Integer,
-    'category': fields.String
+    'country': fields.String
 }
 
-class CategoryApi(Resource):
+class CountryApi(Resource):
+    
 
-    # TODO: what to do with related transactions?
+    # TODO: what to do with related addresses?
     def delete(self, id=None):
+        parser = reqparse.RequestParser()
+        print(parser.parse_args())
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        category = Category.query,filter_by(id=id).first()
-        if not category:
+        country = Country.query.filter_by(id=id).first()
+        if not country:
             abort(404)
-        db.session.delete(category)
+        db.session.delete(country)
         db.session.commit()
-        return marshal(category, mfields), 200
+        return marshal(country, mfields), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
-            category = Category.query.filter_by(id=id).first()
-            if category:
-                return marshal(category, mfields), 200
+            country = Country.query.filter_by(id=id).first()
+            if country:
+                return marshal(country, mfields), 200
             abort(404)
-        return marshal(Category.query.all(), mfields), 200
+        return marshal(Country.query.all(), mfields), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -41,19 +44,19 @@ class CategoryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('category', required=True)
+        parser.add_argument('country', required=True)
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        category = Category.query.filter_by(category=args['category']).first()
-        if category:
-            return marshal(category, mfields), 202
+        country = Country.query.filter_by(country=args['country']).first()
+        if country:
+            return marshal(country, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        category = Category(category=args['category'])
-        db.session.add(category)
+        country = Country(country=args['country'])
+        db.session.add(country)
         db.session.commit()
-        return marshal(category, mfields), 201
+        return marshal(country, mfields), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -62,19 +65,19 @@ class CategoryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('category')
+        parser.add_argument('country')
         args = parser.parse_args()
 
-        category = Category.query.filter_by(id=id).first()
-        if not category:
+        country = Country.query.filter_by(id=id).first()
+        if not country:
             abort(404)
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(category, mfields), 202
+            return marshal(country, mfields), 202
 
-        if args['category']:
-            category.category = args['category']
+        if args['country']:
+            country.country = args['country']
 
         db.session.commit()
-        return marshal(category, mfields), 200
+        return marshal(country, mfields), 200

@@ -11,7 +11,7 @@ import {
 
 export const CategoryCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="/category">
 			<TextInput source="category" />
 		</SimpleForm>
 	</Create>

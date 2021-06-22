@@ -28,7 +28,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from .model import account,address,category,city,place,tag,transaction
+    from .model import account,address,category,city,country,place,state_province,tag,transaction
 
     app.app_context().push()
     db.init_app(app)
@@ -38,7 +38,9 @@ def create_app(test_config=None):
     from .resource.address import AddressApi,CityAddressApi,PlaceAddressApi
     from .resource.category import CategoryApi
     from .resource.city import CityApi
+    from .resource.country import CountryApi
     from .resource.place import PlaceApi
+    from .resource.state_province import StateProvinceApi
     from .resource.tag import TagApi,TransactionTagApi
     from .resource.transaction import TransactionApi,AccountTransactionApi,AddressTransactionApi,CategoryTransactionApi
 
@@ -50,8 +52,10 @@ def create_app(test_config=None):
     api.add_resource(CategoryTransactionApi, '/category/<int:category_id>/transaction')
     api.add_resource(CityApi, '/city', '/city/<int:id>')
     api.add_resource(CityAddressApi, '/city/<int:city_id>/address')
+    api.add_resource(CountryApi, '/country', '/country/<int:id>')
     api.add_resource(PlaceApi, '/place', '/place/<int:id>')
     api.add_resource(PlaceAddressApi, '/place/<int:place_id>/address')
+    api.add_resource(StateProvinceApi, '/state_province', '/state_province/<int:id>')
     api.add_resource(TagApi, '/tag', '/tag/<int:id>')
     api.add_resource(TransactionApi, '/transaction', '/transaction/<int:id>')
     api.add_resource(TransactionTagApi, '/transaction/<int:transaction_id>/tag')
