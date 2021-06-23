@@ -10,7 +10,7 @@ address_marshal = {
     'id': fields.Integer,
     'line_1': fields.String,
     'line_2': fields.String,
-    'city_id': fields.Integer,
+    'city': fields.String,
     'postal_code': fields.String,
     'phone': fields.String,
     'url': fields.String
@@ -34,7 +34,7 @@ class AddressApi(Resource):
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
-            address = Address.query.filter_by(id=id).first()
+            address = Address.query.filter_by(id=id).join(City).first()
             if address:
                 return marshal(address, address_marshal), 200
             abort(404)
