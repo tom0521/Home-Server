@@ -12,7 +12,7 @@ import {
 export const PlaceCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirec="/place">
-			<TextInput source="place" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Create>
 );
@@ -20,7 +20,7 @@ export const PlaceCreate = props => (
 export const PlaceEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="place" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Edit>
 );
@@ -29,7 +29,7 @@ export const PlaceList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="place" />
+			<TextField source="name" />
 		</Datagrid>
 	</List>
 );

@@ -15,9 +15,9 @@ import {
 export const CityCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/city">
-			<TextInput source="city" />
+			<TextInput source="name" />
 			<ReferenceInput source="state_province_id" reference="state_province">
-				<SelectInput optionText="state_province" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
 		</SimpleForm>
 	</Create>
@@ -26,9 +26,9 @@ export const CityCreate = props => (
 export const CityEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="city" />
+			<TextInput source="name" />
 			<ReferenceInput source="state_province_id" reference="state_province">
-				<SelectInput optionText="state_province" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
 		</SimpleForm>
 	</Edit>
@@ -38,9 +38,9 @@ export const CityList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="city" />
+			<TextField source="name" />
 			<ReferenceField source="state_province_id" reference="state_province">
-				<TextField source="state_province" />
+				<TextField source="name" />
 			</ReferenceField>
 		</Datagrid>
 	</List>

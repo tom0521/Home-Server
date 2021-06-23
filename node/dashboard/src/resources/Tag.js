@@ -12,7 +12,7 @@ import {
 export const TagCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/tag">
-			<TextInput source="tag" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Create>
 );
@@ -20,7 +20,7 @@ export const TagCreate = props => (
 export const TagEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="tag" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Edit>
 );
@@ -29,7 +29,7 @@ export const TagList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="tag" />
+			<TextField source="name" />
 		</Datagrid>
 	</List>
 );

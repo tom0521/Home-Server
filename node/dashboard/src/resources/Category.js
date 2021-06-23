@@ -12,7 +12,7 @@ import {
 export const CategoryCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/category">
-			<TextInput source="category" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Create>
 );
@@ -20,7 +20,7 @@ export const CategoryCreate = props => (
 export const CategoryEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="category" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Edit>
 );
@@ -29,7 +29,7 @@ export const CategoryList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="category" />
+			<TextField source="name" />
 		</Datagrid>
 	</List>
 );

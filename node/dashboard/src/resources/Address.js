@@ -18,12 +18,12 @@ export const AddressCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/address">
 			<ReferenceInput source="place_id" reference="place">
-				<SelectInput optionText="place" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
-			<TextInput source="address" />
-			<TextInput source="address2" />
+			<TextInput source="line_1" />
+			<TextInput source="line_2" />
 			<ReferenceInput source="city_id" reference="city">
-				<SelectInput optionText="city" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
 			{
 			// TODO: Custom input for these three
@@ -39,12 +39,12 @@ export const AddressEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
 			<ReferenceInput source="place_id" reference="place">
-				<SelectInput optionText="place" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
-			<TextInput source="address" />
-			<TextInput source="address2" />
+			<TextInput source="line_1" />
+			<TextInput source="line_2" />
 			<ReferenceInput source="city_id" reference="city">
-				<SelectInput optionText="city" />
+				<SelectInput optionText="name" />
 			</ReferenceInput>
 			{
 			// TODO: Custom input for these three
@@ -61,13 +61,13 @@ export const AddressList = props => (
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<ReferenceField source="place_id" reference="place">
-				<TextField source="place" />
+				<TextField source="name" />
 			</ReferenceField>
 			{
 			// TODO: Custom field to combine address
 			}
-			<TextField source="address" />
-			<TextField source="address2" />
+			<TextField source="line_1" />
+			<TextField source="line_2" />
 			<ReferenceField source="city_id" reference="city">
 				<TextField source="city" />
 			</ReferenceField>
