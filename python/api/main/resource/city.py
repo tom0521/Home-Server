@@ -53,6 +53,7 @@ class CityApi(Resource):
 
         # If the etnry already exists, return the entry with Accepted status code
         city = City.query.filter_by(name=args['name'], state_province_id=args['state_province_id']).first()
+
         if city:
             return marshal(city, mfields), 202
 
