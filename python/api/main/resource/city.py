@@ -6,7 +6,7 @@ from ..model.city import City
 from ..model.state_province import StateProvince
 
 
-mfields = {
+city_marshal = {
     'id': fields.Integer,
     'name': fields.String,
     'state_province_id': fields.Integer
@@ -25,16 +25,16 @@ class CityApi(Resource):
             abort(404)
         db.session.delete(city)
         db.session.commit()
-        return marshal(city, mfields), 200
+        return marshal(city, city_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             city = City.query.filter_by(id=id).first()
             if city:
-                return marshal(city, mfields), 200
+                return marshal(city, city_marshal), 200
             abort(404)
-        return marshal(City.query.all(), mfields), 200
+        return marshal(City.query.all(), city_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -55,13 +55,13 @@ class CityApi(Resource):
         city = City.query.filter_by(name=args['name'], state_province_id=args['state_province_id']).first()
 
         if city:
-            return marshal(city, mfields), 202
+            return marshal(city, city_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         city = City(name=args['name'], state_province_id=args['state_province_id'])
         db.session.add(city)
         db.session.commit()
-        return marshal(city, mfields), 201
+        return marshal(city, city_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -80,7 +80,7 @@ class CityApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(city, mfields), 202
+            return marshal(city, city_marshal), 202
 
         if args['state_province_id']:
             # if the foreign id does not exist then abort
@@ -91,4 +91,4 @@ class CityApi(Resource):
             city.name = args['name']
 
         db.session.commit()
-        return marshal(city, mfields), 200
+        return marshal(city, city_marshal), 200

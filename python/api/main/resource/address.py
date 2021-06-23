@@ -6,7 +6,7 @@ from ..model.address import Address
 from ..model.city import City
 from ..model.place import Place
 
-mfields = {
+address_marshal = {
     'id': fields.Integer,
     'place_id': fields.Integer,
     'line_1': fields.String,
@@ -30,16 +30,16 @@ class AddressApi(Resource):
             abort(404)
         db.session.delete(address)
         db.session.commit()
-        return marshal(account, mfields), 200
+        return marshal(account, address_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             address = Address.query.filter_by(id=id).first()
             if address:
-                return marshal(address, mfields), 200
+                return marshal(address, address_marshal), 200
             abort(404)
-        return marshal(Address.query.all(), mfields), 200
+        return marshal(Address.query.all(), address_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -68,7 +68,7 @@ class AddressApi(Resource):
                     line_2=args['line_2'], city_id=args['city_id'], postal_code=args['postal_code'],
                     phone=args['phone'], url=args['url']).first()
         if address:
-            return marshal(address, mfields), 202
+            return marshal(address, address_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         address = Address(place_id=args['place_id'], line_1=args['line_1'],
@@ -76,7 +76,7 @@ class AddressApi(Resource):
                     postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
-        return marshal(address, mfields), 201
+        return marshal(address, address_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -100,7 +100,7 @@ class AddressApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(address, mfields), 202
+            return marshal(address, address_marshal), 202
 
         if args['place_id']:
             address.place_id = args['place_id']
@@ -118,7 +118,7 @@ class AddressApi(Resource):
             address.url = args['url']
 
         db.session.commit()
-        return marshal(address, mfields), 200
+        return marshal(address, address_marshal), 200
 
 
 class CityAddressApi(Resource):
@@ -126,10 +126,10 @@ class CityAddressApi(Resource):
     def get(self, city_id):
         city = City.query.filter_by(id=city_id).first()
         if city:
-            return marshal(city.addresses, mfields)
+            return marshal(city.addresses, address_marshal)
         abort(404)
         db.session.commit()
-        return marshal(place, mfields), 200
+        return marshal(place, address_marshal), 200
 
 
 class PlaceAddressApi(Resource):
@@ -137,5 +137,5 @@ class PlaceAddressApi(Resource):
     def get(self, place_id):
         place = Place.query.filter_by(id=place_id).first()
         if place:
-            return marshal(place.addresses, mfields)
+            return marshal(place.addresses, address_marshal)
         abort(404)

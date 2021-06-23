@@ -5,7 +5,7 @@ from .. import db
 from ..model.country import Country
 
 
-mfields = {
+country_marshal = {
     'id': fields.Integer,
     'name': fields.String
 }
@@ -25,16 +25,16 @@ class CountryApi(Resource):
             abort(404)
         db.session.delete(country)
         db.session.commit()
-        return marshal(country, mfields), 200
+        return marshal(country, country_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             country = Country.query.filter_by(id=id).first()
             if country:
-                return marshal(country, mfields), 200
+                return marshal(country, country_marshal), 200
             abort(404)
-        return marshal(Country.query.all(), mfields), 200
+        return marshal(Country.query.all(), country_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -49,13 +49,13 @@ class CountryApi(Resource):
         # If the etnry already exists, return the entry with Accepted status code
         country = Country.query.filter_by(name=args['name']).first()
         if country:
-            return marshal(country, mfields), 202
+            return marshal(country, country_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         country = Country(name=args['name'])
         db.session.add(country)
         db.session.commit()
-        return marshal(country, mfields), 201
+        return marshal(country, country_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -73,10 +73,10 @@ class CountryApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(country, mfields), 202
+            return marshal(country, country_marshal), 202
 
         if args['name']:
             country.name = args['name']
 
         db.session.commit()
-        return marshal(country, mfields), 200
+        return marshal(country, country_marshal), 200

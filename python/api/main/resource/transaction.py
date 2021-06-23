@@ -10,7 +10,7 @@ from ..model.category import Category
 from ..model.transaction import Transaction
 
 
-mfields = {
+transaction_marshal = {
     'id': fields.Integer,
     'timestamp': fields.DateTime,
     'amount': fields.Float,
@@ -34,16 +34,16 @@ class TransactionApi(Resource):
             abort(404)
         db.session.delete(transaction)
         db.session.commit()
-        return marshal(transaction, mfields), 200
+        return marshal(transaction, transaction_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             transaction = Transaction.query.filter_by(id=id).first()
             if transaction:
-                return marshal(transaction, mfields), 200
+                return marshal(transaction, transaction_marshal), 200
             abort(404)
-        return marshal(Transaction.query.all(), mfields), 200
+        return marshal(Transaction.query.all(), transaction_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -89,7 +89,7 @@ class TransactionApi(Resource):
             transaction.tags.append(tag)
 
         db.session.commit()
-        return marshal(transaction, mfields), 201
+        return marshal(transaction, transaction_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -113,7 +113,7 @@ class TransactionApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(transaction, mfields), 202
+            return marshal(transaction, transaction_marshal), 202
 
         if args['timestamp']:
             transaction.timestamp = args['timestamp']
@@ -130,14 +130,14 @@ class TransactionApi(Resource):
             transaction.note = args['note']
 
         db.session.commit()
-        return marshal(transaction, mfields), 200
+        return marshal(transaction, transaction_marshal), 200
 
 class AccountTransactionApi(Resource):
 
     def get(self, account_id):
         account = Account.query.filter_by(id=account_id).first()
         if account:
-            return marshal(account.transactions, mfields), 200
+            return marshal(account.transactions, transaction_marshal), 200
         abort(404)
 
 
@@ -146,7 +146,7 @@ class AddressTransactionApi(Resource):
     def get(self, address_id):
         address = Address.query.filter_by(id=address_id).first()
         if address:
-            return marshal(address.transactions, mfields)
+            return marshal(address.transactions, transaction_marshal)
         abort(404)
 
 
@@ -155,5 +155,5 @@ class CategoryTransactionApi(Resource):
     def get(self, category_id):
         category = Category.query.filter_by(id=category_id).first()
         if category:
-            return marshal(category.transactions, mfields)
+            return marshal(category.transactions, transaction_marshal)
         abort(404)

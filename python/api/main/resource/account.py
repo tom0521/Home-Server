@@ -4,7 +4,7 @@ from flask_restful import fields,marshal,reqparse,Resource
 from .. import db
 from ..model.account import Account,AccountType
 
-mfields = {
+account_marshal = {
     'id': fields.Integer,
     'name': fields.String,
     'balance': fields.Float,
@@ -24,16 +24,16 @@ class AccountApi(Resource):
             abort(404)
         db.session.delete(account)
         db.session.commit()
-        return marshal(account, mfields), 200
+        return marshal(account, account_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             account = Account.query.filter_by(id=id).first()
             if account:
-                return marshal(account, mfields), 200
+                return marshal(account, account_marshal), 200
             abort(404)
-        return marshal(Account.query.all(), mfields), 200
+        return marshal(Account.query.all(), account_marshal), 200
 
     def post(self, id=None):
         # POST requests do not allow id url
@@ -50,13 +50,13 @@ class AccountApi(Resource):
         # If the etnry already exists, return the entry with Accepted status code
         account = Account.query.filter_by(name=args['name']).first()
         if account:
-            return marshal(account, mfields), 202
+            return marshal(account, account_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         account = Account(name=args['name'], balance=args['balance'], type=AccountType[args['type']])
         db.session.add(account)
         db.session.commit()
-        return marshal(account, mfields), 201
+        return marshal(account, account_marshal), 201
 
     """
       TODO: if balance changed, should the transactions be updated?
@@ -81,7 +81,7 @@ class AccountApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(account, mfields), 202
+            return marshal(account, account_marshal), 202
 
         if args['name']:
             account.name = args['name']
@@ -91,4 +91,4 @@ class AccountApi(Resource):
             account.type = args['type']
 
         db.session.commit()
-        return marshal(account, mfields), 200
+        return marshal(account, account_marshal), 200
