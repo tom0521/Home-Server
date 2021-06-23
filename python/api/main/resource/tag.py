@@ -8,7 +8,7 @@ from ..model.transaction import Transaction
 
 mfields = {
     'id': fields.Integer,
-    'tag': fields.String
+    'name': fields.String
 }
 
 class TagApi(Resource):
@@ -42,16 +42,16 @@ class TagApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('tag', required=True)
+        parser.add_argument('name', required=True)
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        tag = Tag.query.filter_by(tag=args['tag']).first()
+        tag = Tag.query.filter_by(name=args['name']).first()
         if tag:
             return marshal(tag, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        tag = Tag(tag=args['tag'])
+        tag = Tag(name=args['name'])
         db.session.add(tag)
         db.session.commit()
         return marshal(tag, mfields), 201
@@ -63,7 +63,7 @@ class TagApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('tag')
+        parser.add_argument('name')
         args = parser.parse_args()
 
         tag = Tag.query.filter_by(id=id).first()
@@ -74,8 +74,8 @@ class TagApi(Resource):
         if len(args) == 0:
             return marshal(tag, mfields), 202
 
-        if args['tag']:
-            tag.tag = args['tag']
+        if args['name']:
+            tag.name = args['name']
 
         db.session.commit()
         return marshal(tag, mfields), 200

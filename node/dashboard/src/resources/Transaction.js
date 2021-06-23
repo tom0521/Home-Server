@@ -32,16 +32,16 @@ export const TransactionCreate = props => (
 			<DateTimeInput source="timestamp" />
 			<NumberInput source="amount" step="0.01" />
 			<ReferenceInput source="account_id" reference="account">
-				<SelectInput optionText={choice => `${choice.account} - $${choice.balance}`} />
+				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
 			</ReferenceInput>
 			<ReferenceInput source="address_id" reference="address">
 				{
 				// TODO: Add the entire address
 				}
-				<SelectInput optionText="address" />
+				<SelectInput optionText="line_1" />
 			</ReferenceInput>
 			<ReferenceInput source="category_id" reference="category">
-				<SelectInput create={<CreateCategory />} optionText="category" />
+				<SelectInput create={<CreateCategory />} optionText="name" />
 			</ReferenceInput>
 			{
 			// TODO; Add SelectArrayInput for tags
@@ -58,16 +58,16 @@ export const TransactionEdit = props => (
 			<DateTimeInput source="timestamp" />
 			<NumberInput source="amount" step="0.01" />
 			<ReferenceInput source="account_id" reference="account">
-				<SelectInput optionText={choice => `${choice.account} - $${choice.balance}`} />
+				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
 			</ReferenceInput>
 			<ReferenceInput source="address_id" reference="address">
 				{
 				// TODO: Add the entire address
 				}
-				<SelectInput optionText="address" />
+				<SelectInput optionText="line_1" />
 			</ReferenceInput>
 			<ReferenceInput source="category_id" reference="category">
-				<SelectInput create={<CreateCategory />} optionText="category" />
+				<SelectInput create={<CreateCategory />} optionText="name" />
 			</ReferenceInput>
 			{
 			// TODO; Add SelectArrayInput for tags

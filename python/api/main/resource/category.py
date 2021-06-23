@@ -7,7 +7,7 @@ from ..model.category import Category
 
 mfields = {
     'id': fields.Integer,
-    'category': fields.String
+    'name': fields.String
 }
 
 class CategoryApi(Resource):
@@ -41,16 +41,16 @@ class CategoryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('category', required=True)
+        parser.add_argument('name', required=True)
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        category = Category.query.filter_by(category=args['category']).first()
+        category = Category.query.filter_by(name=args['name']).first()
         if category:
             return marshal(category, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        category = Category(category=args['category'])
+        category = Category(name=args['name'])
         db.session.add(category)
         db.session.commit()
         return marshal(category, mfields), 201
@@ -62,7 +62,7 @@ class CategoryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('category')
+        parser.add_argument('name')
         args = parser.parse_args()
 
         category = Category.query.filter_by(id=id).first()
@@ -73,8 +73,8 @@ class CategoryApi(Resource):
         if len(args) == 0:
             return marshal(category, mfields), 202
 
-        if args['category']:
-            category.category = args['category']
+        if args['name']:
+            category.name = args['name']
 
         db.session.commit()
         return marshal(category, mfields), 200

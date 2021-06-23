@@ -7,11 +7,10 @@ from ..model.country import Country
 
 mfields = {
     'id': fields.Integer,
-    'country': fields.String
+    'name': fields.String
 }
 
 class CountryApi(Resource):
-    
 
     # TODO: what to do with related addresses?
     def delete(self, id=None):
@@ -44,16 +43,16 @@ class CountryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('country', required=True)
+        parser.add_argument('name', required=True)
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        country = Country.query.filter_by(country=args['country']).first()
+        country = Country.query.filter_by(name=args['name']).first()
         if country:
             return marshal(country, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        country = Country(country=args['country'])
+        country = Country(name=args['name'])
         db.session.add(country)
         db.session.commit()
         return marshal(country, mfields), 201
@@ -65,7 +64,7 @@ class CountryApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('country')
+        parser.add_argument('name')
         args = parser.parse_args()
 
         country = Country.query.filter_by(id=id).first()
@@ -76,8 +75,8 @@ class CountryApi(Resource):
         if len(args) == 0:
             return marshal(country, mfields), 202
 
-        if args['country']:
-            country.country = args['country']
+        if args['name']:
+            country.name = args['name']
 
         db.session.commit()
         return marshal(country, mfields), 200

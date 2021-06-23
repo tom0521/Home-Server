@@ -9,16 +9,15 @@ from ..model.place import Place
 mfields = {
     'id': fields.Integer,
     'place_id': fields.Integer,
-    'address': fields.String,
-    'address2': fields.String,
+    'line_1': fields.String,
+    'line_2': fields.String,
     'city_id': fields.Integer,
     'postal_code': fields.String,
     'phone': fields.String,
     'url': fields.String
 }
 
-class AddressApi(Resource):
-    
+class AddressApi(Resource): 
 
     # TODO: what to do with related transactions?
     def delete(self, id=None):
@@ -50,8 +49,8 @@ class AddressApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('place_id', type=int, required=True)
-        parser.add_argument('address')
-        parser.add_argument('address2')
+        parser.add_argument('line_1')
+        parser.add_argument('line_2')
         parser.add_argument('city_id', type=int)
         parser.add_argument('postal_code')
         parser.add_argument('phone')
@@ -65,15 +64,15 @@ class AddressApi(Resource):
             abort(400)
 
         # If the etnry already exists, return the entry with Accepted status code
-        address = Address.query.filter_by(place_id=args['place_id'], address=args['address'],
-                    address2=args['address2'], city_id=args['city_id'], postal_code=args['postal_code'],
+        address = Address.query.filter_by(place_id=args['place_id'], line_1=args['line_1'],
+                    line_2=args['line_2'], city_id=args['city_id'], postal_code=args['postal_code'],
                     phone=args['phone'], url=args['url']).first()
         if address:
             return marshal(address, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        address = Address(place_id=args['place_id'], address=args['address'],
-                    address2=args['address2'], city_id=args['city_id'], 
+        address = Address(place_id=args['place_id'], line_1=args['line_1'],
+                    line_2=args['line_2'], city_id=args['city_id'], 
                     postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
@@ -87,8 +86,8 @@ class AddressApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('place_id', type=int)
-        parser.add_argument('address')
-        parser.add_argument('address2')
+        parser.add_argument('line_1')
+        parser.add_argument('line_2')
         parser.add_argument('city_id', type=int)
         parser.add_argument('postal_code')
         parser.add_argument('phone')
@@ -105,10 +104,10 @@ class AddressApi(Resource):
 
         if args['place_id']:
             address.place_id = args['place_id']
-        if args['address']:
-            address.address = args['address']
-        if args['address2']:
-            address.address2 = args['address2']
+        if args['line_1']:
+            address.line_1 = args['line_1']
+        if args['line_2']:
+            address.line_2 = args['line_2']
         if args['city_id']:
             address.city_id = args['city_id']
         if args['postal_code']:
@@ -130,23 +129,13 @@ class CityAddressApi(Resource):
             return marshal(city.addresses, mfields)
         abort(404)
         db.session.commit()
-        return marshal(place, self.mfields), 200
+        return marshal(place, mfields), 200
 
 
 class PlaceAddressApi(Resource):
-    mfields = {
-        'id': fields.Integer,
-        'place_id': fields.Integer,
-        'address': fields.String,
-        'address2': fields.String,
-        'city_id': fields.Integer,
-        'postal_code': fields.String,
-        'phone': fields.String,
-        'url': fields.String
-    }
 
     def get(self, place_id):
         place = Place.query.filter_by(id=place_id).first()
         if place:
-            return marshal(place.addresses, self.mfields)
+            return marshal(place.addresses, mfields)
         abort(404)

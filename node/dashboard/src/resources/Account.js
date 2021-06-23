@@ -16,7 +16,7 @@ import {
 export const AccountCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/account">
-			<TextInput source="account" />
+			<TextInput source="name" />
 			<NumberInput source="balance" step="0.01" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
@@ -29,7 +29,7 @@ export const AccountCreate = props => (
 export const AccountEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="account" />
+			<TextInput source="name" />
 			<NumberInput source="balance" step="0.01" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
@@ -43,7 +43,7 @@ export const AccountList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="account" />
+			<TextField source="name" />
 			<NumberField source="balance" options={{ maximumFractionDigits: 2 }} />
 			<ChipField source="type" />
 		</Datagrid>

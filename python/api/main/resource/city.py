@@ -8,12 +8,11 @@ from ..model.state_province import StateProvince
 
 mfields = {
     'id': fields.Integer,
-    'city': fields.String,
+    'name': fields.String,
     'state_province_id': fields.Integer
 }
 
 class CityApi(Resource):
-    
 
     # TODO: what to do with related addresses?
     def delete(self, id=None):
@@ -44,7 +43,7 @@ class CityApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('city', required=True)
+        parser.add_argument('name', required=True)
         parser.add_argument('state_province_id', type=int, required=True)
         args = parser.parse_args()
 
@@ -53,12 +52,13 @@ class CityApi(Resource):
             abort(400)
 
         # If the etnry already exists, return the entry with Accepted status code
-        city = City.query.filter_by(city=args['city'], state_province_id=args['state_province_id']).first()
+        city = City.query.filter_by(name=args['name'], state_province_id=args['state_province_id']).first()
+
         if city:
             return marshal(city, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        city = City(city=args['city'], state_province_id=args['state_province_id'])
+        city = City(name=args['name'], state_province_id=args['state_province_id'])
         db.session.add(city)
         db.session.commit()
         return marshal(city, mfields), 201
@@ -70,7 +70,7 @@ class CityApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('city')
+        parser.add_argument('name')
         parser.add_argument('state_province_id')
         args = parser.parse_args()
 
@@ -87,8 +87,8 @@ class CityApi(Resource):
             if StateProvince.query.filter_by(id=args['state_province_id']).first() is None:
                 abort(400)
             city.state_province_id = args['state_province_id']
-        if args['city']:
-            city.city = args['city']
+        if args['name']:
+            city.name = args['name']
 
         db.session.commit()
         return marshal(city, mfields), 200

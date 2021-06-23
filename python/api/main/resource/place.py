@@ -7,7 +7,7 @@ from ..model.place import Place
 
 mfields = {
     'id': fields.Integer,
-    'place': fields.String
+    'name': fields.String
 }
 
 class PlaceApi(Resource):
@@ -41,16 +41,16 @@ class PlaceApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('place', required=True)
+        parser.add_argument('name', required=True)
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        place = Place.query.filter_by(place=args['place']).first()
+        place = Place.query.filter_by(name=args['name']).first()
         if place:
             return marshal(place, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        place = Place(place=args['place'])
+        place = Place(name=args['name'])
         db.session.add(place)
         db.session.commit()
         return marshal(place, mfields), 201
@@ -62,7 +62,7 @@ class PlaceApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('place')
+        parser.add_argument('name')
         args = parser.parse_args()
 
         place = Place.query.filter_by(id=id).first()
@@ -73,8 +73,8 @@ class PlaceApi(Resource):
         if len(args) == 0:
             return marshal(place, mfields), 202
 
-        if args['place']:
-            place.place = args['place']
+        if args['name']:
+            place.name = args['name']
 
         db.session.commit()
         return marshal(place, mfields), 200

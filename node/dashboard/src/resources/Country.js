@@ -12,7 +12,7 @@ import {
 export const CountryCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/country">
-			<TextInput source="country" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Create>
 );
@@ -20,7 +20,7 @@ export const CountryCreate = props => (
 export const CountryEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
-			<TextInput source="country" />
+			<TextInput source="name" />
 		</SimpleForm>
 	</Edit>
 );
@@ -29,7 +29,7 @@ export const CountryList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
-			<TextField source="country" />
+			<TextField source="name" />
 		</Datagrid>
 	</List>
 );
