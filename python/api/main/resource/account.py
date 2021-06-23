@@ -6,7 +6,7 @@ from ..model.account import Account,AccountType
 
 mfields = {
     'id': fields.Integer,
-    'account': fields.String,
+    'name': fields.String,
     'balance': fields.Float,
     'type': fields.String
 }
@@ -42,18 +42,18 @@ class AccountApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('account', required=True)
+        parser.add_argument('name', required=True)
         parser.add_argument('balance', type=float, default=0)
         parser.add_argument('type', choices=('DEBIT', 'CREDIT'), default='DEBIT')
         args = parser.parse_args()
 
         # If the etnry already exists, return the entry with Accepted status code
-        account = Account.query.filter_by(account=args['account']).first()
+        account = Account.query.filter_by(name=args['name']).first()
         if account:
             return marshal(account, mfields), 202
 
         # Otherwise, insert the new entry and return Created status code
-        account = Account(account=args['account'], balance=args['balance'], type=AccountType[args['type']])
+        account = Account(name=args['name'], balance=args['balance'], type=AccountType[args['type']])
         db.session.add(account)
         db.session.commit()
         return marshal(account, mfields), 201
@@ -70,7 +70,7 @@ class AccountApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('account')
+        parser.add_argument('name')
         parser.add_argument('balance', type=float)
         parser.add_argument('type', choices=('DEBIT', 'CREDIT'))
         args = parser.parse_args()
@@ -83,8 +83,8 @@ class AccountApi(Resource):
         if len(args) == 0:
             return marshal(account, mfields), 202
 
-        if args['account']:
-            account.account = args['account']
+        if args['name']:
+            account.name = args['name']
         if args['balance']:
             account.balance = args['balance']
         if args['type']:
