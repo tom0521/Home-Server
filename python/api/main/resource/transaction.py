@@ -8,6 +8,7 @@ from ..model.account import Account
 from ..model.address import Address
 from ..model.category import Category
 from ..model.transaction import Transaction
+from ..resource.tag import tag_marshal
 
 
 transaction_marshal = {
@@ -18,7 +19,10 @@ transaction_marshal = {
     'account_balance': fields.Float,
     'address_id': fields.Integer,
     'category_id': fields.Integer,
-    'note': fields.String
+    'note': fields.String,
+    'tags': fields.List(
+        fields.Nested(tag_marshal)
+    )
 }
 
 class TransactionApi(Resource):

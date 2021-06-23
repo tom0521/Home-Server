@@ -8,7 +8,6 @@ from ..model.place import Place
 
 address_marshal = {
     'id': fields.Integer,
-    'place_id': fields.Integer,
     'line_1': fields.String,
     'line_2': fields.String,
     'city_id': fields.Integer,

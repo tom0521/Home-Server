@@ -3,11 +3,15 @@ from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
 from ..model.place import Place
+from ..resource.address import address_marshal
 
 
 place_marshal = {
     'id': fields.Integer,
-    'name': fields.String
+    'name': fields.String,
+    'addresses': fields.List(
+        fields.Nested(address_marshal)
+    )
 }
 
 class PlaceApi(Resource):
