@@ -4,13 +4,17 @@ from flask_restful import fields,marshal,reqparse,Resource
 from .. import db
 from ..model.address import Address
 from ..model.city import City
+from ..model.country import Country
 from ..model.place import Place
+from ..model.state_province import StateProvince
 
 address_marshal = {
     'id': fields.Integer,
     'line_1': fields.String,
     'line_2': fields.String,
     'city': fields.String,
+    'state_province': fields.String,
+    'country': fields.String,
     'postal_code': fields.String,
     'phone': fields.String,
     'url': fields.String
@@ -29,12 +33,12 @@ class AddressApi(Resource):
             abort(404)
         db.session.delete(address)
         db.session.commit()
-        return marshal(account, address_marshal), 200
+        return marshal(address, address_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
-            address = Address.query.filter_by(id=id).join(City).first()
+            address = Address.query.filter_by(id=id).join(City).join(StateProvince).join(Country).first()
             if address:
                 return marshal(address, address_marshal), 200
             abort(404)
@@ -51,6 +55,8 @@ class AddressApi(Resource):
         parser.add_argument('line_1')
         parser.add_argument('line_2')
         parser.add_argument('city_id', type=int)
+        parser.add_argument('state_province_id', type=int)
+        parser.add_argument('country_id', type=int)
         parser.add_argument('postal_code')
         parser.add_argument('phone')
         parser.add_argument('url')
@@ -61,18 +67,22 @@ class AddressApi(Resource):
             abort(400)
         if args['city_id'] and City.query.filter_by(id=args['city_id']).first is None:
             abort(400)
+        if args['state_province_id'] and StateProvince.query.filter_by(id=args['state_province_id']).first is None:
+            abort(400)
+        if args['country_id'] and City.query.filter_by(id=args['country_id']).first is None:
+            abort(400)
 
         # If the etnry already exists, return the entry with Accepted status code
         address = Address.query.filter_by(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=args['city_id'], postal_code=args['postal_code'],
-                    phone=args['phone'], url=args['url']).first()
+                    line_2=args['line_2'], city_id=args['city_id'], state_province_id=args['state_province_id'],
+                    country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
         if address:
             return marshal(address, address_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         address = Address(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=args['city_id'], 
-                    postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
+                    line_2=args['line_2'], city_id=args['city_id'], state_province_id=args['state_province_id'],
+                    country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
         return marshal(address, address_marshal), 201
@@ -88,6 +98,8 @@ class AddressApi(Resource):
         parser.add_argument('line_1')
         parser.add_argument('line_2')
         parser.add_argument('city_id', type=int)
+        parser.add_argument('state_province_id', type=int)
+        parser.add_argument('country_id', type=int)
         parser.add_argument('postal_code')
         parser.add_argument('phone')
         parser.add_argument('url')
@@ -101,6 +113,7 @@ class AddressApi(Resource):
         if len(args) == 0:
             return marshal(address, address_marshal), 202
 
+        # TDOO: Check the foreign keys
         if args['place_id']:
             address.place_id = args['place_id']
         if args['line_1']:
@@ -109,6 +122,10 @@ class AddressApi(Resource):
             address.line_2 = args['line_2']
         if args['city_id']:
             address.city_id = args['city_id']
+        if args['state_province_id']:
+            address.state_province_id = args['state_province_id']
+        if args['country_id']:
+            address.country_id = args['country_id']
         if args['postal_code']:
             address.postal_code = args['postal_code']
         if args['phone']:

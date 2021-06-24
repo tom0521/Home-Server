@@ -7,6 +7,8 @@ class Address(db.Model):
     line_1 = db.Column(db.String(50))
     line_2 = db.Column(db.String(50))
     city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
+    state_province_id = db.Column(db.Integer, db.ForeignKey('state_province.id'))
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
     postal_code = db.Column(db.String(10))
     phone = db.Column(db.String(20))
     url = db.Column(db.String(255))

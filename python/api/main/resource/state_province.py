@@ -9,7 +9,6 @@ from ..model.state_province import StateProvince
 state_province_marshal = {
     'id': fields.Integer,
     'name': fields.String,
-    'country_id': fields.Integer
 }
 
 class StateProvinceApi(Resource):
@@ -44,20 +43,15 @@ class StateProvinceApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('name', required=True)
-        parser.add_argument('country_id', type=int, required=True)
         args = parser.parse_args()
 
-        # If the foreign id does not exist then abort
-        if Country.query.filter_by(id=args['country_id']).first() is None:
-            abort(400)
-
         # If the etnry already exists, return the entry with Accepted status code
-        state_province = StateProvince.query.filter_by(name=args['name'], country_id=args['country_id']).first()
+        state_province = StateProvince.query.filter_by(name=args['name']).first()
         if state_province:
             return marshal(state_province, state_province_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
-        state_province = StateProvince(name=args['name'], country_id=args['country_id'])
+        state_province = StateProvince(name=args['name'])
         db.session.add(state_province)
         db.session.commit()
         return marshal(state_province, state_province_marshal), 201
@@ -70,7 +64,6 @@ class StateProvinceApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('name')
-        parser.add_argument('country_id')
         args = parser.parse_args()
 
         state_province = StateProvince.query.filter_by(id=id).first()
@@ -81,11 +74,6 @@ class StateProvinceApi(Resource):
         if len(args) == 0:
             return marshal(state_province, state_province_marshal), 202
 
-        if args['country_id']:
-            # if the foreign id does not exist then abort
-            if Country.query.filter_by(id=args['country_id']).first() is None:
-                abort(400)
-            state_province.country_id = args['country_id']
         if args['name']:
             state_province.name = args['name']
 
