@@ -38,7 +38,7 @@ class AddressApi(Resource):
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
-            address = Address.query.filter_by(id=id).join(City).join(StateProvince).join(Country).first()
+            address = Address.query.filter_by(id=id).first()
             if address:
                 return marshal(address, address_marshal), 200
             abort(404)
