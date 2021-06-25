@@ -7,6 +7,7 @@ from ..model.city import City
 from ..model.country import Country
 from ..model.place import Place
 from ..model.state_province import StateProvince
+from ..resource.place import place_marshal
 
 address_marshal = {
     'id': fields.Integer,
@@ -18,6 +19,10 @@ address_marshal = {
     'postal_code': fields.String,
     'phone': fields.String,
     'url': fields.String
+}
+
+single_marshal = {
+    'place': fields.Nested(place_marshal)
 }
 
 class AddressApi(Resource): 
@@ -33,14 +38,14 @@ class AddressApi(Resource):
             abort(404)
         db.session.delete(address)
         db.session.commit()
-        return marshal(address, address_marshal), 200
+        return marshal(address, {**address_marshal, **single_marshal}), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             address = Address.query.filter_by(id=id).first()
             if address:
-                return marshal(address, address_marshal), 200
+                return marshal(address, {**address_marshal, **single_marshal}), 200
             abort(404)
         return marshal(Address.query.all(), address_marshal), 200
     
@@ -85,7 +90,7 @@ class AddressApi(Resource):
                     country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
-        return marshal(address, address_marshal), 201
+        return marshal(address, {**address_marshal, **single_marshal}), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -134,7 +139,7 @@ class AddressApi(Resource):
             address.url = args['url']
 
         db.session.commit()
-        return marshal(address, address_marshal), 200
+        return marshal(address, {**address_marshal, **single_marshal}), 200
 
 
 class CityAddressApi(Resource):
