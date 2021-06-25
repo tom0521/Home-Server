@@ -15,10 +15,9 @@ transaction_marshal = {
     'id': fields.Integer,
     'timestamp': fields.DateTime,
     'amount': fields.Float,
-    'account_id': fields.Integer,
     'account_balance': fields.Float,
     'address_id': fields.Integer,
-    'category_id': fields.Integer,
+    'category': fields.String,
     'note': fields.String,
     'tags': fields.List(
         fields.Nested(tag_marshal)
@@ -75,7 +74,7 @@ class TransactionApi(Resource):
             abort(400)
 
         # Otherwise, insert the new entry and return Created status code
-        new_balance = account.balance + transaction.amount
+        new_balance = account.balance + args['amount']
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
                         address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
         db.session.add(transaction)
