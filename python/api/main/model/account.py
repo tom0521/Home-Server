@@ -1,7 +1,15 @@
 from enum import Enum,auto
 
+from flask_restful import fields
+
 from .. import db
 
+account_marshal = {
+    'id': fields.Integer,
+    'name': fields.String,
+    'balance': fields.Float,
+    'type': fields.String,
+}
 
 class AccountType(Enum):
     DEBIT = auto()

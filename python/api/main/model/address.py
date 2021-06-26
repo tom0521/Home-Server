@@ -1,5 +1,19 @@
+from flask_restful import fields
+
 from .. import db
 
+
+address_marshal = {
+    'id': fields.Integer,
+    'line_1': fields.String,
+    'line_2': fields.String,
+    'city': fields.String,
+    'state_province': fields.String,
+    'country': fields.String,
+    'postal_code': fields.String,
+    'phone': fields.String,
+    'url': fields.String
+}
 
 class Address(db.Model):
     id = db.Column(db.Integer, primary_key=True)

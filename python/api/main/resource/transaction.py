@@ -1,28 +1,15 @@
 from datetime import datetime
 
 from flask import abort
-from flask_restful import fields,marshal,reqparse,Resource
+from flask_restful import marshal,reqparse,Resource
 
 from .. import db
 from ..model.account import Account
 from ..model.address import Address
 from ..model.category import Category
-from ..model.transaction import Transaction
-from ..resource.tag import tag_marshal
+from ..model.transaction import Transaction,transaction_marshal
+from ..model.tag import tag_marshal
 
-
-transaction_marshal = {
-    'id': fields.Integer,
-    'timestamp': fields.DateTime,
-    'amount': fields.Float,
-    'account_balance': fields.Float,
-    'address_id': fields.Integer,
-    'category': fields.String,
-    'note': fields.String,
-    'tags': fields.List(
-        fields.Nested(tag_marshal)
-    )
-}
 
 class TransactionApi(Resource):
 

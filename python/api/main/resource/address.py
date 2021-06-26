@@ -2,24 +2,13 @@ from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.address import Address
+from ..model.address import Address,address_marshal
 from ..model.city import City
 from ..model.country import Country
 from ..model.place import Place
 from ..model.state_province import StateProvince
-from ..resource.place import place_marshal
+from ..model.place import place_marshal
 
-address_marshal = {
-    'id': fields.Integer,
-    'line_1': fields.String,
-    'line_2': fields.String,
-    'city': fields.String,
-    'state_province': fields.String,
-    'country': fields.String,
-    'postal_code': fields.String,
-    'phone': fields.String,
-    'url': fields.String
-}
 
 single_marshal = {
     'place': fields.Nested(place_marshal)

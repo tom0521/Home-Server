@@ -1,19 +1,10 @@
 from flask import abort
-from flask_restful import fields,marshal,reqparse,Resource
+from flask_restful import marshal,reqparse,Resource
 
 from .. import db
-from ..model.account import Account,AccountType
-from ..resource.transaction import transaction_marshal
+from ..model.account import Account,AccountType,account_marshal
+from ..model.transaction import transaction_marshal
 
-account_marshal = {
-    'id': fields.Integer,
-    'name': fields.String,
-    'balance': fields.Float,
-    'type': fields.String,
-    'transactions': fields.List(
-        fields.Nested(transaction_marshal)
-    )
-}
 
 class AccountApi(Resource):
 

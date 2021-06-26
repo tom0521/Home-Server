@@ -1,14 +1,9 @@
 from flask import abort
-from flask_restful import fields,marshal,reqparse,Resource
+from flask_restful import marshal,reqparse,Resource
 
 from .. import db
-from ..model.country import Country
+from ..model.country import Country,country_marshal
 
-
-country_marshal = {
-    'id': fields.Integer,
-    'name': fields.String
-}
 
 class CountryApi(Resource):
 
