@@ -1,10 +1,16 @@
 from flask import abort
-from flask_restful import marshal,reqparse,Resource
+from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.account import Account,AccountType,account_marshal
+from ..model.account import Account,AccountType,accounts_marshal
 from ..model.transaction import transaction_marshal
 
+
+# Marshals a single account to return more data
+account_marshal = {
+        **accounts_marshal, 
+        'transactions': fields.List(fields.Nested(transaction_marshal))
+    }
 
 class AccountApi(Resource):
 
@@ -28,7 +34,7 @@ class AccountApi(Resource):
             if account:
                 return marshal(account, account_marshal), 200
             abort(404)
-        return marshal(Account.query.all(), account_marshal), 200
+        return marshal(Account.query.all(), accounts_marshal), 200
 
     def post(self, id=None):
         # POST requests do not allow id url
@@ -48,7 +54,8 @@ class AccountApi(Resource):
             return marshal(account, account_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
-        account = Account(name=args['name'], balance=args['balance'], type=AccountType[args['type']])
+        account = Account(name=args['name'], balance=args['balance'],
+                            type=AccountType[args['type']])
         db.session.add(account)
         db.session.commit()
         return marshal(account, account_marshal), 201

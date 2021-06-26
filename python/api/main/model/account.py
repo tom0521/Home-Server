@@ -4,7 +4,7 @@ from flask_restful import fields
 
 from .. import db
 
-account_marshal = {
+accounts_marshal = {
     'id': fields.Integer,
     'name': fields.String,
     'balance': fields.Float,
