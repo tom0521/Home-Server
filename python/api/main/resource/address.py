@@ -48,35 +48,44 @@ class AddressApi(Resource):
         parser.add_argument('place_id', type=int, required=True)
         parser.add_argument('line_1')
         parser.add_argument('line_2')
-        parser.add_argument('city_id', type=int)
-        parser.add_argument('state_province_id', type=int)
-        parser.add_argument('country_id', type=int)
+        parser.add_argument('city')
+        parser.add_argument('state_province')
+        parser.add_argument('country')
         parser.add_argument('postal_code')
         parser.add_argument('phone')
         parser.add_argument('url')
         args = parser.parse_args()
 
-        # if any foreign ids do not exist abort
+        # make sure the place exists
         if Place.query.filter_by(id=args['place_id']).first() is None:
             abort(400)
-        if args['city_id'] and City.query.filter_by(id=args['city_id']).first is None:
-            abort(400)
-        if args['state_province_id'] and StateProvince.query.filter_by(id=args['state_province_id']).first is None:
-            abort(400)
-        if args['country_id'] and City.query.filter_by(id=args['country_id']).first is None:
-            abort(400)
+        if args['city']:
+            city = City.query.filter_by(name=args['city']).first()
+            if not city:
+                city = City(name=args['city'])
+                db.session.add(city)
+        if args['state_province']:
+            state_province = StateProvince.query.filter_by(name=args['state_province']).first()
+            if not state_province:
+                state_province = StateProvince(name=args['state_province'])
+                db.session.add(state_province)
+        if args['country']:
+            country = Country.query.filter_by(name=args['country']).first()
+            if not country:
+                country = Country(name=args['country'])
+                db.session.add(country)
 
         # If the etnry already exists, return the entry with Accepted status code
         address = Address.query.filter_by(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=args['city_id'], state_province_id=args['state_province_id'],
-                    country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
+                    line_2=args['line_2'], city_id=city.id, state_province_id=state_province.id,
+                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
         if address:
             return marshal(address, address_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         address = Address(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=args['city_id'], state_province_id=args['state_province_id'],
-                    country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
+                    line_2=args['line_2'], city_id=city.id, state_province_id=state_province.id,
+                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
         db.session.add(address)
         db.session.commit()
         return marshal(address, address_marshal), 201
@@ -91,9 +100,9 @@ class AddressApi(Resource):
         parser.add_argument('place_id', type=int)
         parser.add_argument('line_1')
         parser.add_argument('line_2')
-        parser.add_argument('city_id', type=int)
-        parser.add_argument('state_province_id', type=int)
-        parser.add_argument('country_id', type=int)
+        parser.add_argument('city')
+        parser.add_argument('state_province')
+        parser.add_argument('country')
         parser.add_argument('postal_code')
         parser.add_argument('phone')
         parser.add_argument('url')
@@ -114,12 +123,24 @@ class AddressApi(Resource):
             address.line_1 = args['line_1']
         if args['line_2']:
             address.line_2 = args['line_2']
-        if args['city_id']:
-            address.city_id = args['city_id']
-        if args['state_province_id']:
-            address.state_province_id = args['state_province_id']
-        if args['country_id']:
-            address.country_id = args['country_id']
+        if args['city']:
+            city = City.query.filter_by(name=args['city']).first()
+            if not city:
+                city = City(name=args['city'])
+                db.session.add(city)
+            address.city_id = city.id
+        if args['state_province']:
+            state_province = StateProvince.query.filter_by(name=args['state_province']).first()
+            if not state_province:
+                state_province = StateProvince(name=args['state_province'])
+                db.session.add(state_province)
+            address.state_province_id = state_province_id.id
+        if args['country']:
+            country = Country.query.filter_by(name=args['country']).first()
+            if not country:
+                country = Country(name=args['country'])
+                db.session.add(country)
+            address.country_id = country.id
         if args['postal_code']:
             address.postal_code = args['postal_code']
         if args['phone']:
