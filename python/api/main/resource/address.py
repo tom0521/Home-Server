@@ -2,16 +2,16 @@ from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.address import Address,address_marshal
+from ..model.address import Address,addresses_marshal
 from ..model.city import City
 from ..model.country import Country
-from ..model.place import Place
+from ..model.place import Place,places_marshal
 from ..model.state_province import StateProvince
-from ..model.place import place_marshal
 
 
-single_marshal = {
-    'place': fields.Nested(place_marshal)
+address_marshal = {
+    **addresses_marshal,
+    'place': fields.Nested(places_marshal)
 }
 
 class AddressApi(Resource): 
@@ -27,16 +27,16 @@ class AddressApi(Resource):
             abort(404)
         db.session.delete(address)
         db.session.commit()
-        return marshal(address, {**address_marshal, **single_marshal}), 200
+        return marshal(address, address_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             address = Address.query.filter_by(id=id).first()
             if address:
-                return marshal(address, {**address_marshal, **single_marshal}), 200
+                return marshal(address, address_marshal), 200
             abort(404)
-        return marshal(Address.query.all(), address_marshal), 200
+        return marshal(Address.query.all(), addresses_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -79,7 +79,7 @@ class AddressApi(Resource):
                     country_id=args['country_id'], postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
-        return marshal(address, {**address_marshal, **single_marshal}), 201
+        return marshal(address, address_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -128,7 +128,7 @@ class AddressApi(Resource):
             address.url = args['url']
 
         db.session.commit()
-        return marshal(address, {**address_marshal, **single_marshal}), 200
+        return marshal(address, address_marshal), 200
 
 
 class CityAddressApi(Resource):
@@ -136,16 +136,13 @@ class CityAddressApi(Resource):
     def get(self, city_id):
         city = City.query.filter_by(id=city_id).first()
         if city:
-            return marshal(city.addresses, address_marshal)
+            return marshal(city.addresses, addresses_marshal)
         abort(404)
-        db.session.commit()
-        return marshal(place, address_marshal), 200
-
 
 class PlaceAddressApi(Resource):
 
     def get(self, place_id):
         place = Place.query.filter_by(id=place_id).first()
         if place:
-            return marshal(place.addresses, address_marshal)
+            return marshal(place.addresses, addresess_marshal)
         abort(404)

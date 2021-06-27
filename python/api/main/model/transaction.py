@@ -3,19 +3,18 @@ from datetime import datetime
 from flask_restful import fields
 
 from .. import db
-from ..model.tag import tag_marshal
+from ..model.tag import tags_marshal
 
 
-transaction_marshal = {
+transactions_marshal = {
     'id': fields.Integer,
     'timestamp': fields.DateTime,
     'amount': fields.Float,
     'account_balance': fields.Float,
-    'address_id': fields.Integer,
     'category': fields.String,
     'note': fields.String,
     'tags': fields.List(
-        fields.Nested(tag_marshal)
+        fields.Nested(tags_marshal)
     )
 }
 

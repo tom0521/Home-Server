@@ -3,13 +3,13 @@ from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
 from ..model.account import Account,AccountType,accounts_marshal
-from ..model.transaction import transaction_marshal
+from ..model.transaction import transactions_marshal
 
 
 # Marshals a single account to return more data
 account_marshal = {
         **accounts_marshal, 
-        'transactions': fields.List(fields.Nested(transaction_marshal))
+        'transactions': fields.List(fields.Nested(transactions_marshal))
     }
 
 class AccountApi(Resource):

@@ -3,7 +3,7 @@ from flask_restful import marshal,reqparse,Resource
 
 from .. import db
 from ..model.country import Country
-from ..model.state_province import StateProvince,state_province_marshal
+from ..model.state_province import StateProvince,state_provinces_marshal
 
 
 class StateProvinceApi(Resource):
@@ -19,16 +19,16 @@ class StateProvinceApi(Resource):
             abort(404)
         db.session.delete(state_province)
         db.session.commit()
-        return marshal(state_province, state_province_marshal), 200
+        return marshal(state_province, state_provinces_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             state_province = StateProvince.query.filter_by(id=id).first()
             if state_province:
-                return marshal(state_province, state_province_marshal), 200
+                return marshal(state_province, state_provinces_marshal), 200
             abort(404)
-        return marshal(StateProvince.query.all(), state_province_marshal), 200
+        return marshal(StateProvince.query.all(), state_provinces_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -43,13 +43,13 @@ class StateProvinceApi(Resource):
         # If the etnry already exists, return the entry with Accepted status code
         state_province = StateProvince.query.filter_by(name=args['name']).first()
         if state_province:
-            return marshal(state_province, state_province_marshal), 202
+            return marshal(state_province, state_provinces_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         state_province = StateProvince(name=args['name'])
         db.session.add(state_province)
         db.session.commit()
-        return marshal(state_province, state_province_marshal), 201
+        return marshal(state_province, state_provinces_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -67,10 +67,10 @@ class StateProvinceApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(state_province, state_province_marshal), 202
+            return marshal(state_province, state_provinces_marshal), 202
 
         if args['name']:
             state_province.name = args['name']
 
         db.session.commit()
-        return marshal(state_province, state_province_marshal), 200
+        return marshal(state_province, state_provinces_marshal), 200

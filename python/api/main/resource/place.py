@@ -1,9 +1,15 @@
 from flask import abort
-from flask_restful import marshal,reqparse,Resource
+from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.place import Place,place_marshal
+from ..model.address import addresses_marshal
+from ..model.place import Place,places_marshal
 
+
+place_marshal = {
+    **places_marshal,
+    'addresses': fields.List(fields.Nested(addresses_marshal))
+}
 
 class PlaceApi(Resource):
 
@@ -27,7 +33,7 @@ class PlaceApi(Resource):
             if place:
                 return marshal(place, place_marshal), 200
             abort(404)
-        return marshal(Place.query.all(), place_marshal), 200
+        return marshal(Place.query.all(), places_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url

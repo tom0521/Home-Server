@@ -2,7 +2,7 @@ from flask import abort
 from flask_restful import marshal,reqparse,Resource
 
 from .. import db
-from ..model.city import City,city_marshal
+from ..model.city import City,cities_marshal
 from ..model.state_province import StateProvince
 
 
@@ -19,16 +19,16 @@ class CityApi(Resource):
             abort(404)
         db.session.delete(city)
         db.session.commit()
-        return marshal(city, city_marshal), 200
+        return marshal(city, cities_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             city = City.query.filter_by(id=id).first()
             if city:
-                return marshal(city, city_marshal), 200
+                return marshal(city, cities_marshal), 200
             abort(404)
-        return marshal(City.query.all(), city_marshal), 200
+        return marshal(City.query.all(), cities_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -44,13 +44,13 @@ class CityApi(Resource):
         city = City.query.filter_by(name=args['name']).first()
 
         if city:
-            return marshal(city, city_marshal), 202
+            return marshal(city, cities_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         city = City(name=args['name'])
         db.session.add(city)
         db.session.commit()
-        return marshal(city, city_marshal), 201
+        return marshal(city, cities_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -68,10 +68,10 @@ class CityApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(city, city_marshal), 202
+            return marshal(city, cities_marshal), 202
 
         if args['name']:
             city.name = args['name']
 
         db.session.commit()
-        return marshal(city, city_marshal), 200
+        return marshal(city, cities_marshal), 200

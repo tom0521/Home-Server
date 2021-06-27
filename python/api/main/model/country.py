@@ -3,7 +3,7 @@ from flask_restful import fields
 from .. import db
 
 
-country_marshal = {
+countries_marshal = {
     'id': fields.Integer,
     'name': fields.String
 }

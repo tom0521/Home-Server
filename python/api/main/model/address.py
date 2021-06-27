@@ -3,7 +3,7 @@ from flask_restful import fields
 from .. import db
 
 
-address_marshal = {
+addresses_marshal = {
     'id': fields.Integer,
     'line_1': fields.String,
     'line_2': fields.String,

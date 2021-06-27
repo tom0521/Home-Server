@@ -1,15 +1,21 @@
 from datetime import datetime
 
 from flask import abort
-from flask_restful import marshal,reqparse,Resource
+from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.account import Account
+from ..model.account import Account,accounts_marshal
 from ..model.address import Address
 from ..model.category import Category
-from ..model.transaction import Transaction,transaction_marshal
-from ..model.tag import tag_marshal
+from ..model.transaction import Transaction,transactions_marshal
+from ..resource.address import address_marshal
 
+
+transaction_marshal = {
+    **transactions_marshal,
+    'account': fields.Nested(accounts_marshal),
+    'address': fields.Nested(address_marshal)
+}
 
 class TransactionApi(Resource):
 
@@ -24,7 +30,7 @@ class TransactionApi(Resource):
             abort(404)
         db.session.delete(transaction)
         db.session.commit()
-        return marshal(transaction, transaction_marshal), 200
+        return marshal(transaction, transactions_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -33,7 +39,7 @@ class TransactionApi(Resource):
             if transaction:
                 return marshal(transaction, transaction_marshal), 200
             abort(404)
-        return marshal(Transaction.query.all(), transaction_marshal), 200
+        return marshal(Transaction.query.all(), transactions_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -79,7 +85,7 @@ class TransactionApi(Resource):
             transaction.tags.append(tag)
 
         db.session.commit()
-        return marshal(transaction, transaction_marshal), 201
+        return marshal(transaction, transactions_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -103,7 +109,7 @@ class TransactionApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(transaction, transaction_marshal), 202
+            return marshal(transaction, transactions_marshal), 202
 
         if args['timestamp']:
             transaction.timestamp = args['timestamp']
@@ -120,14 +126,14 @@ class TransactionApi(Resource):
             transaction.note = args['note']
 
         db.session.commit()
-        return marshal(transaction, transaction_marshal), 200
+        return marshal(transaction, transactions_marshal), 200
 
 class AccountTransactionApi(Resource):
 
     def get(self, account_id):
         account = Account.query.filter_by(id=account_id).first()
         if account:
-            return marshal(account.transactions, transaction_marshal), 200
+            return marshal(account.transactions, transactions_marshal), 200
         abort(404)
 
 
@@ -136,7 +142,7 @@ class AddressTransactionApi(Resource):
     def get(self, address_id):
         address = Address.query.filter_by(id=address_id).first()
         if address:
-            return marshal(address.transactions, transaction_marshal)
+            return marshal(address.transactions, transactions_marshal)
         abort(404)
 
 
@@ -145,5 +151,5 @@ class CategoryTransactionApi(Resource):
     def get(self, category_id):
         category = Category.query.filter_by(id=category_id).first()
         if category:
-            return marshal(category.transactions, transaction_marshal)
+            return marshal(category.transactions, transactions_marshal)
         abort(404)

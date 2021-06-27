@@ -3,7 +3,7 @@ from flask_restful import fields
 from .. import db
 
 
-category_marshal = {
+categories_marshal = {
     'id': fields.Integer,
     'name': fields.String
 }
