@@ -85,7 +85,7 @@ class AddressApi(Resource):
         # Otherwise, insert the new entry and return Created status code
         address = Address(place_id=args['place_id'], line_1=args['line_1'],
                     line_2=args['line_2'], city_id=city.id, state_province_id=state_province.id,
-                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
+                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
         return marshal(address, address_marshal), 201
