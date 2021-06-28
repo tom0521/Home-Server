@@ -8,23 +8,12 @@ import {
 	List,
 	NumberField,
 	NumberInput,
-	ReferenceField,
 	ReferenceInput,
 	SelectInput,
 	SimpleForm,
 	TextField,
 	TextInput,
-	useCreate,
-	useCreateSuggestionContext
 } from 'react-admin';
-
-import {
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	TextField as MaterialTextField
-} from '@material-ui/core';
 
 export const TransactionCreate = props => (
 	<Create {...props}>
@@ -40,9 +29,7 @@ export const TransactionCreate = props => (
 				}
 				<SelectInput optionText="line_1" />
 			</ReferenceInput>
-			<ReferenceInput source="category_id" reference="category">
-				<SelectInput create={<CreateCategory />} optionText="name" />
-			</ReferenceInput>
+            <TextInput source="category" />
 			{
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
@@ -66,9 +53,7 @@ export const TransactionEdit = props => (
 				}
 				<SelectInput optionText="line_1" />
 			</ReferenceInput>
-			<ReferenceInput source="category_id" reference="category">
-				<SelectInput create={<CreateCategory />} optionText="name" />
-			</ReferenceInput>
+            <TextInput source="category" />
 			{
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
@@ -78,64 +63,12 @@ export const TransactionEdit = props => (
 	</Edit>
 );
 
-const CreateCategory = () => {
-	const { filter, onCancel, onCreate } = useCreateSuggestionContext();
-	const [value, setValue] = React.useState(filter || '');
-	const [create] = useCreate('category');
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		create(
-			{
-				payload: {
-					data: {
-						category: value,
-					},
-				},
-			},
-			{
-				onSuccess: ({ data}) => {
-					setValue('');
-					onCreate(data);
-				},
-			}
-		);
-	};
-
-	return (
-		<Dialog open onClose={onCancel}>
-			<form onSubmit={handleSubmit}>
-				<DialogContent>
-					<MaterialTextField
-						label="New Category"
-						value={value}
-						onChange={event => setValue(event.target.value)}
-						autofocus
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button type="submit">Save</Button>
-					<Button onClick={onCancel}>Cancel</Button>
-				</DialogActions>
-			</form>
-		</Dialog>
-	);
-};
-
 export const TransactionList = props => (
 	<List {...props}>
 		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
 			<NumberField source="amount" step="0.01" />
-			<ReferenceField source="account_id" reference="account">
-				{
-				// TODO: Add the balance
-				}
-				<TextField source="account" />
-			</ReferenceField>
-			<ReferenceField source="category_id" reference="category">
-				<TextField source="category" />
-			</ReferenceField>
+			<TextField source="category" />
 			<TextField multiline source="note" />
 		</Datagrid>
 	</List>

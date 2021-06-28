@@ -64,16 +64,19 @@ class AddressApi(Resource):
             if not city:
                 city = City(name=args['city'])
                 db.session.add(city)
+                db.session.commit()
         if args['state_province']:
             state_province = StateProvince.query.filter_by(name=args['state_province']).first()
             if not state_province:
                 state_province = StateProvince(name=args['state_province'])
                 db.session.add(state_province)
+                db.session.commit()
         if args['country']:
             country = Country.query.filter_by(name=args['country']).first()
             if not country:
                 country = Country(name=args['country'])
                 db.session.add(country)
+                db.session.commit()
 
         # If the etnry already exists, return the entry with Accepted status code
         address = Address.query.filter_by(place_id=args['place_id'], line_1=args['line_1'],
@@ -128,18 +131,21 @@ class AddressApi(Resource):
             if not city:
                 city = City(name=args['city'])
                 db.session.add(city)
+                db.session.commit()
             address.city_id = city.id
         if args['state_province']:
             state_province = StateProvince.query.filter_by(name=args['state_province']).first()
             if not state_province:
                 state_province = StateProvince(name=args['state_province'])
                 db.session.add(state_province)
+                db.session.commit()
             address.state_province_id = state_province_id.id
         if args['country']:
             country = Country.query.filter_by(name=args['country']).first()
             if not country:
                 country = Country(name=args['country'])
                 db.session.add(country)
+                db.session.commit()
             address.country_id = country.id
         if args['postal_code']:
             address.postal_code = args['postal_code']

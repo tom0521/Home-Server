@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import abort
+from flask import abort,Request
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
@@ -52,7 +52,7 @@ class TransactionApi(Resource):
         parser.add_argument('amount', type=float, required=True)
         parser.add_argument('account_id', type=int, required=True)
         parser.add_argument('address_id', type=int)
-        parser.add_argument('category_id', type=int)
+        parser.add_argument('category')
         parser.add_argument('tag', action='append', default=[])
         parser.add_argument('note')
         args = parser.parse_args()
@@ -61,15 +61,19 @@ class TransactionApi(Resource):
         account = Account.query.filter_by(id=args['account_id']).first()
         if account is None:
             abort(400)
-        if args['address_id'] and Address.query.filter_by(id=args['address_id']).first is None:
+        if args['address_id'] and Address.query.filter_by(id=args['address_id']).first() is None:
             abort(400)
-        if args['category_id'] and Category.query.filter_by(id=args['category_id']).first is None:
-            abort(400)
+        if args['category']:
+            category = Category.query.filter_by(name=args['category']).first()
+            if not category:
+                category = Category(name=args['category'])
+                db.session.add(category)
+                db.session.commit()
 
         # Otherwise, insert the new entry and return Created status code
         new_balance = account.balance + args['amount']
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
-                        address_id=args['address_id'], category_id=args['category_id'], note=args['note'])
+                        address_id=args['address_id'], category_id=category.id, note=args['note'])
         db.session.add(transaction)
         account.balance = new_balance
         # TODO: Does this return a value?
@@ -98,7 +102,7 @@ class TransactionApi(Resource):
         parser.add_argument('amount', type=float)
         parser.add_argument('account_id', type=int)
         parser.add_argument('address_id', type=int)
-        parser.add_argument('category_id', type=int)
+        parser.add_argument('category')
         parser.add_argument('tag', action='append')
         parser.add_argument('note')
         args = parser.parse_args()
@@ -119,8 +123,13 @@ class TransactionApi(Resource):
             transaction.account_id = args['account_id']
         if args['address_id']:
             transaction.address_id = args['address_id']
-        if args['category_id']:
-            transaction.category_id = args['category_id']
+        if args['category']:
+            category = Category.query.filter_by(name=args['category']).first()
+            if not category:
+                category = Category(name=args['category'])
+                db.session.add(category)
+                db.session.commit()
+            transaction.category_id = category.id
         # TODO: what to do with tags?
         if args['note']:
             transaction.note = args['note']
