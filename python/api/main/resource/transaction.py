@@ -1,3 +1,4 @@
+import dateutil.parser
 from datetime import datetime
 
 from flask import abort,Request
@@ -48,7 +49,7 @@ class TransactionApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('timestamp', type=lambda x: datetime.strptime(x,'%Y-%m-%dT%H:%M:%S'), default=datetime.now())
+        parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x), default=datetime.now())
         parser.add_argument('amount', type=float, required=True)
         parser.add_argument('account_id', type=int, required=True)
         parser.add_argument('address_id', type=int)
@@ -98,7 +99,7 @@ class TransactionApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('timestamp', type=lambda x: datetime.strptime(x,'%Y-%m-%dT%H:%M:%S'))
+        parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x))
         parser.add_argument('amount', type=float)
         parser.add_argument('account_id', type=int)
         parser.add_argument('address_id', type=int)
