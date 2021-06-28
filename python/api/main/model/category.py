@@ -1,5 +1,12 @@
+from flask_restful import fields
+
 from .. import db
 
+
+categories_marshal = {
+    'id': fields.Integer,
+    'name': fields.String
+}
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)

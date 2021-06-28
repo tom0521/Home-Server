@@ -2,12 +2,13 @@ from flask import abort
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
-from ..model.place import Place
+from ..model.address import addresses_marshal
+from ..model.place import Place,places_marshal
 
 
-mfields = {
-    'id': fields.Integer,
-    'name': fields.String
+place_marshal = {
+    **places_marshal,
+    'addresses': fields.List(fields.Nested(addresses_marshal))
 }
 
 class PlaceApi(Resource):
@@ -23,16 +24,16 @@ class PlaceApi(Resource):
             abort(404)
         db.session.delete(place)
         db.session.commit()
-        return marshal(place, mfields), 200
+        return marshal(place, place_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
         if id:
             place = Place.query.filter_by(id=id).first()
             if place:
-                return marshal(place, mfields), 200
+                return marshal(place, place_marshal), 200
             abort(404)
-        return marshal(Place.query.all(), mfields), 200
+        return marshal(Place.query.all(), places_marshal), 200
     
     def post(self, id=None):
         # POST requests do not allow id url
@@ -47,13 +48,13 @@ class PlaceApi(Resource):
         # If the etnry already exists, return the entry with Accepted status code
         place = Place.query.filter_by(name=args['name']).first()
         if place:
-            return marshal(place, mfields), 202
+            return marshal(place, place_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         place = Place(name=args['name'])
         db.session.add(place)
         db.session.commit()
-        return marshal(place, mfields), 201
+        return marshal(place, place_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -71,10 +72,10 @@ class PlaceApi(Resource):
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(place, mfields), 202
+            return marshal(place, place_marshal), 202
 
         if args['name']:
             place.name = args['name']
 
         db.session.commit()
-        return marshal(place, mfields), 200
+        return marshal(place, place_marshal), 200

@@ -22,9 +22,9 @@ export const AddressCreate = props => (
 			</ReferenceInput>
 			<TextInput source="line_1" />
 			<TextInput source="line_2" />
-			<ReferenceInput source="city_id" reference="city">
-				<SelectInput optionText="name" />
-			</ReferenceInput>
+            <TextInput source="city" />
+            <TextInput source="state_province" />
+            <TextInput source="country" />
 			{
 			// TODO: Custom input for these three
 			}
@@ -43,9 +43,9 @@ export const AddressEdit = props => (
 			</ReferenceInput>
 			<TextInput source="line_1" />
 			<TextInput source="line_2" />
-			<ReferenceInput source="city_id" reference="city">
-				<SelectInput optionText="name" />
-			</ReferenceInput>
+            <TextInput source="city" />
+            <TextInput source="state_province" />
+            <TextInput source="country" />
 			{
 			// TODO: Custom input for these three
 			}
@@ -68,9 +68,9 @@ export const AddressList = props => (
 			}
 			<TextField source="line_1" />
 			<TextField source="line_2" />
-			<ReferenceField source="city_id" reference="city">
-				<TextField source="city" />
-			</ReferenceField>
+			<TextField source="city" />
+			<TextField source="state_province" />
+			<TextField source="country" />
 			{
 			// TODO: Custom fields for these three?
 			}

@@ -1,7 +1,22 @@
 from datetime import datetime
 
-from .. import db
+from flask_restful import fields
 
+from .. import db
+from ..model.tag import tags_marshal
+
+
+transactions_marshal = {
+    'id': fields.Integer,
+    'timestamp': fields.DateTime,
+    'amount': fields.Float,
+    'account_balance': fields.Float,
+    'category': fields.String,
+    'note': fields.String,
+    'tags': fields.List(
+        fields.Nested(tags_marshal)
+    )
+}
 
 transaction_tags = db.Table('transaction_tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
