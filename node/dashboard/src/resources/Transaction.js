@@ -14,6 +14,7 @@ import {
 	TextField,
 	TextInput,
 } from 'react-admin';
+import TagsInput from '../components/TagsInput';
 
 export const TransactionCreate = props => (
 	<Create {...props}>
@@ -35,6 +36,7 @@ export const TransactionCreate = props => (
 			// TODO: Add ImageInput for receipt
 			}
 			<TextInput multiline source="note" />
+            <TagsInput name="tags" />
 		</SimpleForm>
 	</Create>
 );
