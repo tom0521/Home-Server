@@ -8,6 +8,7 @@ from .. import db
 from ..model.account import Account,accounts_marshal
 from ..model.address import Address
 from ..model.category import Category
+from ..model.tag import Tag
 from ..model.transaction import Transaction,transactions_marshal
 from ..resource.address import address_marshal
 
@@ -54,7 +55,7 @@ class TransactionApi(Resource):
         parser.add_argument('account_id', type=int, required=True)
         parser.add_argument('address_id', type=int)
         parser.add_argument('category')
-        parser.add_argument('tag', action='append', default=[])
+        parser.add_argument('tags', action='append', default=[])
         parser.add_argument('note')
         args = parser.parse_args()
 
@@ -81,11 +82,11 @@ class TransactionApi(Resource):
         # account.balance += transaction.amount
 
         # create and associate all tags with this transaction
-        for t in args['tag']:
+        for t in args['tags']:
             # if the tag does not exist, create it
-            tag = Tag.query.filter_by(tag=t).first()
+            tag = Tag.query.filter_by(name=t).first()
             if tag is None:
-                tag = Tag(tag=t)
+                tag = Tag(name=t)
                 db.session.add(tag)
             transaction.tags.append(tag)
 
@@ -104,7 +105,7 @@ class TransactionApi(Resource):
         parser.add_argument('account_id', type=int)
         parser.add_argument('address_id', type=int)
         parser.add_argument('category')
-        parser.add_argument('tag', action='append')
+        parser.add_argument('tags', action='append')
         parser.add_argument('note')
         args = parser.parse_args()
 
