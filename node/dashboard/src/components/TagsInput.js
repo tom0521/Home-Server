@@ -18,6 +18,7 @@ const TagsInput = props => {
             value={ value || [] }
             onAdd={ (tag) => onChange((value || []).concat(tag)) }
             onDelete={ (tag) => onChange((value || []).filter(v => v !== tag)) }
+            placeholder="Tags"
             newChipKeys={ keys }
             error={ !!(touched && error) }
             helperText={ touched && error }
