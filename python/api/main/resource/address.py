@@ -55,6 +55,10 @@ class AddressApi(Resource):
         parser.add_argument('phone')
         parser.add_argument('url')
         args = parser.parse_args()
+ 
+        city_id = None
+        state_province_id = None
+        country_id = None
 
         # make sure the place exists
         if Place.query.filter_by(id=args['place_id']).first() is None:
@@ -65,30 +69,33 @@ class AddressApi(Resource):
                 city = City(name=args['city'])
                 db.session.add(city)
                 db.session.commit()
+            city_id = city.id
         if args['state_province']:
             state_province = StateProvince.query.filter_by(name=args['state_province']).first()
             if not state_province:
                 state_province = StateProvince(name=args['state_province'])
                 db.session.add(state_province)
                 db.session.commit()
+            state_province_id = state_province.id
         if args['country']:
             country = Country.query.filter_by(name=args['country']).first()
             if not country:
                 country = Country(name=args['country'])
                 db.session.add(country)
                 db.session.commit()
+            country_id = country.id
 
         # If the etnry already exists, return the entry with Accepted status code
         address = Address.query.filter_by(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=city.id, state_province_id=state_province.id,
-                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
+                    line_2=args['line_2'], city_id=city_id, state_province_id=state_province_id,
+                    country_id=country_id, postal_code=args['postal_code'], phone=args['phone'], url=args['url']).first()
         if address:
             return marshal(address, address_marshal), 202
 
         # Otherwise, insert the new entry and return Created status code
         address = Address(place_id=args['place_id'], line_1=args['line_1'],
-                    line_2=args['line_2'], city_id=city.id, state_province_id=state_province.id,
-                    country_id=country.id, postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
+                    line_2=args['line_2'], city_id=city_id, state_province_id=state_province_id,
+                    country_id=country_id, postal_code=args['postal_code'], phone=args['phone'], url=args['url'])
         db.session.add(address)
         db.session.commit()
         return marshal(address, address_marshal), 201
