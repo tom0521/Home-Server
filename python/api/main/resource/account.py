@@ -34,7 +34,13 @@ class AccountApi(Resource):
             if account:
                 return marshal(account, account_marshal), 200
             abort(404)
-        return marshal(Account.query.all(), accounts_marshal), 200
+        
+        parser = reqparse.RequestParser()
+        parser.add_argument('page', type=int)
+        parser.add_argument('per_page', type=int)
+        args = parser.parse_args()
+        
+        return marshal(Account.query.paginate(args['page'], args['per_page'], error_out=False).items, accounts_marshal), 200
 
     def post(self, id=None):
         # POST requests do not allow id url
