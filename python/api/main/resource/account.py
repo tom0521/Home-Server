@@ -38,13 +38,15 @@ class AccountApi(Resource):
             abort(404)
         
         parser = reqparse.RequestParser()
-        parser.add_argument('page', type=int)
-        parser.add_argument('per_page', type=int)
+        parser.add_argument('range', type=lambda x: json.loads(x), default=[0,9])
         args = parser.parse_args()
-        
-        accounts = Account.query.paginate(args['page'], args['per_page'], error_out=False)
+
+        per_page = args['range'][1] - args['range'][0] + 1
+        page = args['range'][0] // per_page
+       
+        accounts = Account.query.paginate(page,per_page, error_out=False)
         response = make_response(json.dumps(marshal(accounts.items, accounts_marshal)), 200)
-        response.headers.extend({'Content-Range': f"account {args['page']}-{args['per_page']}/{accounts.total}"})
+        response.headers.extend({'Content-Range': f"account {args['range'][0]}-{args['range'][1]}/{accounts.total}"})
         return response
 
     def post(self, id=None):
