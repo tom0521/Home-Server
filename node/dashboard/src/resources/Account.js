@@ -3,7 +3,8 @@ import {
 	ChipField,
 	Create,
 	Datagrid,
-	Edit,
+    Edit,
+    Filter,
 	List,
 	NumberField,
 	NumberInput,
@@ -39,8 +40,14 @@ export const AccountEdit = props => (
 	</Edit>
 );
 
+export const AccountFilter = props => (
+    <Filter {...props}>
+        <TextInput label="Search" source="name" alwaysOn />
+    </Filter>
+);
+
 export const AccountList = props => (
-	<List {...props}>
+	<List filters={<AccountFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="name" />

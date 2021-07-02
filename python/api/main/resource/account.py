@@ -45,7 +45,7 @@ class AccountApi(Resource):
         account_query = Account.query
 
         if args['filter']:
-            account_query = account_query.filter_by(args['filter'])
+            account_query = account_query.filter_by(**args['filter'])
 
         per_page = args['range'][1] - args['range'][0] + 1
         page = args['range'][0] // per_page

@@ -6,19 +6,19 @@ const httpClient = fetchUtils.fetchJson;
 
 const dataProvider = {
     getList: (resource, params) => {
-	const { page, perPage } = params.pagination;
-	// const { field, order } = params.sort;
-	const query = {
-		// sort: JSON.stringify([field, order]),
-		filter: JSON.stringify(params.filter),
-        range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-	};
-	const url = `${apiUrl}/${resource}?${stringify(query)}`;
+	    const { page, perPage } = params.pagination;
+	    // const { field, order } = params.sort;
+        const query = {
+            // sort: JSON.stringify([field, order]),
+            filter: JSON.stringify(params.filter),
+            range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+        };
+        const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
-	return httpClient(url).then(({ headers, json }) => ({
-		data: json,
-		total: parseInt(headers.get('Content-Range').split('/').pop(), 10),
-	}));
+        return httpClient(url).then(({ headers, json }) => ({
+            data: json,
+            total: parseInt(headers.get('Content-Range').split('/').pop(), 10),
+        }));
     },
 
     getOne: (resource, params) =>
