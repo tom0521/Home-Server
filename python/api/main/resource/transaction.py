@@ -1,8 +1,12 @@
 import dateutil.parser
+import json
+
 from datetime import datetime
 
 from flask import abort,Request
 from flask_restful import fields,marshal,reqparse,Resource
+
+from sqlalchemy import desc
 
 from .. import db
 from ..model.account import Account,accounts_marshal
@@ -41,7 +45,32 @@ class TransactionApi(Resource):
             if transaction:
                 return marshal(transaction, transaction_marshal), 200
             abort(404)
-        return marshal(Transaction.query.all(), transactions_marshal), 200
+        
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x))
+        # TODO: Remove default and allow query all
+        parser.add_argument('range', type=lambda x: json.loads(x), default=[0,99])
+        parser.add_argument('sort', type=lambda x: json.loads(x))
+        args = parser.parse_args()
+
+        transaction_query = Transaction.query
+
+        if args['filter']:
+            # TODO: filter only columns in the table
+            transaction_query = transaction_query.filter_by(**args['filter'])
+        if args['sort']:
+            order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
+            transaction_query = transaction_query.order_by(order)
+
+        per_page = args['range'][1] - args['range'][0] + 1
+        page = args['range'][0] // per_page
+        transactions = transaction_query.paginate(page,per_page, error_out=False)
+ 
+        response = make_response(json.dumps(marshal(transations.items, transaction_marshal)), 200)
+        response.headers.extend({
+            'Content-Range': 
+                f"transaction {args['range'][0]}-{args['range'][1]}/{transactions.total}"
+        })
     
     def post(self, id=None):
         # POST requests do not allow id url
