@@ -5,6 +5,7 @@ import {
 	DateField,
 	DateTimeInput,
 	Edit,
+    Filter,
 	List,
 	NumberField,
 	NumberInput,
@@ -65,8 +66,13 @@ export const TransactionEdit = props => (
 	</Edit>
 );
 
+export const TransactionFilter = props => (
+    <Filter {...props}>
+    </Filter>
+);
+
 export const TransactionList = props => (
-	<List {...props}>
+	<List filters={<TransactionFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
 			<NumberField source="amount" step="0.01" />

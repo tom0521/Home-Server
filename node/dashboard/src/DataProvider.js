@@ -6,20 +6,19 @@ const httpClient = fetchUtils.fetchJson;
 
 const dataProvider = {
     getList: (resource, params) => {
-	// const { page, perPage } = params.pagination;
-	// const { field, order } = params.sort;
-	const query = {
-		// sort: JSON.stringify([field, order]),
-		// range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-		// filer: JSON.stringify(params.filter),
-	};
-	const url = `${apiUrl}/${resource}?${stringify(query)}`;
+	    const { page, perPage } = params.pagination;
+	    const { field, order } = params.sort;
+        const query = {
+            sort: JSON.stringify([field, order]),
+            filter: JSON.stringify(params.filter),
+            range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+        };
+        const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
-	return httpClient(url).then(({ headers, json }) => ({
-		data: json,
-		total: json.length,
-		// total: parseInt(headers.get('content-range').split('/').pop(), 10),
-	}));
+        return httpClient(url).then(({ headers, json }) => ({
+            data: json,
+            total: parseInt(headers.get('Content-Range').split('/').pop(), 10),
+        }));
     },
 
     getOne: (resource, params) =>
@@ -36,15 +35,16 @@ const dataProvider = {
     },
 
     getManyReference: (resource, params) => {
-        // const { page, perPage } = params.pagination;
+        const { page, perPage } = params.pagination;
         // const { field, order } = params.sort;
         const query = {
             // sort: JSON.stringify([field, order]),
-            // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
             filter: JSON.stringify({
                 ...params.filter,
                 [params.target]: params.id,
             }),
+            page: page,
+            per_page: perPage,
         };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
 

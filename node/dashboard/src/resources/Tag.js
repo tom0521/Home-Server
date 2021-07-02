@@ -3,6 +3,7 @@ import {
 	Create,
 	Datagrid,
 	Edit,
+    Filter,
 	List,
 	SimpleForm,
 	TextField,
@@ -25,8 +26,14 @@ export const TagEdit = props => (
 	</Edit>
 );
 
+export const TagFilter = props => (
+    <Filter {...props}>
+        <TextInput label="Search" source="name" alwaysOn />
+    </Filter>
+);
+
 export const TagList = props => (
-	<List {...props}>
+	<List filters={<TagFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="name" />

@@ -3,6 +3,7 @@ import {
 	Create,
 	Datagrid,
 	Edit,
+    Filter,
 	List,
 	SimpleForm,
 	TextField,
@@ -25,8 +26,14 @@ export const CategoryEdit = props => (
 	</Edit>
 );
 
+export const CategoryFilter = props => (
+    <Filter {...props}>
+        <TextInput label="Search" source="name" alwaysOn />
+    </Filter>
+);
+
 export const CategoryList = props => (
-	<List {...props}>
+	<List filters={<CategoryFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="name" />

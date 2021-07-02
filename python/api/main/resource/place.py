@@ -1,5 +1,9 @@
-from flask import abort
+import json
+
+from flask import abort,make_response
 from flask_restful import fields,marshal,reqparse,Resource
+
+from sqlalchemy import desc
 
 from .. import db
 from ..model.address import addresses_marshal
@@ -33,7 +37,33 @@ class PlaceApi(Resource):
             if place:
                 return marshal(place, place_marshal), 200
             abort(404)
-        return marshal(Place.query.all(), places_marshal), 200
+        
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x))
+        # TODO: Remove default and allow query all
+        parser.add_argument('range', type=lambda x: json.loads(x), default=[0,99])
+        parser.add_argument('sort', type=lambda x: json.loads(x))
+        args = parser.parse_args()
+
+        place_query = Place.query
+
+        if args['filter']:
+            # TODO: filter only columns in the table
+            place_query = place_query.filter_by(**args['filter'])
+        if args['sort']:
+            order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
+            place_query = place_query.order_by(order)
+
+        per_page = args['range'][1] - args['range'][0] + 1
+        page = args['range'][0] // per_page
+        places = place_query.paginate(page,per_page, error_out=False)
+ 
+        response = make_response(json.dumps(marshal(places.items, places_marshal)), 200)
+        response.headers.extend({
+            'Content-Range': 
+                f"place {args['range'][0]}-{args['range'][1]}/{places.total}"
+        })
+        return response
     
     def post(self, id=None):
         # POST requests do not allow id url
