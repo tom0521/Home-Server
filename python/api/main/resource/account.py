@@ -1,4 +1,6 @@
-from flask import abort
+import json
+
+from flask import abort,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from .. import db
@@ -40,7 +42,10 @@ class AccountApi(Resource):
         parser.add_argument('per_page', type=int)
         args = parser.parse_args()
         
-        return marshal(Account.query.paginate(args['page'], args['per_page'], error_out=False).items, accounts_marshal), 200
+        accounts = Account.query.paginate(args['page'], args['per_page'], error_out=False)
+        response = make_response(json.dumps(marshal(accounts.items, accounts_marshal)), 200)
+        response.headers.extend({'Content-Range': f"account {args['page']}-{args['per_page']}/{accounts.total}"})
+        return response
 
     def post(self, id=None):
         # POST requests do not allow id url
