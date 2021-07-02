@@ -1,6 +1,6 @@
 import json
 
-from flask import abort
+from flask import abort,make_response
 from flask_restful import marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -50,12 +50,12 @@ class CategoryApi(Resource):
 
         per_page = args['range'][1] - args['range'][0] + 1
         page = args['range'][0] // per_page
-        categorys = category_query.paginate(page,per_page, error_out=False)
+        categories = category_query.paginate(page,per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(categorys.items, categorys_marshal)), 200)
+        response = make_response(json.dumps(marshal(categories.items, categories_marshal)), 200)
         response.headers.extend({
             'Content-Range': 
-                f"category {args['range'][0]}-{args['range'][1]}/{categorys.total}"
+                f"category {args['range'][0]}-{args['range'][1]}/{categories.total}"
         })
         return response
     

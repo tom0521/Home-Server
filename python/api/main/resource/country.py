@@ -1,6 +1,6 @@
 import json
 
-from flask import abort
+from flask import abort,make_response
 from flask_restful import marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -52,12 +52,12 @@ class CountryApi(Resource):
 
         per_page = args['range'][1] - args['range'][0] + 1
         page = args['range'][0] // per_page
-        countrys = country_query.paginate(page,per_page, error_out=False)
+        countries = country_query.paginate(page,per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(countrys.items, countrys_marshal)), 200)
+        response = make_response(json.dumps(marshal(countries.items, countries_marshal)), 200)
         response.headers.extend({
             'Content-Range': 
-                f"country {args['range'][0]}-{args['range'][1]}/{countrys.total}"
+                f"country {args['range'][0]}-{args['range'][1]}/{countries.total}"
         })
         return response
     

@@ -56,8 +56,8 @@ class AccountApi(Resource):
             account_query = account_query.order_by(order)
 
         per_page = args['range'][1] - args['range'][0] + 1
-        page = args['range'][0] // per_page
-        accounts = account_query.paginate(page,per_page, error_out=False)
+        page = args['range'][0] // per_page + 1
+        accounts = account_query.paginate(page=page, per_page=per_page, error_out=False)
  
         response = make_response(json.dumps(marshal(accounts.items, accounts_marshal)), 200)
         response.headers.extend({

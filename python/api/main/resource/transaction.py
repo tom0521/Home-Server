@@ -3,7 +3,7 @@ import json
 
 from datetime import datetime
 
-from flask import abort,Request
+from flask import abort,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -63,14 +63,15 @@ class TransactionApi(Resource):
             transaction_query = transaction_query.order_by(order)
 
         per_page = args['range'][1] - args['range'][0] + 1
-        page = args['range'][0] // per_page
-        transactions = transaction_query.paginate(page,per_page, error_out=False)
+        page = args['range'][0] // per_page + 1
+        transactions = transaction_query.paginate(page=page, per_page=per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(transations.items, transaction_marshal)), 200)
+        response = make_response(json.dumps(marshal(transactions.items, transactions_marshal)), 200)
         response.headers.extend({
             'Content-Range': 
                 f"transaction {args['range'][0]}-{args['range'][1]}/{transactions.total}"
         })
+        return response
     
     def post(self, id=None):
         # POST requests do not allow id url

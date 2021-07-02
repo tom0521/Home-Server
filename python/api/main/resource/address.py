@@ -1,6 +1,6 @@
 import json
 
-from flask import abort
+from flask import abort,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -58,13 +58,13 @@ class AddressApi(Resource):
             address_query = address_query.order_by(order)
 
         per_page = args['range'][1] - args['range'][0] + 1
-        page = args['range'][0] // per_page
-        addresss = address_query.paginate(page,per_page, error_out=False)
+        page = args['range'][0] // per_page + 1
+        addresses = address_query.paginate(page=page, per_page=per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(addresss.items, addresss_marshal)), 200)
+        response = make_response(json.dumps(marshal(addresses.items, address_marshal)), 200)
         response.headers.extend({
             'Content-Range': 
-                f"address {args['range'][0]}-{args['range'][1]}/{addresss.total}"
+                f"address {args['range'][0]}-{args['range'][1]}/{addresses.total}"
         })
         return response
     

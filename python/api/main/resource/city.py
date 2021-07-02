@@ -1,6 +1,6 @@
 import json
 
-from flask import abort
+from flask import abort,make_response
 from flask_restful import marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -51,12 +51,12 @@ class CityApi(Resource):
 
         per_page = args['range'][1] - args['range'][0] + 1
         page = args['range'][0] // per_page
-        citys = city_query.paginate(page,per_page, error_out=False)
+        cities = city_query.paginate(page,per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(citys.items, citys_marshal)), 200)
+        response = make_response(json.dumps(marshal(cities.items, cities_marshal)), 200)
         response.headers.extend({
             'Content-Range': 
-                f"city {args['range'][0]}-{args['range'][1]}/{citys.total}"
+                f"city {args['range'][0]}-{args['range'][1]}/{cities.total}"
         })
         return response
     
