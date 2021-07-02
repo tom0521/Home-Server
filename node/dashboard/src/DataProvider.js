@@ -10,7 +10,7 @@ const dataProvider = {
 	// const { field, order } = params.sort;
 	const query = {
 		// sort: JSON.stringify([field, order]),
-		// filer: JSON.stringify(params.filter),
+		filter: JSON.stringify(params.filter),
         range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
 	};
 	const url = `${apiUrl}/${resource}?${stringify(query)}`;

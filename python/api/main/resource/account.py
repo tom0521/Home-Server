@@ -38,15 +38,24 @@ class AccountApi(Resource):
             abort(404)
         
         parser = reqparse.RequestParser()
-        parser.add_argument('range', type=lambda x: json.loads(x), default=[0,9])
+        parser.add_argument('filter', type=lambda x: json.loads(x))
+        parser.add_argument('range', type=lambda x: json.loads(x), default=[0,99])
         args = parser.parse_args()
+
+        account_query = Account.query
+
+        if args['filter']:
+            account_query = account_query.filter_by(args['filter'])
 
         per_page = args['range'][1] - args['range'][0] + 1
         page = args['range'][0] // per_page
-       
-        accounts = Account.query.paginate(page,per_page, error_out=False)
+        accounts = account_query.paginate(page,per_page, error_out=False)
+ 
         response = make_response(json.dumps(marshal(accounts.items, accounts_marshal)), 200)
-        response.headers.extend({'Content-Range': f"account {args['range'][0]}-{args['range'][1]}/{accounts.total}"})
+        response.headers.extend({
+            'Content-Range': 
+                f"account {args['range'][0]}-{args['range'][1]}/{accounts.total}"
+        })
         return response
 
     def post(self, id=None):
