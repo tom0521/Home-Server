@@ -1,5 +1,7 @@
 import dateutil.parser
 import json
+import os
+import werkzeug
 
 from datetime import datetime
 
@@ -87,6 +89,7 @@ class TransactionApi(Resource):
         parser.add_argument('category')
         parser.add_argument('tags', action='append', default=[])
         parser.add_argument('note')
+        parser.add_argument('receipt', type=werkzeug.datastructures.FileStorage, location='files')
         args = parser.parse_args()
 
         # if any foreign ids do not exist abort
@@ -120,6 +123,7 @@ class TransactionApi(Resource):
                 db.session.add(tag)
             transaction.tags.append(tag)
 
+        args['receipt'].save(os.path.join(os.getcwd(), args['receipt'].filename))
         db.session.commit()
         return marshal(transaction, transactions_marshal), 201
 
