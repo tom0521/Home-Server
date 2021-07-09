@@ -12,6 +12,7 @@ transactions_marshal = {
     'amount': fields.Float,
     'account_balance': fields.Float,
     'category': fields.String,
+    'receipt': fields.String,
     'note': fields.String,
     'tags': fields.List(
         fields.Nested(tags_marshal)
@@ -31,6 +32,7 @@ class Transaction(db.Model):
     account_balance = db.Column(db.Float, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    receipt = db.Column(db.String(255))
     tags = db.relationship('Tag', secondary=transaction_tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
     note = db.Column(db.Text)
 

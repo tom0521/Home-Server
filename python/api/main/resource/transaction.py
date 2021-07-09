@@ -104,11 +104,19 @@ class TransactionApi(Resource):
                 category = Category(name=args['category'])
                 db.session.add(category)
                 db.session.commit()
+            category_id = category.id
+        else:
+            category_id = None
+        if args['receipt']:
+            receipt_path = os.path.join(os.getcwd(), args['receipt'].filename)
+            args['receipt'].save(receipt_path)
+        else:
+            receipt_path = None
 
         # Otherwise, insert the new entry and return Created status code
         new_balance = account.balance + args['amount']
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
-                        address_id=args['address_id'], category_id=category.id, note=args['note'])
+                        address_id=args['address_id'], category_id=category_id, note=args['note'], receipt=receipt_path)
         db.session.add(transaction)
         account.balance = new_balance
         # TODO: Does this return a value?
@@ -123,7 +131,6 @@ class TransactionApi(Resource):
                 db.session.add(tag)
             transaction.tags.append(tag)
 
-        args['receipt'].save(os.path.join(os.getcwd(), args['receipt'].filename))
         db.session.commit()
         return marshal(transaction, transactions_marshal), 201
 
