@@ -102,9 +102,10 @@ const dataProvider = {
 
         let formData = new FormData();
         for (const [key, val] of Object.entries(params.data)) {
-            console.log(`${key}: ${val}`);
             if (key === 'receipt') {
                 formData.append(key, val.rawFile);
+            } else if (Array.isArray(val)) {
+                val.forEach(elem => formData.append(key, elem));
             } else {
                 formData.append(key, val);
             }
