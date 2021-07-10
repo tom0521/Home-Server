@@ -6,6 +6,8 @@ import {
 	DateTimeInput,
 	Edit,
     Filter,
+    ImageInput,
+    ImageField,
 	List,
 	NumberField,
 	NumberInput,
@@ -14,6 +16,7 @@ import {
 	SimpleForm,
 	TextField,
 	TextInput,
+    UrlField,
 } from 'react-admin';
 import TagsInput from '../components/TagsInput';
 
@@ -36,6 +39,9 @@ export const TransactionCreate = props => (
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
 			}
+            <ImageInput source="receipt" label="Receipt" accept="image/*" placeholder={<p>Drop your receipt here</p>}>
+                <ImageField source="src" title="title" />
+            </ImageInput>
 			<TextInput multiline source="note" />
             <TagsInput name="tags" />
 		</SimpleForm>
@@ -78,6 +84,7 @@ export const TransactionList = props => (
 			<NumberField source="amount" step="0.01" />
 			<TextField source="category" />
 			<TextField multiline source="note" />
+            <UrlField source="receipt" />
 		</Datagrid>
 	</List>
 );

@@ -4,7 +4,7 @@ import { stringify } from 'query-string';
 const apiUrl = 'http://192.168.1.103:5000';
 const httpClient = fetchUtils.fetchJson;
 
-const dataProvider = {
+const baseDataProvider = {
     getList: (resource, params) => {
 	    const { page, perPage } = params.pagination;
 	    const { field, order } = params.sort;
@@ -90,6 +90,33 @@ const dataProvider = {
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: 'DELETE',
         }).then(({ json }) => ({ data: json }));
+    }
+};
+
+const dataProvider = {
+    ...baseDataProvider,
+    create: (resource, params) => {
+        if (resource !== 'transaction' || !params.data.receipt) {
+            return baseDataProvider.create(resource, params);
+        }
+
+        let formData = new FormData();
+        for (const [key, val] of Object.entries(params.data)) {
+            if (key === 'receipt') {
+                formData.append(key, val.rawFile);
+            } else if (Array.isArray(val)) {
+                val.forEach(elem => formData.append(key, elem));
+            } else {
+                formData.append(key, val);
+            }
+        }
+
+        return httpClient(`${apiUrl}/${resource}`, {
+            method: 'POST',
+            body: formData,
+        }).then(({ json }) => ({
+            data: { ...params.data, id: json.id },
+        }));
     }
 };
 
