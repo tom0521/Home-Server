@@ -16,6 +16,7 @@ import {
 	SimpleForm,
 	TextField,
 	TextInput,
+    UrlField,
 } from 'react-admin';
 import TagsInput from '../components/TagsInput';
 
@@ -83,7 +84,7 @@ export const TransactionList = props => (
 			<NumberField source="amount" step="0.01" />
 			<TextField source="category" />
 			<TextField multiline source="note" />
-            <ImageField source="receipt" title="receipt" />
+            <UrlField source="receipt" />
 		</Datagrid>
 	</List>
 );
