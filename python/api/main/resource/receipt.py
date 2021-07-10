@@ -4,7 +4,7 @@ from flask_restful import Resource
 
 class ReceiptApi(Resource):
 
-    def get(self, receipt_path):
+    def get(self, receipt):
         return send_from_directory(
-            current_app.config['RECEIPT_PATH'], receipt_path
+            current_app.config['RECEIPT_PATH'], receipt
         )

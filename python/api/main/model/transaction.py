@@ -12,7 +12,7 @@ transactions_marshal = {
     'amount': fields.Float,
     'account_balance': fields.Float,
     'category': fields.String,
-    'receipt': fields.String,
+    'receipt': fields.Url('receiptapi', absolute=True),
     'note': fields.String,
     'tags': fields.List(
         fields.Nested(tags_marshal)

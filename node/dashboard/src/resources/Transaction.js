@@ -83,6 +83,7 @@ export const TransactionList = props => (
 			<NumberField source="amount" step="0.01" />
 			<TextField source="category" />
 			<TextField multiline source="note" />
+            <ImageField source="receipt" title="receipt" />
 		</Datagrid>
 	</List>
 );
