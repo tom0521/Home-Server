@@ -60,7 +60,7 @@ def create_app(test_config=None):
     api.add_resource(CountryApi, '/country', '/country/<int:id>')
     api.add_resource(PlaceApi, '/place', '/place/<int:id>')
     api.add_resource(PlaceAddressApi, '/place/<int:place_id>/address')
-    api.add_resource(ReceiptApi, '/receipt/not_found', '/receipt/<path:receipt>')
+    api.add_resource(ReceiptApi, '/receipt/<path:receipt>')
     api.add_resource(StateProvinceApi, '/state_province', '/state_province/<int:id>')
     api.add_resource(TagApi, '/tag', '/tag/<int:id>')
     api.add_resource(TransactionApi, '/transaction', '/transaction/<int:id>')

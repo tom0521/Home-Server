@@ -6,13 +6,17 @@ from .. import db
 from ..model.tag import tags_marshal
 
 
+class ReceiptUrl(fields.Url):
+    def output(self, key, obj):
+        return fields.Url.output(self, key, obj) if obj.__dict__[key] else None
+
 transactions_marshal = {
     'id': fields.Integer,
     'timestamp': fields.DateTime,
     'amount': fields.Float,
     'account_balance': fields.Float,
     'category': fields.String,
-    'receipt': fields.Url('receiptapi', absolute=True),
+    'receipt': ReceiptUrl('receiptapi', absolute=True),
     'note': fields.String,
     'tags': fields.List(
         fields.Nested(tags_marshal)
