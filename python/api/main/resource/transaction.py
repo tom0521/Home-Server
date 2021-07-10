@@ -5,7 +5,7 @@ import werkzeug
 
 from datetime import datetime
 
-from flask import abort,make_response
+from flask import abort,current_app,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -107,16 +107,11 @@ class TransactionApi(Resource):
             category_id = category.id
         else:
             category_id = None
-        if args['receipt']:
-            receipt_path = os.path.join(os.getcwd(), args['receipt'].filename)
-            args['receipt'].save(receipt_path)
-        else:
-            receipt_path = None
 
         # Otherwise, insert the new entry and return Created status code
         new_balance = account.balance + args['amount']
         transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
-                        address_id=args['address_id'], category_id=category_id, note=args['note'], receipt=receipt_path)
+                        address_id=args['address_id'], category_id=category_id, note=args['note'])
         db.session.add(transaction)
         account.balance = new_balance
         # TODO: Does this return a value?
@@ -130,6 +125,17 @@ class TransactionApi(Resource):
                 tag = Tag(name=t)
                 db.session.add(tag)
             transaction.tags.append(tag)
+
+        db.session.commit()
+
+        # Need to make the transaction to create a unique receipt filename
+        if args['receipt']:
+            receipt_dir = args['timestamp'].strftime('%Y/%B/%A')
+            os.makedirs(os.path.join(current_app.config['RECEIPT_PATH'], receipt_dir), exist_ok=True)
+            receipt_name = f"{args['timestamp'].strftime('%X')}-{transaction.id}{os.path.splitext(args['receipt'].filename)[-1]}"
+            receipt_path = f'{receipt_dir}/{receipt_name}'
+            args['receipt'].save(os.path.join(current_app.config['RECEIPT_PATH'], receipt_path))
+            transaction.receipt = receipt_path
 
         db.session.commit()
         return marshal(transaction, transactions_marshal), 201

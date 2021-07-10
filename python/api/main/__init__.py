@@ -15,7 +15,9 @@ def create_app(test_config=None):
     api = Api(app)
     app.config.from_mapping(
         SECRET_KEY="dev",
-        DATABASE=os.path.join(app.instance_path, "api.db"),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        SQLALCHEMY_DATABASE_URI=f'sqlite:///{app.instance_path}/app.db',
+        RECEIPT_PATH=os.path.join(app.instance_path, 'receipts'),
     )
 
     if test_config is None:
@@ -24,13 +26,15 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     try:
-        os.makedirs(app.instance_path)
+        os.makedirs(app.instance_path, exist_ok=True)
+        os.makedirs(app.config['RECEIPT_PATH'], exist_ok=True)
     except OSError:
         pass
 
+    app.app_context().push()
+
     from .model import account,address,category,city,country,place,state_province,tag,transaction
 
-    app.app_context().push()
     db.init_app(app)
     db.create_all()
 
