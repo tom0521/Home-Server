@@ -18,6 +18,7 @@ import {
 	TextInput,
     UrlField,
 } from 'react-admin';
+import AddressReferenceInput from '../components/AddressReferenceInput'
 import TagsInput from '../components/TagsInput';
 
 export const TransactionCreate = props => (
@@ -28,12 +29,12 @@ export const TransactionCreate = props => (
 			<ReferenceInput source="account_id" reference="account">
 				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
 			</ReferenceInput>
-			<ReferenceInput source="address_id" reference="address">
-				{
-				// TODO: Add the entire address
-				}
-				<SelectInput optionText="line_1" />
-			</ReferenceInput>
+            <AddressReferenceInput
+                source="address_id"
+                reference="address"
+                allowEmpty
+                perPage={100}
+            />
             <TextInput source="category" />
 			{
 			// TODO; Add SelectArrayInput for tags
