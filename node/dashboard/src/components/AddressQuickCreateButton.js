@@ -16,7 +16,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 
 
-function AddressQuickCreateButton({ onChange }) {
+function AddressQuickCreateButton({ onChange, ...props}) {
     const [showDialog, setShowDialog] = useState(false);
     const [create, { loading }] = useCreate('address');
     const notify = useNotify();
@@ -49,7 +49,8 @@ function AddressQuickCreateButton({ onChange }) {
 
     return (
         <>
-            <Button onClick={handleClick} label="ra.action.create">
+            <Button onClick={handleClick} label="ra.action.create"
+                disabled={props.disabled}>
                 <IconContentAdd />
             </Button>
             <Dialog

@@ -16,10 +16,10 @@ const AddressReferenceInput = props => {
             <ReferenceInput key={version} {...props}>
                 <SelectInput optionText={choice => (
                     choice.city && choice.state_province ? `${choice.city}, ${choice.state_province}` : `${choice.url}`
-                )}/>
+                )} disabled={props.disabled} />
             </ReferenceInput>
 
-            <AddressQuickCreateButton onChange={handleChange} />
+            <AddressQuickCreateButton onChange={handleChange} {...props} />
         </div>
     );
 };

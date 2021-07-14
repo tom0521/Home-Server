@@ -40,6 +40,7 @@ export const TransactionCreate = props => (
                         reference="address"
                         filter={ formData.place_id ? { place_id: formData.place_id } : {} }
                         allowEmpty
+                        disabled={ !formData.place_id }
                         {...rest}
                     />
                 )}
