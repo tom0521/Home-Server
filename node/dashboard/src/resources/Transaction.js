@@ -6,6 +6,7 @@ import {
 	DateTimeInput,
 	Edit,
     Filter,
+    FormDataConsumer,
     ImageInput,
     ImageField,
 	List,
@@ -29,12 +30,20 @@ export const TransactionCreate = props => (
 			<ReferenceInput source="account_id" reference="account">
 				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
 			</ReferenceInput>
-            <AddressReferenceInput
-                source="address_id"
-                reference="address"
-                allowEmpty
-                perPage={100}
-            />
+            <ReferenceInput source="place_id" reference="place">
+                <SelectInput optionText="name" />
+            </ReferenceInput>
+            <FormDataConsumer>
+                {({ formData, ...rest }) => (
+                    <AddressReferenceInput
+                        source="address_id"
+                        reference="address"
+                        filter={ formData.place_id ? { place_id: formData.place_id } : {} }
+                        allowEmpty
+                        {...rest}
+                    />
+                )}
+            </FormDataConsumer>
             <TextInput source="category" />
 			{
 			// TODO; Add SelectArrayInput for tags

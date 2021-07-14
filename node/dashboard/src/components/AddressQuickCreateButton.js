@@ -3,7 +3,6 @@ import { useForm } from 'react-final-form';
 import {
     Button,
     FormWithRedirect,
-    required,
     SaveButton,
     TextInput,
     useCreate,
@@ -32,6 +31,7 @@ function AddressQuickCreateButton({ onChange }) {
     };
 
     const handleSubmit = async values => {
+        values.place_id = form.getFieldState('place_id').value;
         create(
             { payload: { data: values } },
             {
@@ -71,12 +71,30 @@ function AddressQuickCreateButton({ onChange }) {
                             <DialogContent>
                                 <TextInput
                                     source="line_1"
-                                    validate={required()}
                                     fullWidth
                                 />
                                 <TextInput
                                     source="line_2"
-                                    validate={required()}
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="city"
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="state"
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="postal_code"
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="phone"
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="url" type="url"
                                     fullWidth
                                 />
                             </DialogContent>
