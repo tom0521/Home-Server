@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    AutocompleteInput,
 	Create,
 	Datagrid,
 	DateField,
@@ -18,9 +19,60 @@ import {
 	TextField,
 	TextInput,
     UrlField,
+    useCreate,
+    useCreateSuggestionContext,
 } from 'react-admin';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    TextField as MuiTextField,
+} from '@material-ui/core';
 import AddressReferenceInput from '../components/AddressReferenceInput'
 import TagsInput from '../components/TagsInput';
+
+const CreatePlace = () => {
+    const { filter, onCancel, onCreate } = useCreateSuggestionContext();
+    const [value, setValue] = React.useState(filter || '');
+    const [create] = useCreate('place');
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        create(
+            {
+                payload: {
+                    data: { name: value, },
+                },
+            },
+            {
+                onSuccess: ({ data }) => {
+                    setValue('');
+                    onCreate(data);
+                },
+            }
+        );
+    };
+
+    return (
+        <Dialog open onClose={onCancel}>
+            <form onSubmit={handleSubmit}>
+                <DialogContent>
+                    <MuiTextField
+                        label="New Place"
+                        value={value}
+                        onChange={event => setValue(event.target.value)}
+                        autoFocus
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button type="submit">Save</Button>
+                    <Button onClick={onCancel}>Cancel</Button>
+                </DialogActions>
+            </form>
+        </Dialog>
+    );
+};
 
 export const TransactionCreate = props => (
 	<Create {...props}>
@@ -31,7 +83,12 @@ export const TransactionCreate = props => (
 				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
 			</ReferenceInput>
             <ReferenceInput source="place_id" reference="place">
-                <SelectInput optionText="name" />
+                <AutocompleteInput
+                    optionText="name"
+                    create={<CreatePlace />}
+                    createLabel="New Place..."
+                    allowEmpty
+                />
             </ReferenceInput>
             <FormDataConsumer>
                 {({ formData, ...rest }) => (
