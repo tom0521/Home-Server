@@ -74,6 +74,24 @@ const CreatePlace = () => {
     );
 };
 
+const categories = [
+    { id: 0,  name:'Housing' },
+    { id: 1,  name: 'Transportation' },
+    { id: 2,  name: 'Food' },
+    { id: 3,  name: 'Utilities' },
+    { id: 4,  name: 'Clothing' },
+    { id: 5,  name: 'Medical/Healthcare' },
+    { id: 6,  name: 'Insurance' },
+    { id: 7,  name: 'Household Items/Supplies' },
+    { id: 8,  name: 'Personal' },
+    { id: 9,  name: 'Debt' },
+    { id: 10, name: 'Retirement' },
+    { id: 11, name: 'Education' },
+    { id: 12, name: 'Savings' },
+    { id: 13, name: 'Gifts/Donations' },
+    { id: 14, name: 'Entertainment' }
+];
+
 export const TransactionCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/transaction/create">
@@ -102,7 +120,7 @@ export const TransactionCreate = props => (
                     />
                 )}
             </FormDataConsumer>
-            <TextInput source="category" />
+            <SelectInput source="category" choices={categories} optionValue="name" />
 			{
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
@@ -110,8 +128,8 @@ export const TransactionCreate = props => (
             <ImageInput source="receipt" label="Receipt" accept="image/*" placeholder={<p>Drop your receipt here</p>}>
                 <ImageField source="src" title="title" />
             </ImageInput>
-			<TextInput multiline source="note" />
-            <TagsInput name="tags" />
+			<TextInput multiline source="note" fullWidth />
+            <TagsInput name="tags" fullWidth />
 		</SimpleForm>
 	</Create>
 );
