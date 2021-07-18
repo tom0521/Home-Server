@@ -43,6 +43,9 @@ class CategoryApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
+            if args['filter']['q']:
+                category_query = category_query.filter(Category.name.like(f"%{args['filter']['q']}%"))
+                del args['filter']['q']
             category_query = category_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

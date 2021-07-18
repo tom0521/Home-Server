@@ -59,6 +59,8 @@ class TransactionApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
+            if args['filter']['q']:
+                del args['filter']['q']
             transaction_query = transaction_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
