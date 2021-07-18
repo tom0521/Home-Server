@@ -9,6 +9,7 @@ import {
 	NumberField,
 	NumberInput,
 	RadioButtonGroupInput,
+    required,
 	SimpleForm,
 	TextField,
 	TextInput
@@ -17,7 +18,7 @@ import {
 export const AccountCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/account">
-			<TextInput source="name" />
+			<TextInput source="name" validate={required()} />
 			<NumberInput source="balance" step="0.01" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },

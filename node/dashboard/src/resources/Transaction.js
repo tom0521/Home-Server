@@ -14,6 +14,7 @@ import {
 	NumberField,
 	NumberInput,
 	ReferenceInput,
+    required,
 	SelectInput,
 	SimpleForm,
 	TextField,
@@ -96,9 +97,9 @@ export const TransactionCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/transaction/create">
 			<DateTimeInput source="timestamp" />
-			<NumberInput source="amount" step="0.01" />
-			<ReferenceInput source="account_id" reference="account">
-				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
+			<NumberInput source="amount" step="0.01" validate={required()} />
+			<ReferenceInput source="account_id" reference="account" >
+				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
 			</ReferenceInput>
             <ReferenceInput source="place_id" reference="place">
                 <AutocompleteInput
@@ -169,7 +170,6 @@ export const TransactionList = props => (
 			<DateField source="timestamp" />
 			<NumberField source="amount" step="0.01" />
 			<TextField source="category" />
-			<TextField multiline source="note" />
             <UrlField source="receipt" />
 		</Datagrid>
 	</List>
