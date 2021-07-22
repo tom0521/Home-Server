@@ -12,7 +12,6 @@ from ..model.state_province import StateProvince
 
 class CityApi(Resource):
 
-    # TODO: what to do with related addresses?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:

@@ -17,13 +17,12 @@ place_marshal = {
 
 class PlaceApi(Resource):
 
-    # TODO: what to do with related addresses?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        place = place.query,filter_by(id=id).first()
+        place = place.query.filter_by(id=id).first()
         if not place:
             abort(404)
         db.session.delete(place)

@@ -33,7 +33,7 @@ class TransactionApi(Resource):
         if not id:
             abort(404)
 
-        transaction = Transaction.query,filter_by(id=id).first()
+        transaction = Transaction.query.filter_by(id=id).first()
         if not transaction:
             abort(404)
         db.session.delete(transaction)

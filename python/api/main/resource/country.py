@@ -11,10 +11,7 @@ from ..model.country import Country,countries_marshal
 
 class CountryApi(Resource):
 
-    # TODO: what to do with related addresses?
     def delete(self, id=None):
-        parser = reqparse.RequestParser()
-        print(parser.parse_args())
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)

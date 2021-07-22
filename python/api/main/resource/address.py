@@ -20,13 +20,12 @@ address_marshal = {
 
 class AddressApi(Resource): 
 
-    # TODO: what to do with related transactions?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        address = Address.query,filter_by(id=id).first()
+        address = Address.query.filter_by(id=id).first()
         if not address:
             abort(404)
         db.session.delete(address)

@@ -12,13 +12,12 @@ from ..model.transaction import Transaction
 
 class TagApi(Resource):
 
-    # TODO: what to do with transaction_tag entries?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        tag = Tag.query,filter_by(id=id).first()
+        tag = Tag.query.filter_by(id=id).first()
         if not tag:
             abort(404)
         db.session.delete(tag)
