@@ -167,7 +167,7 @@ class TransactionApi(Resource):
 
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        # parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x))
+        parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x))
         parser.add_argument('amount', type=float)
         parser.add_argument('account_id', type=int)
         parser.add_argument('address_id', type=int)
@@ -176,7 +176,6 @@ class TransactionApi(Resource):
         parser.add_argument('note')
         args = parser.parse_args()
 
-        print(args)
         transaction = Transaction.query.filter_by(id=id).first()
         if not transaction:
             abort(404)
@@ -188,8 +187,8 @@ class TransactionApi(Resource):
         # if args['timestamp']:
         #    transaction.timestamp = args['timestamp']
         if args['amount']:
-            transaction.amount = args['amount']
             amount_diff = args['amount'] - transaction.amount
+            transaction.amount = args['amount']
             for i in range(transaction.account.transactions.index(transaction),len(transaction.account.transactions)):
                 transaction.account.transactions[i].account_balance += amount_diff
             transaction.account.balance += amount_diff
