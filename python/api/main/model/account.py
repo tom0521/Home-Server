@@ -23,7 +23,7 @@ class Account(db.Model):
     name = db.Column(db.String(50), unique=True, nullable=False)
     balance = db.Column(db.Float, nullable=False,default=0)
     type = db.Column(db.Enum(AccountType), nullable=False)
-    transactions = db.relationship('Transaction', backref='account', lazy=True)
+    transactions = db.relationship('Transaction', backref='account', order_by='Transaction.timestamp', lazy=True)
     
     def __repr__(self):
         return '%s - $%.2f' % (self.name, self.balance)
