@@ -184,8 +184,8 @@ class TransactionApi(Resource):
         if len(args) == 0:
             return marshal(transaction, transactions_marshal), 202
 
-        # if args['timestamp']:
-        #    transaction.timestamp = args['timestamp']
+        if args['timestamp']:
+            transaction.timestamp = args['timestamp']
         if args['amount']:
             amount_diff = args['amount'] - transaction.amount
             transaction.amount = args['amount']
