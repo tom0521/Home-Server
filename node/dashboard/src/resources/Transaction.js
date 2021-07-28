@@ -161,6 +161,9 @@ export const TransactionEdit = props => (
 
 export const TransactionFilter = props => (
     <Filter {...props}>
+        <ReferenceInput source="account_id" label="Account" reference="account">
+            <SelectInput optionText="name" />
+        </ReferenceInput>
     </Filter>
 );
 
