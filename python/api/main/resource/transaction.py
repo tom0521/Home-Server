@@ -21,24 +21,37 @@ from ..resource.address import address_marshal
 
 transaction_marshal = {
     **transactions_marshal,
+    'account_id': fields.Integer,
     'account': fields.Nested(accounts_marshal),
     'address': fields.Nested(address_marshal)
 }
 
 class TransactionApi(Resource):
 
-    # TODO: Need to update account and all transactions after this one
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        transaction = Transaction.query,filter_by(id=id).first()
+        transaction = Transaction.query.filter_by(id=id).first()
         if not transaction:
             abort(404)
+
+        # Get index of transaction within account transactions
+        index = transaction.account.transactions.index(transaction)
+        # Subtract amount of the deleted transaction
+        for i in range(index+1,len(transaction.account.transactions)):
+            transaction.account.transactions[i].account_balance -= transaction.amount
+
+        # Get the response ready before we delete the entry
+        ret_json = marshal(transaction, transaction_marshal)
+
+        # TODO: Remove receipt?
+        transaction.account.balance -= transaction.amount
+
         db.session.delete(transaction)
         db.session.commit()
-        return marshal(transaction, transactions_marshal), 200
+        return ret_json, 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -111,13 +124,9 @@ class TransactionApi(Resource):
             category_id = None
 
         # Otherwise, insert the new entry and return Created status code
-        new_balance = account.balance + args['amount']
-        transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=new_balance,
+        transaction = Transaction(timestamp=args['timestamp'],amount=args['amount'],account_id=args['account_id'],account_balance=0,
                         address_id=args['address_id'], category_id=category_id, note=args['note'])
         db.session.add(transaction)
-        account.balance = new_balance
-        # TODO: Does this return a value?
-        # account.balance += transaction.amount
 
         # create and associate all tags with this transaction
         for t in args['tags']:
@@ -127,7 +136,16 @@ class TransactionApi(Resource):
                 tag = Tag(name=t)
                 db.session.add(tag)
             transaction.tags.append(tag)
+        db.session.commit()
 
+        # Then update all the later transaction account balances
+        # Get index of transaction within account transactions
+        index = transaction.account.transactions.index(transaction)
+        transaction.account.balance += args['amount']
+        transaction.account.transactions[-1].account_balance = transaction.account.balance
+        # Subtract amount of the deleted transaction
+        for i in range(len(transaction.account.transactions)-2,index-1,-1):
+            transaction.account.transactions[i].account_balance = transaction.account.transactions[i+1].account_balance - transaction.account.transactions[i+1].amount
         db.session.commit()
 
         # Need to make the transaction to create a unique receipt filename
@@ -169,7 +187,12 @@ class TransactionApi(Resource):
         if args['timestamp']:
             transaction.timestamp = args['timestamp']
         if args['amount']:
+            amount_diff = args['amount'] - transaction.amount
             transaction.amount = args['amount']
+            for i in range(transaction.account.transactions.index(transaction),len(transaction.account.transactions)):
+                transaction.account.transactions[i].account_balance += amount_diff
+            transaction.account.balance += amount_diff
+            db.session.commit()
         if args['account_id']:
             transaction.account_id = args['account_id']
         if args['address_id']:

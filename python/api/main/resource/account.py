@@ -18,13 +18,12 @@ account_marshal = {
 
 class AccountApi(Resource):
 
-    # TODO: what to do with related transactions?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        account = Account.query,filter_by(id=id).first()
+        account = Account.query.filter_by(id=id).first()
         if not account:
             abort(404)
         db.session.delete(account)
@@ -93,11 +92,6 @@ class AccountApi(Resource):
         db.session.commit()
         return marshal(account, account_marshal), 201
 
-    """
-      TODO: if balance changed, should the transactions be updated?
-            or do not allow balance to be updated. Need to create a
-            transaction to update.
-    """
     def put(self, id=None):
         # if an id was not specified, who do I update?
         if not id:
@@ -121,6 +115,10 @@ class AccountApi(Resource):
         if args['name']:
             account.name = args['name']
         if args['balance']:
+            # Update all related transactions
+            account_diff = args['balance'] - account.balance
+            for transaction in account.transactions:
+                transaction.account_balance += account_diff
             account.balance = args['balance']
         if args['type']:
             account.type = args['type']

@@ -11,13 +11,12 @@ from ..model.category import Category,categories_marshal
 
 class CategoryApi(Resource):
 
-    # TODO: what to do with related transactions?
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
             abort(404)
 
-        category = Category.query,filter_by(id=id).first()
+        category = Category.query.filter_by(id=id).first()
         if not category:
             abort(404)
         db.session.delete(category)

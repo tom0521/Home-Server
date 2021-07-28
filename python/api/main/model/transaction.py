@@ -12,7 +12,7 @@ class ReceiptUrl(fields.Url):
 
 transactions_marshal = {
     'id': fields.Integer,
-    'timestamp': fields.DateTime,
+    'timestamp': fields.DateTime(dt_format='iso8601'),
     'amount': fields.Float,
     'account_balance': fields.Float,
     'category': fields.String,
