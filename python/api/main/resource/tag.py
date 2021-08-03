@@ -43,7 +43,7 @@ class TagApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 tag_query = tag_query.filter(Tag.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             tag_query = tag_query.filter_by(**args['filter'])

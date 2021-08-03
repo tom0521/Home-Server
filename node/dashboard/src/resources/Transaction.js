@@ -4,6 +4,7 @@ import {
 	Create,
 	Datagrid,
 	DateField,
+    DateInput,
 	DateTimeInput,
 	Edit,
     Filter,
@@ -30,7 +31,7 @@ import {
     DialogContent,
     TextField as MuiTextField,
 } from '@material-ui/core';
-import AddressReferenceInput from '../components/AddressReferenceInput'
+import AddressReferenceInput from '../components/AddressReferenceInput';
 import TagsInput from '../components/TagsInput';
 
 const CreatePlace = () => {
@@ -164,6 +165,8 @@ export const TransactionFilter = props => (
         <ReferenceInput source="account_id" label="Account" reference="account">
             <SelectInput optionText="name" />
         </ReferenceInput>
+        <DateInput source="from_date" label="From Date" />
+        <DateInput source="to_date" label="To Date" />
     </Filter>
 );
 

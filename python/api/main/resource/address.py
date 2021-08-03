@@ -51,7 +51,7 @@ class AddressApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 address_query = address_query.filter(Address.line_1.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             address_query = address_query.filter_by(**args['filter'])

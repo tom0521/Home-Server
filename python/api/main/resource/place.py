@@ -48,7 +48,7 @@ class PlaceApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 place_query = place_query.filter(Place.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             place_query = place_query.filter_by(**args['filter'])

@@ -42,7 +42,7 @@ class CategoryApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 category_query = category_query.filter(Category.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             category_query = category_query.filter_by(**args['filter'])

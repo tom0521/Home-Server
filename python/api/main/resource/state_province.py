@@ -44,7 +44,7 @@ class StateProvinceApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 state_province_query = state_province_query.filter(StateProvince.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             state_province_query = state_province_query.filter_by(**args['filter'])

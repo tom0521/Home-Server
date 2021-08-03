@@ -8,7 +8,7 @@ from datetime import datetime
 from flask import abort,current_app,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
-from sqlalchemy import desc
+from sqlalchemy import desc,func
 
 from .. import db
 from ..model.account import Account,accounts_marshal
@@ -71,6 +71,12 @@ class TransactionApi(Resource):
         transaction_query = Transaction.query
 
         if args['filter']:
+            if args['filter'].get('from_date'):
+                transaction_query = transaction_query.filter(func.DATE(Transaction.timestamp) >= args['filter']['from_date'])
+                del args['filter']['from_date']
+            if args['filter'].get('to_date'):
+                transaction_query = transaction_query.filter(func.DATE(Transaction.timestamp) <= args['filter']['to_date'])
+                del args['filter']['to_date']
             transaction_query = transaction_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

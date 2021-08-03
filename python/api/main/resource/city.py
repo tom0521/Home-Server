@@ -43,7 +43,7 @@ class CityApi(Resource):
 
         if args['filter']:
             # TODO: filter only columns in the table
-            if args['filter']['q']:
+            if args['filter'].get('q'):
                 city_query = city_query.filter(City.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
             city_query = city_query.filter_by(**args['filter'])
