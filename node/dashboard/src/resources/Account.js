@@ -7,7 +7,6 @@ import {
     Filter,
 	List,
 	NumberField,
-	NumberInput,
 	RadioButtonGroupInput,
     required,
 	SimpleForm,
@@ -19,7 +18,7 @@ export const AccountCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/account">
 			<TextInput source="name" validate={required()} />
-			<NumberInput source="balance" step="0.01" />
+			<TextInput source="balance" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
 				{ id: 'CREDIT', name: 'Credit' }
@@ -32,7 +31,7 @@ export const AccountEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
 			<TextInput source="name" />
-			<NumberInput source="balance" step="0.01" />
+			<TextInput source="balance" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
 				{ id: 'CREDIT', name: 'Credit' }

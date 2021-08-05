@@ -106,6 +106,8 @@ const dataProvider = {
                 formData.append(key, val.rawFile);
             } else if (Array.isArray(val)) {
                 val.forEach(elem => formData.append(key, elem));
+            } else if (key === 'timestamp') {
+                formData.append(key, val.toISOString());
             } else {
                 formData.append(key, val);
             }
