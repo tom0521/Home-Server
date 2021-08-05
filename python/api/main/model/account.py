@@ -21,7 +21,7 @@ class AccountType(Enum):
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    balance = db.Column(db.Float, nullable=False,default=0)
+    balance = db.Column(db.Numeric(precision=2), nullable=False,default=0)
     type = db.Column(db.Enum(AccountType), nullable=False)
     transactions = db.relationship('Transaction', backref='account', order_by='Transaction.timestamp', lazy=True)
     

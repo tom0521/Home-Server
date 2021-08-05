@@ -4,6 +4,7 @@ import os
 import werkzeug
 
 from datetime import datetime
+from decimal import Decimal
 
 from flask import abort,current_app,make_response
 from flask_restful import fields,marshal,reqparse,Resource
@@ -101,7 +102,7 @@ class TransactionApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x), default=datetime.now())
-        parser.add_argument('amount', type=float, required=True)
+        parser.add_argument('amount', type=Decimal, required=True)
         parser.add_argument('account_id', type=int, required=True)
         parser.add_argument('address_id', type=int)
         parser.add_argument('category')
@@ -171,7 +172,7 @@ class TransactionApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('timestamp', type=lambda x: dateutil.parser.isoparse(x))
-        parser.add_argument('amount', type=float)
+        parser.add_argument('amount', type=Decimal)
         parser.add_argument('account_id', type=int)
         parser.add_argument('address_id', type=int)
         parser.add_argument('category')

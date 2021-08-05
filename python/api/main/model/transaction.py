@@ -31,9 +31,9 @@ transaction_tags = db.Table('transaction_tags',
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    amount = db.Column(db.Float, nullable=False)
+    amount = db.Column(db.Numeric(precision=2), nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
-    account_balance = db.Column(db.Float, nullable=False)
+    account_balance = db.Column(db.Numeric(precision=2), nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     receipt = db.Column(db.String(255))
