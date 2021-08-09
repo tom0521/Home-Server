@@ -51,7 +51,7 @@ export const AccountList = props => (
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="name" />
-			<NumberField source="balance" options={{ maximumFractionDigits: 2 }} />
+			<NumberField source="balance" options={{ style: 'currency', currency: 'USD' }} />
 			<ChipField source="type" />
 		</Datagrid>
 	</List>
