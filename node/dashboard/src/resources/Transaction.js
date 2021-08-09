@@ -90,7 +90,8 @@ const categories = [
     { id: 11, name: 'Education' },
     { id: 12, name: 'Savings' },
     { id: 13, name: 'Gifts/Donations' },
-    { id: 14, name: 'Entertainment' }
+    { id: 14, name: 'Entertainment' },
+    { id: 15, name: 'Income' }
 ];
 
 export const TransactionCreate = props => (
