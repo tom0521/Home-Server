@@ -19,7 +19,6 @@ import {
 	SimpleForm,
 	TextField,
 	TextInput,
-    UrlField,
     useCreate,
     useCreateSuggestionContext,
 } from 'react-admin';
@@ -31,6 +30,7 @@ import {
     TextField as MuiTextField,
 } from '@material-ui/core';
 import AddressReferenceInput from '../components/AddressReferenceInput';
+import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
 
 const CreatePlace = () => {
@@ -176,7 +176,7 @@ export const TransactionList = props => (
 			<DateField source="timestamp" />
 			<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
 			<TextField source="category" />
-            <UrlField source="receipt" />
+            <ReceiptField source="receipt" />
 		</Datagrid>
 	</List>
 );
