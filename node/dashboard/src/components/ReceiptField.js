@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 const ReceiptField = ({ source }) => {
     const record = useRecordContext();
     const classes = useStyles();
-    return record ? (
+    return (record && record[source]) ? (
         <a href={record[source]} className={classes.link}>
             <ReceiptIcon />
         </a>
