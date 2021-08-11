@@ -16,7 +16,6 @@ import {
     required,
 	SelectInput,
 	SimpleForm,
-	TextField,
 	TextInput,
     useCreate,
     useCreateSuggestionContext,
@@ -29,6 +28,7 @@ import {
     TextField as MuiTextField,
 } from '@material-ui/core';
 import AddressReferenceInput from '../components/AddressReferenceInput';
+import CategoryField from '../components/CategoryField';
 import MoneyField from '../components/MoneyField';
 import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
@@ -175,7 +175,7 @@ export const TransactionList = props => (
 		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
 			<MoneyField source="amount" />
-			<TextField source="category" />
+			<CategoryField source="category" />
             <ReceiptField source="receipt" />
 		</Datagrid>
 	</List>
