@@ -6,13 +6,13 @@ import {
     Edit,
     Filter,
 	List,
-	NumberField,
 	RadioButtonGroupInput,
     required,
 	SimpleForm,
 	TextField,
 	TextInput
 } from 'react-admin';
+import MoneyField from '../components/MoneyField';
 
 export const AccountCreate = props => (
 	<Create {...props}>
@@ -51,7 +51,7 @@ export const AccountList = props => (
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<TextField source="name" />
-			<NumberField source="balance" options={{ style: 'currency', currency: 'USD' }} />
+			<MoneyField source="balance" />
 			<ChipField source="type" />
 		</Datagrid>
 	</List>

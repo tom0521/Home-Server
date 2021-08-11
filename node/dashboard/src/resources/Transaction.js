@@ -12,7 +12,6 @@ import {
     ImageInput,
     ImageField,
 	List,
-	NumberField,
 	ReferenceInput,
     required,
 	SelectInput,
@@ -30,6 +29,7 @@ import {
     TextField as MuiTextField,
 } from '@material-ui/core';
 import AddressReferenceInput from '../components/AddressReferenceInput';
+import MoneyField from '../components/MoneyField';
 import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
 
@@ -174,7 +174,7 @@ export const TransactionList = props => (
 	<List filters={<TransactionFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
-			<NumberField source="amount" options={{ style: 'currency', currency: 'USD' }} />
+			<MoneyField source="amount" />
 			<TextField source="category" />
             <ReceiptField source="receipt" />
 		</Datagrid>
