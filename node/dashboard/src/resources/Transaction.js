@@ -141,21 +141,15 @@ export const TransactionEdit = props => (
 		<SimpleForm>
 			<DateTimeInput source="timestamp" />
 			<TextInput source="amount" />
-			<ReferenceInput source="account_id" reference="account">
-				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
+			<ReferenceInput source="account_id" reference="account" >
+				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
 			</ReferenceInput>
-			<ReferenceInput source="address_id" reference="address">
-				{
-				// TODO: Add the entire address
-				}
-				<SelectInput optionText="line_1" />
-			</ReferenceInput>
-            <TextInput source="category" />
+            <SelectInput source="category" choices={categories} optionValue="name" />
 			{
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
 			}
-			<TextInput multiline source="note" />
+			<TextInput multiline source="note" fullWidth />
 		</SimpleForm>
 	</Edit>
 );
