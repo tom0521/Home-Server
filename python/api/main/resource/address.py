@@ -178,7 +178,7 @@ class AddressApi(Resource):
                 state_province = StateProvince(name=args['state_province'])
                 db.session.add(state_province)
                 db.session.commit()
-            address.state_province_id = state_province_id.id
+            address.state_province_id = state_province.id
         if args['country']:
             country = Country.query.filter_by(name=args['country']).first()
             if not country:
