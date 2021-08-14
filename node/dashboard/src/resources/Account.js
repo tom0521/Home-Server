@@ -49,7 +49,6 @@ export const AccountFilter = props => (
 export const AccountList = props => (
 	<List filters={<AccountFilter />} {...props}>
 		<Datagrid rowClick="edit">
-			<TextField source="id" />
 			<TextField source="name" />
 			<MoneyField source="balance" />
 			<ChipField source="type" />
