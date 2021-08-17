@@ -14,8 +14,8 @@ const MoneyField = props => {
         <NumberField
             options={{ style: 'currency', currency: 'USD', signDisplay: 'exceptZero', }}
             className={classnames({
-                [classes.asset]: props.record[props.source] > 0,
-                [classes.debt]: props.record[props.source] < 0,
+                [classes.asset]: props.record && props.record[props.source] > 0,
+                [classes.debt]: props.record && props.record[props.source] < 0,
             })}
             {...props} />
     );

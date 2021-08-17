@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 
 const CategoryField = props => {
     const classes = useStyles();
-    return props.record[props.source] ? (
+    return props.record && props.record[props.source] ? (
         <ChipField
             className={classnames({
                 [classes.housing]: props.record[props.source] === 'Housing',
