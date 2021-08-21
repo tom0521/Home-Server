@@ -83,7 +83,11 @@ function AddressQuickCreateButton({ onChange, ...props}) {
                                     fullWidth
                                 />
                                 <TextInput
-                                    source="state"
+                                    source="state_province"
+                                    fullWidth
+                                />
+                                <TextInput
+                                    source="country"
                                     fullWidth
                                 />
                                 <TextInput

@@ -6,20 +6,19 @@ import {
     Edit,
     Filter,
 	List,
-	NumberField,
-	NumberInput,
 	RadioButtonGroupInput,
     required,
 	SimpleForm,
 	TextField,
 	TextInput
 } from 'react-admin';
+import MoneyField from '../components/MoneyField';
 
 export const AccountCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/account">
 			<TextInput source="name" validate={required()} />
-			<NumberInput source="balance" step="0.01" />
+			<TextInput source="balance" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
 				{ id: 'CREDIT', name: 'Credit' }
@@ -32,7 +31,7 @@ export const AccountEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
 			<TextInput source="name" />
-			<NumberInput source="balance" step="0.01" />
+			<TextInput source="balance" />
 			<RadioButtonGroupInput source="type" choices={[
 				{ id: 'DEBIT', name: 'Debit' },
 				{ id: 'CREDIT', name: 'Credit' }
@@ -50,9 +49,8 @@ export const AccountFilter = props => (
 export const AccountList = props => (
 	<List filters={<AccountFilter />} {...props}>
 		<Datagrid rowClick="edit">
-			<TextField source="id" />
 			<TextField source="name" />
-			<NumberField source="balance" options={{ maximumFractionDigits: 2 }} />
+			<MoneyField source="balance" />
 			<ChipField source="type" />
 		</Datagrid>
 	</List>

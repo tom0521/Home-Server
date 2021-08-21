@@ -12,15 +12,11 @@ import {
     ImageInput,
     ImageField,
 	List,
-	NumberField,
-	NumberInput,
 	ReferenceInput,
     required,
 	SelectInput,
 	SimpleForm,
-	TextField,
 	TextInput,
-    UrlField,
     useCreate,
     useCreateSuggestionContext,
 } from 'react-admin';
@@ -32,6 +28,9 @@ import {
     TextField as MuiTextField,
 } from '@material-ui/core';
 import AddressReferenceInput from '../components/AddressReferenceInput';
+import CategoryField from '../components/CategoryField';
+import MoneyField from '../components/MoneyField';
+import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
 
 const CreatePlace = () => {
@@ -91,14 +90,15 @@ const categories = [
     { id: 11, name: 'Education' },
     { id: 12, name: 'Savings' },
     { id: 13, name: 'Gifts/Donations' },
-    { id: 14, name: 'Entertainment' }
+    { id: 14, name: 'Entertainment' },
+    { id: 15, name: 'Income' }
 ];
 
 export const TransactionCreate = props => (
 	<Create {...props}>
 		<SimpleForm redirect="/transaction/create">
 			<DateTimeInput source="timestamp" />
-			<NumberInput source="amount" step="0.01" validate={required()} />
+			<TextInput source="amount" />
 			<ReferenceInput source="account_id" reference="account" >
 				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
 			</ReferenceInput>
@@ -140,22 +140,16 @@ export const TransactionEdit = props => (
 	<Edit {...props}>
 		<SimpleForm>
 			<DateTimeInput source="timestamp" />
-			<NumberInput source="amount" step="0.01" />
-			<ReferenceInput source="account_id" reference="account">
-				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} />
+			<TextInput source="amount" />
+			<ReferenceInput source="account_id" reference="account" >
+				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
 			</ReferenceInput>
-			<ReferenceInput source="address_id" reference="address">
-				{
-				// TODO: Add the entire address
-				}
-				<SelectInput optionText="line_1" />
-			</ReferenceInput>
-            <TextInput source="category" />
+            <SelectInput source="category" choices={categories} optionValue="name" />
 			{
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
 			}
-			<TextInput multiline source="note" />
+			<TextInput multiline source="note" fullWidth />
 		</SimpleForm>
 	</Edit>
 );
@@ -174,9 +168,9 @@ export const TransactionList = props => (
 	<List filters={<TransactionFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
-			<NumberField source="amount" step="0.01" />
-			<TextField source="category" />
-            <UrlField source="receipt" />
+			<MoneyField source="amount" />
+			<CategoryField source="category" />
+            <ReceiptField source="receipt" />
 		</Datagrid>
 	</List>
 );
