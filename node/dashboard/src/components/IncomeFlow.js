@@ -81,10 +81,9 @@ const IncomeFlow = props => {
         let timestamp = new Date(elem.timestamp);
         // This transaction is the first or the start of a new month
         if (labels.length === 0 ||
-            timestamp.getMonth()+1 !== labels[labels.length-1]) {
+            timestamp.getMonth() !== labels[labels.length-1].getMonth()) {
             // Append a new label, expense, income, and net income
-            // TODO: use the long month name
-            labels.push(timestamp.getMonth()+1);
+            labels.push(timestamp);
             income_flow.push(
                 (income_flow.length === 0) ? 0 :
                 income_flow[income_flow.length-1]
@@ -98,6 +97,11 @@ const IncomeFlow = props => {
             expenses[expenses.length-1] -= elem.amount;
         }
         income_flow[income_flow.length-1] += elem.amount;
+    });
+    labels.forEach((elem, idx) => {
+        labels[idx] = Intl.DateTimeFormat('en-US',
+                { month: 'long' }
+            ).format(elem);
     });
     graphData.labels = labels;
     graphData.datasets[0].data = income_flow;
