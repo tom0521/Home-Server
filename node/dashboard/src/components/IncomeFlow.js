@@ -2,6 +2,9 @@ import * as React from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
 import { Card, CardContent } from '@material-ui/core';
 import { Bar } from 'react-chartjs-2';
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
+import blue from '@material-ui/core/colors/blue';
 
 const graphOptions = {
     plugins: {
@@ -32,7 +35,7 @@ const graphData = {
         {
             type: 'line',
             label: 'Net Income',
-            borderColor: 'rgb(54, 162, 235)',
+            borderColor: blue[500],
             borderWidth: 2,
             fill: false,
             data: []
@@ -40,13 +43,13 @@ const graphData = {
         {
             type: 'bar',
             label: 'Income',
-            backgroundColor: 'rgb(75, 192, 192)',
+            backgroundColor: green[500],
             data: []
         },
         {
             type: 'bar',
             label: 'Expenses',
-            backgroundColor: 'rgb(255, 99, 132)',
+            backgroundColor: red[500],
             borderWidth: 2,
             borderColor: 'white',
             data: []
