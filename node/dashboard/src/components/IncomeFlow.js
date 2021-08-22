@@ -12,7 +12,18 @@ const graphOptions = {
         legend: {
             display: false,
         },
-    }
+    },
+    scales: {
+        y: {
+            ticks: {
+                callback: function(value, index, values) {
+                    return new Intl.NumberFormat('en-US', { 
+                            style: 'currency', currency: 'USD' 
+                        }).format(value);
+                },
+            },
+        },
+    },
 };
 
 const graphData = {
