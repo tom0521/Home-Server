@@ -9,6 +9,9 @@ const graphOptions = {
             display: true,
             text: 'Income Flow',
         },
+        legend: {
+            display: false,
+        },
     }
 };
 
@@ -57,29 +60,38 @@ const IncomeFlow = props => {
     });
     if (!loaded) { return <Loading />; }
     if (error) { return <Error />; }
+
+    const labels = [];
+    const income_flow = [];
+    const income = [];
+    const expenses = [];
     
     data.forEach((elem) => {
         let timestamp = new Date(elem.timestamp);
         // This transaction is the first or the start of a new month
-        if (graphData.labels.length === 0 ||
-            timestamp.getMonth()+1 !== graphData.labels[graphData.labels.length-1]) {
+        if (labels.length === 0 ||
+            timestamp.getMonth()+1 !== labels[labels.length-1]) {
             // Append a new label, expense, income, and net income
             // TODO: use the long month name
-            graphData.labels.push(timestamp.getMonth()+1);
-            graphData.datasets[0].data.push(
-                (graphData.datasets[0].data.length === 0) ? 0 :
-                graphData.datasets[0].data[graphData.datasets[0].length-1]
+            labels.push(timestamp.getMonth()+1);
+            income_flow.push(
+                (income_flow.length === 0) ? 0 :
+                income_flow[income_flow.length-1]
             );
-            graphData.datasets[1].data.push(0);
-            graphData.datasets[2].data.push(0);
+            income.push(0);
+            expenses.push(0);
         }
         if (elem.category && elem.category === 'Income') {
-            graphData.datasets[1].data[graphData.datasets[1].data.length-1] += elem.amount;
+            income[income.length-1] += elem.amount;
         } else {
-            graphData.datasets[2].data[graphData.datasets[2].data.length-1] -= elem.amount;
+            expenses[expenses.length-1] -= elem.amount;
         }
-        graphData.datasets[0].data[graphData.datasets[0].data.length-1] += elem.amount;
+        income_flow[income_flow.length-1] += elem.amount;
     });
+    graphData.labels = labels;
+    graphData.datasets[0].data = income_flow;
+    graphData.datasets[1].data = income;
+    graphData.datasets[2].data = expenses;
 
     return (
         <Card>
