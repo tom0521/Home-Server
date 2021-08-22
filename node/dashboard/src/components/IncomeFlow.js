@@ -3,6 +3,15 @@ import { useQueryWithStore, Loading, Error } from 'react-admin';
 import { Card, CardContent } from '@material-ui/core';
 import { Bar } from 'react-chartjs-2';
 
+const graphOptions = {
+    plugins: {
+        title: {
+            display: true,
+            text: 'Income Flow',
+        },
+    }
+};
+
 const graphData = {
     labels: [],
     datasets:[
@@ -75,7 +84,7 @@ const IncomeFlow = props => {
     return (
         <Card>
             <CardContent>
-                <Bar data={graphData} />
+                <Bar data={graphData} options={graphOptions} />
             </CardContent>
         </Card>
     );
