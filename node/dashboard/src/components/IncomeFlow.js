@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
-import { Card, CardContent } from '@material-ui/core';
 import { Bar } from 'react-chartjs-2';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
@@ -112,11 +111,7 @@ const IncomeFlow = props => {
     graphData.datasets[2].data = expenses;
 
     return (
-        <Card>
-            <CardContent>
-                <Bar data={graphData} options={graphOptions} />
-            </CardContent>
-        </Card>
+        <Bar data={graphData} options={graphOptions} />
     );
 };
 

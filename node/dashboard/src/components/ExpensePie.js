@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
-import { Card, CardContent } from '@material-ui/core';
 import { Doughnut } from 'react-chartjs-2';
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
+import lightGreen from '@material-ui/core/colors/lightGreen';
 import green from '@material-ui/core/colors/green';
 import yellow from '@material-ui/core/colors/yellow';
 import orange from '@material-ui/core/colors/orange';
@@ -78,37 +78,34 @@ const IncomeFlow = props => {
     graphData.datasets[0].data = Object.values(categories);
 
     return (
-        <Card>
-            <CardContent>
-                <Doughnut
-                    data={graphData}
-                    options={graphOptions}
-                    plugins={
-                        [{
-                            beforeDraw: (chart, args, options) => {
-                                if (chart.options.centertext) {
-                                    var width = chart.width,
-                                        height = chart.height,
-                                        ctx = chart.ctx;
+        <Doughnut
+            data={graphData}
+            options={graphOptions}
+            plugins={
+                [{
+                    beforeDraw: (chart, args, options) => {
+                        if (chart.options.centertext) {
+                            var width = chart.width,
+                                height = chart.height,
+                                ctx = chart.ctx;
 
-                                    ctx.restore();
-                                    var fontSize = (height / 160).toFixed(2);
-                                    ctx.font = fontSize + "em sans-serif";
-                                    ctx.textBaseline = "middle";
+                            ctx.restore();
+                            var fontSize = (height / 160).toFixed(2);
+                            ctx.font = fontSize + 'em sans-serif';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = lightGreen[500];
 
-                                    var text = chart.options.centertext,
-                                        textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                        textY = height / 2 - (chart.titleBlock.height - 15);
+                            var text = chart.options.centertext,
+                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                textY = height / 2;
 
-                                    ctx.fillText(text, textX, textY);
-                                    ctx.save();
-                                }
-                            }
-                        }]
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
                     }
-                />
-            </CardContent>
-        </Card>
+                }]
+            }
+        />
     );
 };
 
