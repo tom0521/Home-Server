@@ -1,48 +1,13 @@
 import * as React from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
-import { Doughnut } from 'react-chartjs-2';
-import red from '@material-ui/core/colors/red';
+import {
+    ResponsiveContainer,
+    PieChart,
+    Pie,
+} from 'recharts';
+import { Decimal } from 'decimal.js';
 import blue from '@material-ui/core/colors/blue';
-import lightGreen from '@material-ui/core/colors/lightGreen';
-import green from '@material-ui/core/colors/green';
-import yellow from '@material-ui/core/colors/yellow';
-import orange from '@material-ui/core/colors/orange';
-import purple from '@material-ui/core/colors/purple';
-import indigo from '@material-ui/core/colors/indigo';
-import teal from '@material-ui/core/colors/teal';
-
-const graphOptions = {
-    plugins: {
-        legend: {
-            display: false,
-        },
-        title: {
-            display: true,
-            text: 'Expenses',
-        },
-    },
-}
-
-const graphData = {
-    labels: [],
-    datasets:[
-        {
-            label: 'Expenses',
-            data: [],
-            backgroundColor: [
-                red[500],
-                blue[500],
-                green[500],
-                yellow[500],
-                orange[500],
-                purple[500],
-                indigo[500],
-                teal[500],
-            ],
-        },
-    ],
-};
-
+import Title from './Title';
 
 const IncomeFlow = props => { 
     const { loaded, error, data } = useQueryWithStore({
@@ -63,49 +28,42 @@ const IncomeFlow = props => {
     if (error) { return <Error />; }
 
     const categories = {};
-    let total = 0;
+    let total = new Decimal(0);
     data.forEach((elem) => {
         if (elem.category && elem.category !== 'Income' &&
             elem.category !== 'Debt') {
-            categories[elem.category] = (categories[elem.category] || 0) - elem.amount;
-            total -= elem.amount;
+            categories[elem.category] = (categories[elem.category] || new Decimal(0)).minus(elem.amount);
+            total = total.minus(elem.amount);
         }
     });
-    graphOptions.centertext = Intl.NumberFormat('en-US', {
+    let centertext = Intl.NumberFormat('en-US', {
                                         style: 'currency', currency: 'USD'
                                     }).format(total);
-    graphData.labels = Object.keys(categories);
-    graphData.datasets[0].data = Object.values(categories);
+    const graphData = [];
+    for (const [key, val] of Object.entries(categories)) {
+        graphData.push({
+            name: key,
+            amount: val.toNumber(),
+        });
+    }
 
     return (
-        <Doughnut
-            data={graphData}
-            options={graphOptions}
-            plugins={
-                [{
-                    beforeDraw: (chart, args, options) => {
-                        if (chart.options.centertext) {
-                            var width = chart.width,
-                                height = chart.height,
-                                ctx = chart.ctx;
-
-                            ctx.restore();
-                            var fontSize = (height / 160).toFixed(2);
-                            ctx.font = fontSize + 'em sans-serif';
-                            ctx.textBaseline = 'middle';
-                            ctx.fillStyle = lightGreen[500];
-
-                            var text = chart.options.centertext,
-                                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                textY = height / 2;
-
-                            ctx.fillText(text, textX, textY);
-                            ctx.save();
-                        }
-                    }
-                }]
-            }
-        />
+        <React.Fragment>
+            <Title>Expenses</Title>
+            <ResponsiveContainer>
+                <PieChart>
+                    <Pie
+                        data={graphData}
+                        dataKey="amount"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill={blue[500]}
+                        label
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </React.Fragment>
     );
 };
 
