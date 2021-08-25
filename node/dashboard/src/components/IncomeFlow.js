@@ -87,7 +87,7 @@ const IncomeFlow = props => {
                     <Tooltip />
                     <Bar dataKey="income" barSize={40} fill={green[500]} />
                     <Bar dataKey="expenses" barSize={40} fill={red[500]} />
-                    <Line type="monotone" dataKey="net_income" stroke={blue[500]} />
+                    <Line type="monotone" dataKey="net_income" stroke={blue[500]} dot />
                 </ComposedChart>
             </ResponsiveContainer>
         </React.Fragment>
