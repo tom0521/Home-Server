@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
 import {
     CartesianGrid,
@@ -16,8 +16,10 @@ import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 import Title from './Title';
+import DateContext from '../util/DateContext';
 
 const IncomeFlow = props => { 
+    const today = useContext(DateContext);
     const theme = useTheme();
     const { loaded, error, data } = useQueryWithStore({
         type: 'getList',
@@ -30,6 +32,9 @@ const IncomeFlow = props => {
             sort: {
                 field: 'timestamp',
                 order: 'ASC',
+            },
+            filter: {
+                to_date: today,
             },
         }
     });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
 import {
     Cell,
@@ -8,8 +8,8 @@ import {
     Sector,
 } from 'recharts';
 import { Decimal } from 'decimal.js';
-import blue from '@material-ui/core/colors/blue';
 import Title from './Title';
+import DateContext from '../util/DateContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -65,6 +65,7 @@ const renderActiveShape = props => {
 
 const IncomeFlow = props => { 
     const [ activeIndex, setActiveIndex ] = useState(0);
+    const today = useContext(DateContext);
     const { loaded, error, data } = useQueryWithStore({
         type: 'getList',
         resource: 'transaction',
@@ -76,6 +77,9 @@ const IncomeFlow = props => {
             sort: {
                 field: 'timestamp',
                 order: 'ASC',
+            },
+            filter: {
+                to_date: today,
             },
         }
     });
@@ -112,7 +116,7 @@ const IncomeFlow = props => {
                         cy="50%"
                         innerRadius={60}
                         outerRadius={80}
-                        fill={blue[500]}
+                        fill={'#0088FE'}
                         onMouseEnter={(_,idx) => setActiveIndex(idx)}
                     >
                         { graphData.map((elem, idx) => (
