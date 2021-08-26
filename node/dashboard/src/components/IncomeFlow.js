@@ -1,63 +1,25 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { useQueryWithStore, Loading, Error } from 'react-admin';
-import { Card, CardContent } from '@material-ui/core';
-import { Bar } from 'react-chartjs-2';
+import {
+    CartesianGrid,
+    ComposedChart,
+    Line,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts';
+import { Decimal } from 'decimal.js';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
-
-const graphOptions = {
-    plugins: {
-        title: {
-            display: true,
-            text: 'Income Flow',
-        },
-        legend: {
-            display: false,
-        },
-    },
-    scales: {
-        y: {
-            ticks: {
-                callback: function(value, index, values) {
-                    return new Intl.NumberFormat('en-US', { 
-                            style: 'currency', currency: 'USD' 
-                        }).format(value);
-                },
-            },
-        },
-    },
-};
-
-const graphData = {
-    labels: [],
-    datasets:[
-        {
-            type: 'line',
-            label: 'Net Income',
-            borderColor: blue[500],
-            borderWidth: 2,
-            fill: false,
-            data: []
-        },
-        {
-            type: 'bar',
-            label: 'Income',
-            backgroundColor: green[500],
-            data: []
-        },
-        {
-            type: 'bar',
-            label: 'Expenses',
-            backgroundColor: red[500],
-            borderWidth: 2,
-            borderColor: 'white',
-            data: []
-        },
-    ],
-};
+import Title from './Title';
+import DateContext from '../util/DateContext';
+import MoneyFormat from '../util/MoneyFormat';
 
 const IncomeFlow = props => { 
+    const today = useContext(DateContext);
     const { loaded, error, data } = useQueryWithStore({
         type: 'getList',
         resource: 'transaction',
@@ -70,53 +32,87 @@ const IncomeFlow = props => {
                 field: 'timestamp',
                 order: 'ASC',
             },
+            filter: {
+                to_date: today,
+            },
         }
     });
     if (!loaded) { return <Loading />; }
     if (error) { return <Error />; }
 
-    const labels = [];
-    const income_flow = [];
-    const income = [];
-    const expenses = [];
+    const graphData = [];
     
     data.forEach((elem) => {
-        let timestamp = new Date(elem.timestamp);
+        let month = Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(elem.timestamp));
         // This transaction is the first or the start of a new month
-        if (labels.length === 0 ||
-            timestamp.getMonth() !== labels[labels.length-1].getMonth()) {
+        if (graphData.length === 0 || month !== graphData[graphData.length-1].label) {
             // Append a new label, expense, income, and net income
-            labels.push(timestamp);
-            income_flow.push(
-                (income_flow.length === 0) ? 0 :
-                income_flow[income_flow.length-1]
-            );
-            income.push(0);
-            expenses.push(0);
+            graphData.push({
+                label: month,
+                income: new Decimal(0),
+                expenses: new Decimal(0),
+                net_income: (graphData.length === 0) ? new Decimal(0) :
+                            graphData[graphData.length-1].net_income,
+            });
         }
         if (elem.category && elem.category === 'Income') {
-            income[income.length-1] += elem.amount;
+            graphData[graphData.length-1].income =
+                graphData[graphData.length-1].income.plus(elem.amount);
         } else {
-            expenses[expenses.length-1] -= elem.amount;
+            graphData[graphData.length-1].expenses =
+                graphData[graphData.length-1].expenses.minus(elem.amount);
         }
-        income_flow[income_flow.length-1] += elem.amount;
+        graphData[graphData.length-1].net_income =
+            graphData[graphData.length-1].net_income.plus(elem.amount);
     });
-    labels.forEach((elem, idx) => {
-        labels[idx] = Intl.DateTimeFormat('en-US',
-                { month: 'long' }
-            ).format(elem);
+
+    graphData.forEach((val, idx) => {
+        graphData[idx].income     = val.income.toNumber();
+        graphData[idx].expenses   = val.expenses.toNumber();
+        graphData[idx].net_income = val.net_income.toNumber();
     });
-    graphData.labels = labels;
-    graphData.datasets[0].data = income_flow;
-    graphData.datasets[1].data = income;
-    graphData.datasets[2].data = expenses;
 
     return (
-        <Card>
-            <CardContent>
-                <Bar data={graphData} options={graphOptions} />
-            </CardContent>
-        </Card>
+        <React.Fragment>
+            <Title>Net Income</Title>
+            <ResponsiveContainer>
+                <ComposedChart
+                    data={graphData}
+                    margin={{
+                        top: 16,
+                        right: 16,
+                        bottom: 0,
+                        left: 16,
+                    }}
+                >
+                    <CartesianGrid strokeDashArray="3" />
+                    <XAxis dataKey="label" stroke="#666" />
+                    <YAxis
+                        stroke="#666"
+                        tickFormatter={MoneyFormat(0)}/>
+                    <Tooltip 
+                        separator=" "
+                        formatter={(val, name, props) => {
+                            switch (name) {
+                                case 'income':
+                                    name = '\u2191';
+                                    break;
+                                case 'expenses':
+                                    name = '\u2193';
+                                    break;
+                                default:
+                                    name = '\u2197';
+                            }
+                         
+                            return [ MoneyFormat(2)(val), name, ];
+                        }}
+                    />
+                    <Bar dataKey="income" barSize={40} fill={green[500]} />
+                    <Bar dataKey="expenses" barSize={40} fill={red[500]} />
+                    <Line type="monotone" dataKey="net_income" stroke={blue[500]} dot />
+                </ComposedChart>
+            </ResponsiveContainer>
+        </React.Fragment>
     );
 };
 
