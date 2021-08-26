@@ -1,17 +1,22 @@
-import * as React from "react";
+import React, { cloneElement } from 'react';
 import {
+    Button,
 	ChipField,
 	Create,
+    CreateButton,
 	Datagrid,
     Edit,
+    ExportButton,
     Filter,
 	List,
 	RadioButtonGroupInput,
     required,
 	SimpleForm,
 	TextField,
-	TextInput
+	TextInput,
+    TopToolbar,
 } from 'react-admin';
+import TransferIcon from '@material-ui/icons/SwapHoriz';
 import MoneyField from '../components/MoneyField';
 
 export const AccountCreate = props => (
@@ -47,11 +52,23 @@ export const AccountFilter = props => (
 );
 
 export const AccountList = props => (
-	<List filters={<AccountFilter />} {...props}>
+	<List actions={<ListActions />} filters={<AccountFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="name" />
 			<MoneyField source="balance" />
 			<ChipField source="type" />
 		</Datagrid>
 	</List>
+);
+
+const ListActions = (props) => (
+    <TopToolbar>
+        { cloneElement(props.filters, { context: 'button' }) }
+        <CreateButton />
+        <ExportButton />
+        <Button
+            label="Transfer">
+            <TransferIcon />
+        </Button>
+    </TopToolbar>
 );
