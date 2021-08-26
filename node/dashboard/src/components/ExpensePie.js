@@ -10,6 +10,7 @@ import {
 import { Decimal } from 'decimal.js';
 import Title from './Title';
 import DateContext from '../util/DateContext';
+import MoneyFormat from '../util/MoneyFormat';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -33,10 +34,7 @@ const renderActiveShape = props => {
                 {payload.name}
             </text>
             <text x={cx} y={cy} textAnchor="middle" fill="#333">
-                { Intl.NumberFormat('en-US', {
-                    style: 'currency', currency: 'USD'
-                    }).format(value)
-                }
+                { MoneyFormat(2)(value) }
             </text>
             <text x={cx} y={cy} dy={18} textAnchor="middle" fill="#999">
                 {`${(percent * 100).toFixed(2)}%`}

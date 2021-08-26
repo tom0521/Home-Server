@@ -11,16 +11,15 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 import { Decimal } from 'decimal.js';
-import { useTheme } from '@material-ui/core/styles';
 import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 import Title from './Title';
 import DateContext from '../util/DateContext';
+import MoneyFormat from '../util/MoneyFormat';
 
 const IncomeFlow = props => { 
     const today = useContext(DateContext);
-    const theme = useTheme();
     const { loaded, error, data } = useQueryWithStore({
         type: 'getList',
         resource: 'transaction',
@@ -83,13 +82,31 @@ const IncomeFlow = props => {
                         top: 16,
                         right: 16,
                         bottom: 0,
-                        left: 24,
+                        left: 16,
                     }}
                 >
                     <CartesianGrid strokeDashArray="3" />
-                    <XAxis dataKey="label" stroke={theme.palette.text.secondary} />
-                    <YAxis stroke={theme.palette.text.secondary} />
-                    <Tooltip />
+                    <XAxis dataKey="label" stroke="#666" />
+                    <YAxis
+                        stroke="#666"
+                        tickFormatter={MoneyFormat(0)}/>
+                    <Tooltip 
+                        separator=" "
+                        formatter={(val, name, props) => {
+                            switch (name) {
+                                case 'income':
+                                    name = '\u2191';
+                                    break;
+                                case 'expenses':
+                                    name = '\u2193';
+                                    break;
+                                default:
+                                    name = '\u2197';
+                            }
+                         
+                            return [ MoneyFormat(2)(val), name, ];
+                        }}
+                    />
                     <Bar dataKey="income" barSize={40} fill={green[500]} />
                     <Bar dataKey="expenses" barSize={40} fill={red[500]} />
                     <Line type="monotone" dataKey="net_income" stroke={blue[500]} dot />
