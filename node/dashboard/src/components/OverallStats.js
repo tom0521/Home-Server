@@ -5,7 +5,6 @@ import {
     Typography,
 } from '@material-ui/core';
 import { Decimal } from 'decimal.js';
-import Title from './Title';
 import DateContext from '../util/DateContext';
 import MoneyFormat from '../util/MoneyFormat';
 
@@ -46,22 +45,58 @@ const OverallStats = props => {
     return (
         <React.Fragment>
             <Grid container spacing={1}>
-                <Grid item xs={12} md={4} lg={4}>
-                    <Title>Income</Title>
-                    <Typography component="p" variant="h4">
+                <Grid item xs={4} md={4} lg={4}>
+                    <Typography
+                        component="p"
+                        variant="h5"
+                        color="textPrimary"
+                        align="right"
+                    >
                         { MoneyFormat(2)(income) }
                     </Typography>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                    <Title>Expenses</Title>
-                    <Typography component="p" variant="h4">
-                        { MoneyFormat(2)(expenses) }
+                    <Typography
+                        component="p"
+                        variant="caption"
+                        color="textSecondary"
+                        align="right"
+                    >
+                        Income
                     </Typography>
                 </Grid>
-                <Grid item xs={12} md={4} lg={4}>
-                    <Title>Net Income</Title>
-                    <Typography component="p" variant="h4">
+                <Grid item xs={4} md={4} lg={4}>
+                    <Typography
+                        component="p"
+                        variant="h5"
+                        color="textPrimary"
+                        align="right"
+                    >
+                        { MoneyFormat(2)(expenses) }
+                    </Typography>
+                    <Typography
+                        component="p"
+                        variant="caption"
+                        color="textSecondary"
+                        align="right"
+                    >
+                        Expenses
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} md={4} lg={4}>
+                    <Typography
+                        component="p"
+                        variant="h5"
+                        color="textPrimary"
+                        align="right"
+                    >
                         { MoneyFormat(2)(net_income) }
+                    </Typography>
+                    <Typography
+                        component="p"
+                        variant="caption"
+                        color="textSecondary"
+                        align="right"
+                    >
+                        Net Income
                     </Typography>
                 </Grid>
             </Grid>
