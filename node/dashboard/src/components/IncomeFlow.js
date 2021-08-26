@@ -74,7 +74,7 @@ const IncomeFlow = props => {
 
     return (
         <React.Fragment>
-            <Title>Net Income</Title>
+            <Title>Cash Flow</Title>
             <ResponsiveContainer>
                 <ComposedChart
                     data={graphData}
