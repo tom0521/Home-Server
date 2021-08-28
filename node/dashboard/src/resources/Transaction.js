@@ -97,7 +97,7 @@ const categories = [
 
 export const TransactionCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="list">
 			<DateTimeInput source="timestamp" />
 			<TextInput source="amount" />
 			<ReferenceInput source="account_id" reference="account" >
