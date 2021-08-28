@@ -154,7 +154,7 @@ class TransactionApi(Resource):
 
         # Need to make the transaction to create a unique receipt filename
         if args['receipt']:
-            receipt_dir = args['timestamp'].strftime('%Y/%B/%A')
+            receipt_dir = args['timestamp'].strftime('%Y/%m/%d')
             os.makedirs(os.path.join(current_app.config['RECEIPT_PATH'], receipt_dir), exist_ok=True)
             receipt_name = f"{args['timestamp'].strftime('%X')}-{transaction.id}{os.path.splitext(args['receipt'].filename)[-1]}"
             receipt_path = f'{receipt_dir}/{receipt_name}'
