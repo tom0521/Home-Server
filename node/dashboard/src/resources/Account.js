@@ -1,18 +1,22 @@
-import * as React from "react";
+import React, { cloneElement } from 'react';
 import {
 	ChipField,
 	Create,
+    CreateButton,
 	Datagrid,
     Edit,
+    ExportButton,
     Filter,
 	List,
 	RadioButtonGroupInput,
     required,
 	SimpleForm,
 	TextField,
-	TextInput
+	TextInput,
+    TopToolbar,
 } from 'react-admin';
 import MoneyField from '../components/MoneyField';
+import TransferQuickCreateButton from '../components/TransferQuickCreateButton';
 
 export const AccountCreate = props => (
 	<Create {...props}>
@@ -47,11 +51,20 @@ export const AccountFilter = props => (
 );
 
 export const AccountList = props => (
-	<List filters={<AccountFilter />} {...props}>
+	<List actions={<ListActions />} filters={<AccountFilter />} {...props}>
 		<Datagrid rowClick="edit">
 			<TextField source="name" />
 			<MoneyField source="balance" />
 			<ChipField source="type" />
 		</Datagrid>
 	</List>
+);
+
+const ListActions = (props) => (
+    <TopToolbar>
+        { cloneElement(props.filters, { context: 'button' }) }
+        <CreateButton />
+        <ExportButton />
+        <TransferQuickCreateButton />
+    </TopToolbar>
 );

@@ -32,6 +32,7 @@ import CategoryField from '../components/CategoryField';
 import MoneyField from '../components/MoneyField';
 import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
+import MoneyFormat from '../util/MoneyFormat';
 
 const CreatePlace = () => {
     const { filter, onCancel, onCreate } = useCreateSuggestionContext();
@@ -96,11 +97,16 @@ const categories = [
 
 export const TransactionCreate = props => (
 	<Create {...props}>
-		<SimpleForm>
+		<SimpleForm redirect="list">
 			<DateTimeInput source="timestamp" />
 			<TextInput source="amount" />
 			<ReferenceInput source="account_id" reference="account" >
-				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
+				<SelectInput 
+                    optionText={
+                        choice => `${choice.name} (${MoneyFormat(2)(choice.balance)})`
+                    } 
+                    validate={required()}
+                />
 			</ReferenceInput>
             <ReferenceInput source="place_id" reference="place">
                 <AutocompleteInput
@@ -142,7 +148,12 @@ export const TransactionEdit = props => (
 			<DateTimeInput source="timestamp" />
 			<TextInput source="amount" />
 			<ReferenceInput source="account_id" reference="account" >
-				<SelectInput optionText={choice => `${choice.name} - $${choice.balance}`} validate={required()} />
+				<SelectInput
+                    optionText={
+                        choice => `${choice.name} (${MoneyFormat(2)(choice.balance)})`
+                    }
+                    validate={required()}
+                />
 			</ReferenceInput>
             <SelectInput source="category" choices={categories} optionValue="name" />
 			{
