@@ -1,6 +1,5 @@
 import React, { cloneElement } from 'react';
 import {
-    Button,
 	ChipField,
 	Create,
     CreateButton,
@@ -16,8 +15,8 @@ import {
 	TextInput,
     TopToolbar,
 } from 'react-admin';
-import TransferIcon from '@material-ui/icons/SwapHoriz';
 import MoneyField from '../components/MoneyField';
+import TransferQuickCreateButton from '../components/TransferQuickCreateButton';
 
 export const AccountCreate = props => (
 	<Create {...props}>
@@ -66,9 +65,6 @@ const ListActions = (props) => (
         { cloneElement(props.filters, { context: 'button' }) }
         <CreateButton />
         <ExportButton />
-        <Button
-            label="Transfer">
-            <TransferIcon />
-        </Button>
+        <TransferQuickCreateButton />
     </TopToolbar>
 );
