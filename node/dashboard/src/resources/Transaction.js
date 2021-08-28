@@ -133,7 +133,11 @@ export const TransactionCreate = props => (
 			// TODO; Add SelectArrayInput for tags
 			// TODO: Add ImageInput for receipt
 			}
-            <ImageInput source="receipt" label="Receipt" accept="image/*" placeholder={<p>Drop your receipt here</p>}>
+            <ImageInput
+                source="receipt"
+                label="Receipt"
+                accept="image/*,.pdf"
+                placeholder={<p>Drop your receipt here</p>}>
                 <ImageField source="src" title="title" />
             </ImageInput>
 			<TextInput multiline source="note" fullWidth />
