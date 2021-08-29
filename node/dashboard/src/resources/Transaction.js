@@ -20,6 +20,8 @@ import {
     useCreate,
     useCreateSuggestionContext,
 } from 'react-admin';
+
+/* Material UI */
 import {
     Button,
     Dialog,
@@ -27,11 +29,15 @@ import {
     DialogContent,
     TextField as MuiTextField,
 } from '@material-ui/core';
+
+/* Custom Components */
 import AddressReferenceInput from '../components/AddressReferenceInput';
 import CategoryField from '../components/CategoryField';
 import MoneyField from '../components/MoneyField';
 import ReceiptField from '../components/ReceiptField';
 import TagsInput from '../components/TagsInput';
+
+/* Utilities */
 import MoneyFormat from '../util/MoneyFormat';
 
 const CreatePlace = () => {

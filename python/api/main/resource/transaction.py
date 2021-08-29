@@ -22,7 +22,6 @@ from ..resource.address import address_marshal
 
 transaction_marshal = {
     **transactions_marshal,
-    'account_id': fields.Integer,
     'account': fields.Nested(accounts_marshal),
     'address': fields.Nested(address_marshal)
 }
@@ -87,7 +86,10 @@ class TransactionApi(Resource):
         page = args['range'][0] // per_page + 1
         transactions = transaction_query.paginate(page=page, per_page=per_page, error_out=False)
  
-        response = make_response(json.dumps(marshal(transactions.items, transactions_marshal)), 200)
+        response = make_response(
+                json.dumps(
+                    marshal(transactions.items, transactions_marshal)
+                ), 200)
         response.headers.extend({
             'Content-Range': 
                 f"transaction {args['range'][0]}-{args['range'][1]}/{transactions.total}"
@@ -162,7 +164,7 @@ class TransactionApi(Resource):
             transaction.receipt = receipt_path
 
         db.session.commit()
-        return marshal(transaction, transactions_marshal), 201
+        return marshal(transaction, transaction_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -213,30 +215,4 @@ class TransactionApi(Resource):
             transaction.note = args['note']
 
         db.session.commit()
-        return marshal(transaction, transactions_marshal), 200
-
-class AccountTransactionApi(Resource):
-
-    def get(self, account_id):
-        account = Account.query.filter_by(id=account_id).first()
-        if account:
-            return marshal(account.transactions, transactions_marshal), 200
-        abort(404)
-
-
-class AddressTransactionApi(Resource):
-
-    def get(self, address_id):
-        address = Address.query.filter_by(id=address_id).first()
-        if address:
-            return marshal(address.transactions, transactions_marshal)
-        abort(404)
-
-
-class CategoryTransactionApi(Resource):
-
-    def get(self, category_id):
-        category = Category.query.filter_by(id=category_id).first()
-        if category:
-            return marshal(category.transactions, transactions_marshal)
-        abort(404)
+        return marshal(transaction, transaction_marshal), 200

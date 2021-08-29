@@ -2,7 +2,14 @@ import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
 
 const apiUrl = 'http://192.168.1.103:5000';
-const httpClient = fetchUtils.fetchJson;
+const httpClient = (url, options={}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Accept: 'application/json' });
+    }
+    options.headers.set('Timezone-Offset', 
+        (-1 * new Date().getTimezoneOffset() / 60));
+    return fetchUtils.fetchJson(url, options);
+};
 
 const baseDataProvider = {
     getList: (resource, params) => {
