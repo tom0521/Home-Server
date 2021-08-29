@@ -79,7 +79,7 @@ const TransferQuickCreateButton = ({ onChange, ...props}) => {
 
     return (
         <>
-            <Button onClick={handleClick} label="ra.action.create"
+            <Button onClick={handleClick} label="Transfer"
                 disabled={props.disabled}>
                 <TransferIcon />
             </Button>
