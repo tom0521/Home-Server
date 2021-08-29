@@ -7,10 +7,7 @@ const httpClient = (url, options={}) => {
         options.headers = new Headers({ Accept: 'application/json' });
     }
     options.headers.set('Timezone-Offset', 
-        `${(-1 * new Date().getTimezoneOffset() / 60).toLocaleString('en-US', {
-            signDisplay: 'always', minimumIntegerDigits: 2,
-        })}:00`
-    );
+        (-1 * new Date().getTimezoneOffset() / 60));
     return fetchUtils.fetchJson(url, options);
 };
 
