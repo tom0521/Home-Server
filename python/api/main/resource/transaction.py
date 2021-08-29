@@ -6,7 +6,7 @@ import werkzeug
 from datetime import datetime
 from decimal import Decimal
 
-from flask import abort,current_app,make_response,request
+from flask import abort,current_app,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc,func
@@ -16,7 +16,7 @@ from ..model.account import Account,accounts_marshal
 from ..model.address import Address
 from ..model.category import Category
 from ..model.tag import Tag
-from ..model.transaction import DateTimezone,Transaction,transactions_marshal
+from ..model.transaction import Transaction,transactions_marshal
 from ..resource.address import address_marshal
 
 
@@ -44,14 +44,7 @@ class TransactionApi(Resource):
             transaction.account.transactions[i].account_balance -= transaction.amount
 
         # Get the response ready before we delete the entry
-        ret_json = marshal(transaction, {
-            'timestamp':
-                DateTimezone(
-                    tz_offset=
-                        int(request.headers.get('Timezone-Offset', default=0)),
-                    dt_format='iso8601'),
-            **transaction_marshal
-        })
+        ret_json = marshal(transaction, transaction_marshal)
 
         # TODO: Remove receipt?
         transaction.account.balance -= transaction.amount
@@ -61,19 +54,11 @@ class TransactionApi(Resource):
         return ret_json, 200
 
     def get(self, id=None):
-        timezone_marshal = {
-            'timestamp':
-                DateTimezone(
-                    tz_offset=
-                        int(request.headers.get('Timezone-Offset', default=0)),
-                    dt_format='iso8601'),
-            **transactions_marshal
-        }
         # if the id was specified, try to query it
         if id:
             transaction = Transaction.query.filter_by(id=id).first()
             if transaction:
-                return marshal(transaction, timezone_marshal), 200
+                return marshal(transaction, transaction_marshal), 200
             abort(404)
         
         parser = reqparse.RequestParser()
@@ -103,7 +88,7 @@ class TransactionApi(Resource):
  
         response = make_response(
                 json.dumps(
-                    marshal(transactions.items, timezone_marshal)
+                    marshal(transactions.items, transactions_marshal)
                 ), 200)
         response.headers.extend({
             'Content-Range': 
@@ -179,14 +164,7 @@ class TransactionApi(Resource):
             transaction.receipt = receipt_path
 
         db.session.commit()
-        return marshal(transaction, {
-            'timestamp':
-                DateTimezone(
-                    tz_offset=
-                        int(request.headers.get('Timezone-Offset', default=0)),
-                    dt_format='iso8601'),
-            **transactions_marshal
-        }), 201
+        return marshal(transaction, transaction_marshal), 201
 
     def put(self, id=None):
         # if an id was not specified, who do I update?
@@ -237,11 +215,4 @@ class TransactionApi(Resource):
             transaction.note = args['note']
 
         db.session.commit()
-        return marshal(transaction, {
-            'timestamp':
-                DateTimezone(
-                    tz_offset=
-                        int(request.headers.get('Timezone-Offset', default=0)),
-                    dt_format='iso8601'),
-            **transactions_marshal
-        }), 200
+        return marshal(transaction, transaction_marshal), 200

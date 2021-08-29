@@ -1,18 +1,21 @@
 from datetime import datetime,timedelta,timezone
 
+from flask import request
 from flask_restful import fields
 
 from .. import db
 from ..model.tag import tags_marshal
 
 class DateTimezone(fields.DateTime):
-    def __init__(self, tz_offset=0, **kwargs):
-        self.timezone = timezone(timedelta(hours=tz_offset))
-        super(DateTimezone, self).__init__(**kwargs)
-
     def format(self, value):
-        return super(DateTimezone, self).format(
-                value.astimezone(self.timezone))
+        tz = timezone(
+                timedelta(
+                    hours=int(
+                        request.headers.get('Timezone-Offset', default=0)
+                    )
+                )
+            )
+        return super(DateTimezone, self).format(value.astimezone(tz))
 
 class ReceiptUrl(fields.Url):
     def output(self, key, obj):
@@ -20,6 +23,7 @@ class ReceiptUrl(fields.Url):
 
 transactions_marshal = {
     'id': fields.Integer,
+    'timestamp': DateTimezone(dt_format='iso8601'),
     'amount': fields.Float,
     'account_id': fields.Integer,
     'account_balance': fields.Float,
