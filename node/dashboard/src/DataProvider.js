@@ -22,7 +22,7 @@ const baseDataProvider = {
         };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
-        return httpClient(url, {}).then(({ headers, json }) => ({
+        return httpClient(url).then(({ headers, json }) => ({
             data: json,
             total: parseInt(headers.get('Content-Range').split('/').pop(), 10),
         }));
