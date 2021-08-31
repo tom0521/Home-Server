@@ -2,7 +2,7 @@ import json
 
 from decimal import Decimal
 
-from flask import abort,make_response
+from flask import abort,make_response,request
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc
@@ -22,15 +22,25 @@ class AccountApi(Resource):
 
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
-        if not id:
+        if id:
+            account = Account.query.filter_by(id=id).first()
+            if account:
+                db.session.delete(account)
+                db.session.commit()
+                return marshal(account, account_marshal), 200
             abort(404)
 
-        account = Account.query.filter_by(id=id).first()
-        if not account:
-            abort(404)
-        db.session.delete(account)
-        db.session.commit()
-        return marshal(account, account_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        accounts = Account.query.filter(
+                    Account.id.in_(args['filter'].get('id',[]))).all()
+        for account in accounts:
+            db.session.delete(account)
+            db.session.commit()
+
+        return marshal(accounts, accounts_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -54,6 +64,9 @@ class AccountApi(Resource):
             if args['filter'].get('q'):
                 account_query = account_query.filter(Account.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                account_query = account_query.filter(Account.id.in_(args['filter']['id']))
+                del args['filter']['id']
             account_query = account_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
