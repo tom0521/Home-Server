@@ -2,7 +2,7 @@ import json
 
 from decimal import Decimal
 
-from flask import abort,make_response,request
+from flask import abort,make_response
 from flask_restful import fields,marshal,reqparse,Resource
 
 from sqlalchemy import desc
