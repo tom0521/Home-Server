@@ -74,7 +74,7 @@ const baseDataProvider = {
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: 'PUT',
             body: JSON.stringify(params.data),
-        }).then(({ json }) => ({ data: json }));
+        }).then(({ json }) => ({ data: json.map(x => x.id) }));
     },
 
     create: (resource, params) =>
