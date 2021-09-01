@@ -146,6 +146,14 @@ class AddressApi(Resource):
         return marshal(address, address_marshal), 201
 
     def put(self, id=None):
+        # id must be specififed
+        if not id:
+            abort(400)
+
+        address = Address.query.filter_by(id=id).first()
+        if not address:
+            abort(404)
+
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('place_id', type=int)
@@ -159,58 +167,44 @@ class AddressApi(Resource):
         parser.add_argument('url')
         args = parser.parse_args()
 
-        # if the id was specified via url
-        if id:
-            if args['filter']:
-                del args['filter']
-            address = Address.query.filter_by(id=id).first()
-            if not address:
-                abort(404)
-        else:
-            if not args['filter'] or not isinstance(args['filter'].get('id'), list):
-                abort(400)
-            addresses = Address.query.filter(Address.id.in_(args['filter']['id'])).all()
-            del args['filter']
-
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(address if id else addresses, address_marshal), 202
+            return marshal(address, address_marshal), 202
 
-        for row in ([address] if id else addresses):
-            # TDOO: Check the foreign keys
-            if args['place_id']:
-                row.place_id = args['place_id']
-            if args['line_1']:
-                row.line_1 = args['line_1']
-            if args['line_2']:
-                row.line_2 = args['line_2']
-            if args['city']:
-                city = City.query.filter_by(name=args['city']).first()
-                if not city:
-                    city = City(name=args['city'])
-                    db.session.add(city)
-                    db.session.commit()
-                row.city_id = city.id
-            if args['state_province']:
-                state_province = StateProvince.query.filter_by(name=args['state_province']).first()
-                if not state_province:
-                    state_province = StateProvince(name=args['state_province'])
-                    db.session.add(state_province)
-                    db.session.commit()
-                row.state_province_id = state_province.id
-            if args['country']:
-                country = Country.query.filter_by(name=args['country']).first()
-                if not country:
-                    country = Country(name=args['country'])
-                    db.session.add(country)
-                    db.session.commit()
-                row.country_id = country.id
-            if args['postal_code']:
-                row.postal_code = args['postal_code']
-            if args['phone']:
-                row.phone = args['phone']
-            if args['url']:
-                row.url = args['url']
-            db.session.commit()
+        # TDOO: Check the foreign keys
+        if args['place_id']:
+            address.place_id = args['place_id']
+        if args['line_1']:
+            address.line_1 = args['line_1']
+        if args['line_2']:
+            address.line_2 = args['line_2']
+        if args['city']:
+            city = City.query.filter_by(name=args['city']).first()
+            if not city:
+                city = City(name=args['city'])
+                db.session.add(city)
+                db.session.commit()
+            address.city_id = city.id
+        if args['state_province']:
+            state_province = StateProvince.query.filter_by(name=args['state_province']).first()
+            if not state_province:
+                state_province = StateProvince(name=args['state_province'])
+                db.session.add(state_province)
+                db.session.commit()
+            address.state_province_id = state_province.id
+        if args['country']:
+            country = Country.query.filter_by(name=args['country']).first()
+            if not country:
+                country = Country(name=args['country'])
+                db.session.add(country)
+                db.session.commit()
+            address.country_id = country.id
+        if args['postal_code']:
+            address.postal_code = args['postal_code']
+        if args['phone']:
+            address.phone = args['phone']
+        if args['url']:
+            address.url = args['url']
+        db.session.commit()
 
-        return marshal(address if id else addresses, address_marshal), 200
+        return marshal(address, address_marshal), 200
