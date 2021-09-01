@@ -12,18 +12,27 @@ from ..model.state_province import StateProvince,state_provinces_marshal
 
 class StateProvinceApi(Resource):
 
-    # TODO: what to do with related addresses?
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            state_province = StateProvince.query.filter_by(id=id).first()
+            if state_province:
+                db.session.delete(state_province)
+                db.session.commit()
+                return marshal(state_province, state_provinces_marshal), 200
             abort(404)
 
-        state_province = StateProvince.query.filter_by(id=id).first()
-        if not state_province:
-            abort(404)
-        db.session.delete(state_province)
-        db.session.commit()
-        return marshal(state_province, state_provinces_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        state_provinces = StateProvince.query.filter(
+                StateProvince.id.in_(args['filter'].get('id',[]))).all()
+        for state_province in state_provinces:
+            db.session.delete(state_province)
+            db.session.commit()
+
+        return marshal(state_provinces, state_provinces_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -47,6 +56,10 @@ class StateProvinceApi(Resource):
             if args['filter'].get('q'):
                 state_province_query = state_province_query.filter(StateProvince.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                state_province_query = state_province_query.filter(
+                        StateProvince.id.in_(args['filter']['id']))
+                del args['filter']['id']
             state_province_query = state_province_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

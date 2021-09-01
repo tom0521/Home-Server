@@ -31,27 +31,45 @@ class TransactionApi(Resource):
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
         if not id:
+            transaction = Transaction.query.filter_by(id=id).first()
+            if transaction:
+                # Get index of transaction within account transactions
+                index = transaction.account.transactions.index(transaction)
+                # Subtract amount of the deleted transaction
+                for i in range(index+1,len(transaction.account.transactions)):
+                    transaction.account.transactions[i].account_balance -= transaction.amount
+
+                # Get the response ready before we delete the entry
+                ret_json = marshal(transaction, transaction_marshal)
+
+                # TODO: Remove receipt?
+                transaction.account.balance -= transaction.amount
+
+                db.session.delete(transaction)
+                db.session.commit()
+                return ret_json, 200
             abort(404)
 
-        transaction = Transaction.query.filter_by(id=id).first()
-        if not transaction:
-            abort(404)
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
 
-        # Get index of transaction within account transactions
-        index = transaction.account.transactions.index(transaction)
-        # Subtract amount of the deleted transaction
-        for i in range(index+1,len(transaction.account.transactions)):
-            transaction.account.transactions[i].account_balance -= transaction.amount
+        transactions = Transaction.query.filter(
+                Transaction.id.in_(args['filter'].get('id',[]))).all()
+        for transaction in transactions:
+            # Get index of transaction within account transactions
+            index = transaction.account.transactions.index(transaction)
+            # Subtract amount of the deleted transaction
+            for i in range(index+1,len(transaction.account.transactions)):
+                transaction.account.transactions[i].account_balance -= transaction.amount
 
-        # Get the response ready before we delete the entry
-        ret_json = marshal(transaction, transaction_marshal)
+            # TODO: Remove receipt?
+            transaction.account.balance -= transaction.amount
 
-        # TODO: Remove receipt?
-        transaction.account.balance -= transaction.amount
+            db.session.delete(transaction)
+            db.session.commit()
 
-        db.session.delete(transaction)
-        db.session.commit()
-        return ret_json, 200
+        return marshal(transactions, transactions_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -77,6 +95,10 @@ class TransactionApi(Resource):
             if args['filter'].get('to_date'):
                 transaction_query = transaction_query.filter(func.DATE(Transaction.timestamp) <= args['filter']['to_date'])
                 del args['filter']['to_date']
+            if isinstance(args['filter'].get('id'), list):
+                transaction_query = transaction_query.filter(
+                        Transaction.id.in_(args['filter']['id']))
+                del args['filter']['id']
             transaction_query = transaction_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
