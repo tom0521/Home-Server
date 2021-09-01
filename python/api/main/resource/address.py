@@ -21,16 +21,26 @@ address_marshal = {
 class AddressApi(Resource): 
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            address = Address.query.filter_by(id=id).first()
+            if address:
+                db.session.delete(address)
+                db.session.commit()
+                return marshal(address, address_marshal), 200
             abort(404)
 
-        address = Address.query.filter_by(id=id).first()
-        if not address:
-            abort(404)
-        db.session.delete(address)
-        db.session.commit()
-        return marshal(address, address_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        addresses = Address.query.filter(
+                    Address.id.in_(args['filter'].get('id',[]))).all()
+        for address in addresses:
+            db.session.delete(address)
+            db.session.commit()
+
+        return marshal(addresses, addresses_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -136,10 +146,6 @@ class AddressApi(Resource):
         return marshal(address, address_marshal), 201
 
     def put(self, id=None):
-        # if an id was not specified, who do I update?
-        if not id:
-            abort(404)
-
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('place_id', type=int)
@@ -153,65 +159,58 @@ class AddressApi(Resource):
         parser.add_argument('url')
         args = parser.parse_args()
 
-        address = Address.query.filter_by(id=id).first()
-        if not address:
-            abort(404)
+        # if the id was specified via url
+        if id:
+            if args['filter']:
+                del args['filter']
+            address = Address.query.filter_by(id=id).first()
+            if not address:
+                abort(404)
+        else:
+            if not args['filter'] or not isinstance(args['filter'].get('id'), list):
+                abort(400)
+            addresses = Address.query.filter(Address.id.in_(args['filter']['id'])).all()
+            del args['filter']
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(address, address_marshal), 202
+            return marshal(address if id else addresses, address_marshal), 202
 
-        # TDOO: Check the foreign keys
-        if args['place_id']:
-            address.place_id = args['place_id']
-        if args['line_1']:
-            address.line_1 = args['line_1']
-        if args['line_2']:
-            address.line_2 = args['line_2']
-        if args['city']:
-            city = City.query.filter_by(name=args['city']).first()
-            if not city:
-                city = City(name=args['city'])
-                db.session.add(city)
-                db.session.commit()
-            address.city_id = city.id
-        if args['state_province']:
-            state_province = StateProvince.query.filter_by(name=args['state_province']).first()
-            if not state_province:
-                state_province = StateProvince(name=args['state_province'])
-                db.session.add(state_province)
-                db.session.commit()
-            address.state_province_id = state_province.id
-        if args['country']:
-            country = Country.query.filter_by(name=args['country']).first()
-            if not country:
-                country = Country(name=args['country'])
-                db.session.add(country)
-                db.session.commit()
-            address.country_id = country.id
-        if args['postal_code']:
-            address.postal_code = args['postal_code']
-        if args['phone']:
-            address.phone = args['phone']
-        if args['url']:
-            address.url = args['url']
+        for row in ([address] if id else addresses):
+            # TDOO: Check the foreign keys
+            if args['place_id']:
+                row.place_id = args['place_id']
+            if args['line_1']:
+                row.line_1 = args['line_1']
+            if args['line_2']:
+                row.line_2 = args['line_2']
+            if args['city']:
+                city = City.query.filter_by(name=args['city']).first()
+                if not city:
+                    city = City(name=args['city'])
+                    db.session.add(city)
+                    db.session.commit()
+                row.city_id = city.id
+            if args['state_province']:
+                state_province = StateProvince.query.filter_by(name=args['state_province']).first()
+                if not state_province:
+                    state_province = StateProvince(name=args['state_province'])
+                    db.session.add(state_province)
+                    db.session.commit()
+                row.state_province_id = state_province.id
+            if args['country']:
+                country = Country.query.filter_by(name=args['country']).first()
+                if not country:
+                    country = Country(name=args['country'])
+                    db.session.add(country)
+                    db.session.commit()
+                row.country_id = country.id
+            if args['postal_code']:
+                row.postal_code = args['postal_code']
+            if args['phone']:
+                row.phone = args['phone']
+            if args['url']:
+                row.url = args['url']
+            db.session.commit()
 
-        db.session.commit()
-        return marshal(address, address_marshal), 200
-
-
-class CityAddressApi(Resource):
-
-    def get(self, city_id):
-        city = City.query.filter_by(id=city_id).first()
-        if city:
-            return marshal(city.addresses, addresses_marshal)
-        abort(404)
-
-class PlaceAddressApi(Resource):
-
-    def get(self, place_id):
-        place = Place.query.filter_by(id=place_id).first()
-        if place:
-            return marshal(place.addresses, addresess_marshal)
-        abort(404)
+        return marshal(address if id else addresses, address_marshal), 200
