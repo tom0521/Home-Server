@@ -111,45 +111,39 @@ class AccountApi(Resource):
         # set the arguments for the request
         parser = reqparse.RequestParser()
         parser.add_argument('balance', type=Decimal)
-        parser.add_argument('id', type=lambda x: json.loads(x))
+        parser.add_argument('filter', type=lambda x: json.loads(x))
         parser.add_argument('name')
         parser.add_argument('type', choices=('DEBIT', 'CREDIT'))
         args = parser.parse_args()
 
         # if the id was specified via url
         if id:
+            if args['filter']:
+                del args['filer']
             account = Account.query.filter_by(id=id).first()
             if not account:
                 abort(404)
+        else:
+            if not args['filter'] or not isinstance(args['filter'].get('id'), list):
+                abort(400)
+            accounts = Account.query.filter(Account.id.in_(args['filter']['id'])).all()
+            del args['filter']
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
-            return marshal(account, account_marshal), 202
+            return marshal(account if id else accounts, account_marshal), 202
 
-        if args['name']:
-            account.name = args['name']
-        if args['balance']:
-            # Update all related transactions
-            account_diff = args['balance'] - account.balance
-            for transaction in account.transactions:
-                transaction.account_balance += account_diff
-            account.balance = args['balance']
-        if args['type']:
-            account.type = args['type']
+        for row in ([account] if id else accounts):
+            if args['name']:
+                row.name = args['name']
+            if args['balance']:
+                # Update all related transactions
+                account_diff = args['balance'] - row.balance
+                for transaction in row.transactions:
+                    transaction.account_balance += account_diff
+                row.balance = args['balance']
+            if args['type']:
+                row.type = args['type']
+            db.session.commit()
 
-        db.session.commit()
-        return marshal(account, account_marshal), 200
-
-    def __put(self, account, args):
-        if args['name']:
-            account.name = args['name']
-        if args['balance']:
-            # Update all related transactions
-            account_diff = args['balance'] - account.balance
-            for transaction in account.transactions:
-                transaction.account_balance += account_diff
-            account.balance = args['balance']
-        if args['type']:
-            account.type = args['type']
-        db.session.commit()
-
+        return marshal(account if id else accounts, account_marshal), 200
