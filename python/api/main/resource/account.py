@@ -21,7 +21,7 @@ account_marshal = {
 class AccountApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
+        # if the id is specified via url
         if id:
             account = Account.query.filter_by(id=id).first()
             if account:
@@ -108,20 +108,19 @@ class AccountApi(Resource):
         return marshal(account, account_marshal), 201
 
     def put(self, id=None):
-        # if an id was not specified, who do I update?
-        if not id:
-            abort(404)
-
         # set the arguments for the request
         parser = reqparse.RequestParser()
-        parser.add_argument('name')
         parser.add_argument('balance', type=Decimal)
+        parser.add_argument('id', type=lambda x: json.loads(x))
+        parser.add_argument('name')
         parser.add_argument('type', choices=('DEBIT', 'CREDIT'))
         args = parser.parse_args()
 
-        account = Account.query.filter_by(id=id).first()
-        if not account:
-            abort(404)
+        # if the id was specified via url
+        if id:
+            account = Account.query.filter_by(id=id).first()
+            if not account:
+                abort(404)
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
@@ -140,3 +139,17 @@ class AccountApi(Resource):
 
         db.session.commit()
         return marshal(account, account_marshal), 200
+
+    def __put(self, account, args):
+        if args['name']:
+            account.name = args['name']
+        if args['balance']:
+            # Update all related transactions
+            account_diff = args['balance'] - account.balance
+            for transaction in account.transactions:
+                transaction.account_balance += account_diff
+            account.balance = args['balance']
+        if args['type']:
+            account.type = args['type']
+        db.session.commit()
+

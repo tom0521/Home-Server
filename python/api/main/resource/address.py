@@ -54,6 +54,9 @@ class AddressApi(Resource):
             if args['filter'].get('q'):
                 address_query = address_query.filter(Address.line_1.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                address_query = address_query.filter(Address.id.in_(args['filter']['id']))
+                del args['filter']['id']
             address_query = address_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

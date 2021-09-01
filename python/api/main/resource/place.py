@@ -51,6 +51,9 @@ class PlaceApi(Resource):
             if args['filter'].get('q'):
                 place_query = place_query.filter(Place.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                place_query = place_query.filter(Place.id.in_(args['filter']['id']))
+                del args['filter']['id']
             place_query = place_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
