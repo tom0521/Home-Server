@@ -39,7 +39,7 @@ def create_app(test_config=None):
     db.create_all()
 
     from .resource.account import AccountApi
-    from .resource.address import AddressApi,CityAddressApi,PlaceAddressApi
+    from .resource.address import AddressApi
     from .resource.category import CategoryApi
     from .resource.city import CityApi
     from .resource.country import CountryApi
@@ -55,10 +55,8 @@ def create_app(test_config=None):
     api.add_resource(AddressApi, '/address', '/address/<int:id>')
     api.add_resource(CategoryApi, '/category', '/category/<int:id>')
     api.add_resource(CityApi, '/city', '/city/<int:id>')
-    api.add_resource(CityAddressApi, '/city/<int:city_id>/address')
     api.add_resource(CountryApi, '/country', '/country/<int:id>')
     api.add_resource(PlaceApi, '/place', '/place/<int:id>')
-    api.add_resource(PlaceAddressApi, '/place/<int:place_id>/address')
     api.add_resource(ReceiptApi, '/receipt/<path:receipt>')
     api.add_resource(StateProvinceApi, '/state_province', '/state_province/<int:id>')
     api.add_resource(TagApi, '/tag', '/tag/<int:id>')

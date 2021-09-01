@@ -18,16 +18,25 @@ place_marshal = {
 class PlaceApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            place = place.query.filter_by(id=id).first()
+            if place:
+                db.session.delete(place)
+                db.session.commit()
+                return marshal(place, place_marshal), 200
             abort(404)
 
-        place = place.query.filter_by(id=id).first()
-        if not place:
-            abort(404)
-        db.session.delete(place)
-        db.session.commit()
-        return marshal(place, place_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        places = Place.query.filter(Place.id.in_(args['filter'].get('id',[]))).all()
+        for place in places:
+            db.session.delete(place)
+            db.session.commit()
+
+        return marshal(places, places_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -51,6 +60,9 @@ class PlaceApi(Resource):
             if args['filter'].get('q'):
                 place_query = place_query.filter(Place.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                place_query = place_query.filter(Place.id.in_(args['filter']['id']))
+                del args['filter']['id']
             place_query = place_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

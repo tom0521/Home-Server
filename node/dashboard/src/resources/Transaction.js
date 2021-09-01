@@ -187,7 +187,7 @@ export const TransactionFilter = props => (
 
 export const TransactionList = props => (
 	<List filters={<TransactionFilter />} {...props}>
-		<Datagrid rowClick="edit">
+		<Datagrid>
 			<DateField source="timestamp" />
 			<MoneyField source="amount" />
 			<CategoryField source="category" />

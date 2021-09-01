@@ -12,16 +12,25 @@ from ..model.country import Country,countries_marshal
 class CountryApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            country = Country.query.filter_by(id=id).first()
+            if country:
+                db.session.delete(country)
+                db.session.commit()
+                return marshal(country, countries_marshal), 200
             abort(404)
 
-        country = Country.query.filter_by(id=id).first()
-        if not country:
-            abort(404)
-        db.session.delete(country)
-        db.session.commit()
-        return marshal(country, countries_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        countries = Country.query.filter(Country.id.in_(args['filter'].get('id',[]))).all()
+        for country in countries:
+            db.session.delete(country)
+            db.session.commit()
+
+        return marshal(countries, countries_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -45,6 +54,9 @@ class CountryApi(Resource):
             if args['filter'].get('q'):
                 country_query = country_query.filter(Country.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                country_query = country_query.filter(Country.id.in_(args['filter']['id']))
+                del args['filter']['id']
             country_query = country_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

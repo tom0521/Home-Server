@@ -7,22 +7,30 @@ from sqlalchemy import desc
 
 from .. import db
 from ..model.city import City,cities_marshal
-from ..model.state_province import StateProvince
 
 
 class CityApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            city = City.query.filter_by(id=id).first()
+            if city:
+                db.session.delete(city)
+                db.session.commit()
+                return marshal(city, cities_marshal), 200
             abort(404)
 
-        city = City.query.filter_by(id=id).first()
-        if not city:
-            abort(404)
-        db.session.delete(city)
-        db.session.commit()
-        return marshal(city, cities_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        cities = City.query.filter(City.id.in_(args['filter'].get('id',[]))).all()
+        for city in cities:
+            db.session.delete(city)
+            db.session.commit()
+
+        return marshal(cities, cities_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -46,6 +54,9 @@ class CityApi(Resource):
             if args['filter'].get('q'):
                 city_query = city_query.filter(City.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                city_query = city_query.filter(City.id.in_(args['filter']['id']))
+                del args['filter']['id']
             city_query = city_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]

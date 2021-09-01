@@ -4,7 +4,7 @@ import { stringify } from 'query-string';
 const apiUrl = 'http://192.168.1.103:5000';
 const httpClient = (url, options={}) => {
     if (!options.headers) {
-        options.headers = new Headers({ Accept: 'application/json' });
+        options.headers = new Headers();
     }
     options.headers.set('Timezone-Offset', 
         (-1 * new Date().getTimezoneOffset() / 60));
@@ -35,7 +35,7 @@ const baseDataProvider = {
 
     getMany: (resource, params) => {
         const query = {
-            // filter: JSON.stringify({ id: params.ids }),
+            filter: JSON.stringify({ id: params.ids }),
         };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
         return httpClient(url).then(({ json }) => ({ data: json }));
@@ -43,9 +43,9 @@ const baseDataProvider = {
 
     getManyReference: (resource, params) => {
         const { page, perPage } = params.pagination;
-        // const { field, order } = params.sort;
+        const { field, order } = params.sort;
         const query = {
-            // sort: JSON.stringify([field, order]),
+            sort: JSON.stringify([field, order]),
             filter: JSON.stringify({
                 ...params.filter,
                 [params.target]: params.id,
@@ -69,12 +69,12 @@ const baseDataProvider = {
 
     updateMany: (resource, params) => {
         const query = {
-            // filter: JSON.stringify({ id: params.ids}),
+            filter: JSON.stringify({ id: params.ids}),
         };
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: 'PUT',
             body: JSON.stringify(params.data),
-        }).then(({ json }) => ({ data: json }));
+        }).then(({ json }) => ({ data: json.map(x => x.id) }));
     },
 
     create: (resource, params) =>
@@ -92,11 +92,11 @@ const baseDataProvider = {
 
     deleteMany: (resource, params) => {
         const query = {
-            // filter: JSON.stringify({ id: params.ids}),
+            filter: JSON.stringify({ id: params.ids }),
         };
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: 'DELETE',
-        }).then(({ json }) => ({ data: json }));
+        }).then(({ json }) => ({ data: json.map(x => x.id) }));
     }
 };
 

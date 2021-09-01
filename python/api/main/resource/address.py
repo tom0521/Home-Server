@@ -21,16 +21,26 @@ address_marshal = {
 class AddressApi(Resource): 
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            address = Address.query.filter_by(id=id).first()
+            if address:
+                db.session.delete(address)
+                db.session.commit()
+                return marshal(address, address_marshal), 200
             abort(404)
 
-        address = Address.query.filter_by(id=id).first()
-        if not address:
-            abort(404)
-        db.session.delete(address)
-        db.session.commit()
-        return marshal(address, address_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        addresses = Address.query.filter(
+                    Address.id.in_(args['filter'].get('id',[]))).all()
+        for address in addresses:
+            db.session.delete(address)
+            db.session.commit()
+
+        return marshal(addresses, addresses_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -54,6 +64,9 @@ class AddressApi(Resource):
             if args['filter'].get('q'):
                 address_query = address_query.filter(Address.line_1.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                address_query = address_query.filter(Address.id.in_(args['filter']['id']))
+                del args['filter']['id']
             address_query = address_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
@@ -133,8 +146,12 @@ class AddressApi(Resource):
         return marshal(address, address_marshal), 201
 
     def put(self, id=None):
-        # if an id was not specified, who do I update?
+        # id must be specififed
         if not id:
+            abort(400)
+
+        address = Address.query.filter_by(id=id).first()
+        if not address:
             abort(404)
 
         # set the arguments for the request
@@ -149,10 +166,6 @@ class AddressApi(Resource):
         parser.add_argument('phone')
         parser.add_argument('url')
         args = parser.parse_args()
-
-        address = Address.query.filter_by(id=id).first()
-        if not address:
-            abort(404)
 
         # if the request has no arguments then there is nothing to update
         if len(args) == 0:
@@ -192,23 +205,6 @@ class AddressApi(Resource):
             address.phone = args['phone']
         if args['url']:
             address.url = args['url']
-
         db.session.commit()
+
         return marshal(address, address_marshal), 200
-
-
-class CityAddressApi(Resource):
-
-    def get(self, city_id):
-        city = City.query.filter_by(id=city_id).first()
-        if city:
-            return marshal(city.addresses, addresses_marshal)
-        abort(404)
-
-class PlaceAddressApi(Resource):
-
-    def get(self, place_id):
-        place = Place.query.filter_by(id=place_id).first()
-        if place:
-            return marshal(place.addresses, addresess_marshal)
-        abort(404)

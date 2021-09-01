@@ -13,16 +13,25 @@ from ..model.transaction import Transaction
 class TagApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
-        if not id:
+        # if the id is specified via url
+        if id:
+            tag = Tag.query.filter_by(id=id).first()
+            if tag:
+                db.session.delete(tag)
+                db.session.commit()
+                return marshal(tag, tags_marshal), 200
             abort(404)
 
-        tag = Tag.query.filter_by(id=id).first()
-        if not tag:
-            abort(404)
-        db.session.delete(tag)
-        db.session.commit()
-        return marshal(tag, tags_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        tags = Tag.query.filter(Tag.id.in_(args['filter'].get('id',[]))).all()
+        for tag in tags:
+            db.session.delete(tag)
+            db.session.commit()
+
+        return marshal(tags, tags_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -46,6 +55,10 @@ class TagApi(Resource):
             if args['filter'].get('q'):
                 tag_query = tag_query.filter(Tag.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                tag_query = tag_query.filter(
+                        Tag.id.in_(args['filter']['id']))
+                del args['filter']['id']
             tag_query = tag_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
