@@ -12,16 +12,26 @@ from ..model.category import Category,categories_marshal
 class CategoryApi(Resource):
 
     def delete(self, id=None):
-        # if an id was not specified, what do I delete?
+        # if the id is specified via url
         if not id:
+            category = Category.query.filter_by(id=id).first()
+            if category:
+                db.session.delete(category)
+                db.session.commit()
+                return marshal(category, categories_marshal), 200
             abort(404)
 
-        category = Category.query.filter_by(id=id).first()
-        if not category:
-            abort(404)
-        db.session.delete(category)
-        db.session.commit()
-        return marshal(category, categories_marshal), 200
+        parser = reqparse.RequestParser()
+        parser.add_argument('filter', type=lambda x: json.loads(x), location='args')
+        args = parser.parse_args()
+
+        categories = Category.query.filter(
+                    Category.id.in_(args['filter'].get('id',[]))).all()
+        for category in categories:
+            db.session.delete(category)
+            db.session.commit()
+
+        return marshal(categories, categories_marshal), 200
 
     def get(self, id=None):
         # if the id was specified, try to query it
@@ -45,6 +55,9 @@ class CategoryApi(Resource):
             if args['filter'].get('q'):
                 category_query = category_query.filter(Category.name.like(f"%{args['filter']['q']}%"))
                 del args['filter']['q']
+            if isinstance(args['filter'].get('id'), list):
+                category_query = category_query.filter(Category.id.in_(args['filter']['id']))
+                del args['filter']['id']
             category_query = category_query.filter_by(**args['filter'])
         if args['sort']:
             order = desc(args['sort'][0]) if args['sort'][1] == "DESC" else args['sort'][0]
