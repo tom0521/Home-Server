@@ -83,14 +83,14 @@ const CreatePlace = () => {
 };
 
 const categories = [
-    { id: 0,  name:'Housing' },
+    { id: 0,  name: 'Housing' },
     { id: 1,  name: 'Transportation' },
     { id: 2,  name: 'Food' },
     { id: 3,  name: 'Utilities' },
     { id: 4,  name: 'Clothing' },
-    { id: 5,  name: 'Medical/Healthcare' },
+    { id: 5,  name: 'Healthcare' },
     { id: 6,  name: 'Insurance' },
-    { id: 7,  name: 'Household Items/Supplies' },
+    { id: 7,  name: 'Household Items' },
     { id: 8,  name: 'Personal' },
     { id: 9,  name: 'Debt' },
     { id: 10, name: 'Retirement' },
@@ -98,7 +98,9 @@ const categories = [
     { id: 12, name: 'Savings' },
     { id: 13, name: 'Gifts/Donations' },
     { id: 14, name: 'Entertainment' },
-    { id: 15, name: 'Income' }
+    { id: 15, name: 'Income' },
+    { id: 16, name: 'Pets' },
+    { id: 17, name: 'Miscellaneous' },
 ];
 
 export const TransactionCreate = props => (
@@ -187,7 +189,7 @@ export const TransactionFilter = props => (
 
 export const TransactionList = props => (
 	<List filters={<TransactionFilter />} {...props}>
-		<Datagrid>
+		<Datagrid rowClick="edit">
 			<DateField source="timestamp" />
 			<MoneyField source="amount" />
 			<CategoryField source="category" />
