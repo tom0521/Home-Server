@@ -1,7 +1,7 @@
 import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
 
-const apiUrl = 'http://192.168.1.103:5000';
+const apiUrl = `http://${process.env.REACT_APP_API_ADDR}:${process.env.REACT_APP_API_PORT}`;
 const httpClient = (url, options={}) => {
     if (!options.headers) {
         options.headers = new Headers();
