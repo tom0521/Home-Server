@@ -213,6 +213,8 @@ class TransactionApi(Resource):
             return marshal(transaction, transactions_marshal), 202
 
         if args['timestamp']:
+            # TODO: if the timestamp is changed, that means the account
+            #       history may need to be updated
             transaction.timestamp = args['timestamp']
         if args['amount']:
             amount_diff = args['amount'] - transaction.amount
