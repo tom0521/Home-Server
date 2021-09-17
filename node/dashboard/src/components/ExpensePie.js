@@ -92,13 +92,13 @@ const IncomeFlow = props => {
         }
     });
 
-    const graphData = [];
-    for (const [key, val] of Object.entries(categories)) {
-        graphData.push({
-            name: key,
-            amount: val.toNumber(),
-        });
-    }
+    const graphData = Object.entries(categories)
+                        .map(([key, val]) => {
+                            return { name: key, amount: val.toNumber(), };
+                        })
+                        .sort((v1, v2) => {
+                            return v2.amount - v1.amount;
+                        });
 
     return (
         <React.Fragment>

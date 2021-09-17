@@ -9,6 +9,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExpensePie from './components/ExpensePie';
 import IncomeFlow from './components/IncomeFlow';
 import OverallStats from './components/OverallStats';
+import TagAverage from './components/TagAverage';
+import TagFrequency from './components/TagFrequency';
+import TagTotal from './components/TagTotal';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -20,21 +23,24 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         overflow: 'auto',
         flexDirection: 'column',
-        maxHeight: 240,
     },
     fixedHeight: {
         height: 240,
+    },
+    heightCeiling: {
+        maxHeight: 240,
     },
 }));
 
 const Dashboard = props => {
     const classes = useStyles();
     const fixedPaper = clsx(classes.fixedHeight, classes.paper);
+    const paperCeiling = clsx(classes.heightCeiling, classes.paper);
     return (
         <Container maxWidth='lg'>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper className={classes.paper}>
+                    <Paper className={paperCeiling}>
                         <OverallStats />
                     </Paper>
                 </Grid>
@@ -46,6 +52,21 @@ const Dashboard = props => {
                 <Grid item xs={12} md={8} lg={9}>
                     <Paper className={fixedPaper}>
                         <IncomeFlow />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <Paper className={classes.paper}>
+                        <TagAverage />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <Paper className={classes.paper}>
+                        <TagTotal />
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                    <Paper className={classes.paper}>
+                        <TagFrequency />
                     </Paper>
                 </Grid>
             </Grid>
