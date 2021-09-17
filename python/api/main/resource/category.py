@@ -13,7 +13,7 @@ class CategoryApi(Resource):
 
     def delete(self, id=None):
         # if the id is specified via url
-        if not id:
+        if id:
             category = Category.query.filter_by(id=id).first()
             if category:
                 db.session.delete(category)

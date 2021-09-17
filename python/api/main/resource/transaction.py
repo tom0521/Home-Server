@@ -30,7 +30,7 @@ class TransactionApi(Resource):
 
     def delete(self, id=None):
         # if an id was not specified, what do I delete?
-        if not id:
+        if id:
             transaction = Transaction.query.filter_by(id=id).first()
             if transaction:
                 # Get index of transaction within account transactions
