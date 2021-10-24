@@ -3,11 +3,13 @@ import markdown
 
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -36,6 +38,7 @@ def create_app(test_config=None):
     from .model import account,address,category,city,country,place,state_province,tag,transaction
 
     db.init_app(app)
+    migrate.init_app(app,db)
     db.create_all()
 
     from .resource.account import AccountApi
@@ -45,12 +48,14 @@ def create_app(test_config=None):
     from .resource.country import CountryApi
     from .resource.place import PlaceApi
     from .resource.receipt import ReceiptApi
+    from .resource.reconcile import ReconcileApi
     from .resource.state_province import StateProvinceApi
     from .resource.tag import TagApi,TransactionTagApi
     from .resource.transaction import TransactionApi
     from .resource.transfer import TransferApi
 
     api.add_resource(AccountApi, '/account', '/account/<int:id>')
+    api.add_resource(ReconcileApi, '/account/<int:id>/reconcile')
     api.add_resource(TransferApi, '/account/transfer')
     api.add_resource(AddressApi, '/address', '/address/<int:id>')
     api.add_resource(CategoryApi, '/category', '/category/<int:id>')

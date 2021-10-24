@@ -51,6 +51,7 @@ class Transaction(db.Model):
     receipt = db.Column(db.String(255))
     tags = db.relationship('Tag', secondary=transaction_tags, lazy='subquery', backref=db.backref('transactions', lazy=True))
     note = db.Column(db.Text)
+    payment_id = db.Column(db.Integer, db.ForeignKey('transaction.id'))
 
     def __repr__(self):
         return f'{self.timestamp}: ${self.amount:.2f}'
