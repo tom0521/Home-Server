@@ -126,7 +126,24 @@ const dataProvider = {
         }).then(({ json }) => ({
             data: { ...params.data, id: json.id },
         }));
-    }
+    },
+
+    getDefault: (resource, params) => {
+        const url = `${apiUrl}/${resource}?${stringify(params)}`;
+        return httpClient(url).then(({ headers, json }) => ({
+            data: json,
+            total: json.length,
+        }));
+    },
+
+    postDefault: (resource, params) =>
+        httpClient(`${apiUrl}/${resource}`, {
+            method: 'POST',
+            body: JSON.stringify(params),
+        }).then(({ json }) => ({
+            data: json,
+            total: json.length,
+        })),
 };
 
 export default dataProvider;

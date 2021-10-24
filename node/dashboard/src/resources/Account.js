@@ -5,7 +5,6 @@ import {
     CreateButton,
 	Datagrid,
     Edit,
-    ExportButton,
     Filter,
 	List,
 	RadioButtonGroupInput,
@@ -15,7 +14,10 @@ import {
 	TextInput,
     TopToolbar,
 } from 'react-admin';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import MoneyField from '../components/MoneyField';
+import PopupForm from '../components/PopupForm';
+import ReconcileForm from '../components/ReconcileForm';
 import TransferQuickCreateButton from '../components/TransferQuickCreateButton';
 
 export const AccountCreate = props => (
@@ -64,7 +66,11 @@ const ListActions = (props) => (
     <TopToolbar>
         { cloneElement(props.filters, { context: 'button' }) }
         <CreateButton />
-        <ExportButton />
         <TransferQuickCreateButton />
+        <PopupForm
+            form={<ReconcileForm />}
+            icon={<AssignmentIcon />}
+            title="Reconcile"
+        />
     </TopToolbar>
 );
